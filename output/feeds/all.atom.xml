@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Daniel Whittenbury</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2020-03-03T00:00:00+10:30</updated><entry><title>Hello World Post.</title><link href="/hello-world-post.html" rel="alternate"></link><published>2020-03-03T00:00:00+10:30</published><updated>2020-03-03T00:00:00+10:30</updated><author><name>Daniel</name></author><id>tag:None,2020-03-03:/hello-world-post.html</id><summary type="html">&lt;p&gt;My first post which gives a brief introduction to me and how I will be using this&amp;nbsp;website.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;Hello world, nice to meet you.&lt;/strong&gt; My name is Daniel and this is my very first post
+to my webpage. I hope this will be the first of many and not my last.
+My intention for this website is to be a kind of online portfolio and blog
+(coming soon). I intend to use this site as a
+way to document projects that I am working on, so it will be fairly well
+centred on data science, programming and statistics. However, I may go off on
+tangents at times to dribble some nonsense about something else that interests&amp;nbsp;me.&lt;/p&gt;
+&lt;p&gt;Anyway, a bit about me. I am an aspiring data analyst/engineer/scientist and
+recovering theoretical physicist based in
+&lt;a href="https://southaustralia.com/places-to-go/adelaide"&gt;Adelaide, Australia&lt;/a&gt; who is
+interested in data science, programming, machine learning, deep learning and
+most things technology&amp;nbsp;related.&lt;/p&gt;
+&lt;p&gt;My education and career started in physics and now I am transitioning to data
+science. It has quickly become a
+passion of mine. Over the past year I&amp;#8217;ve been increasing my repertoire of
+skills in this field, in doing so I have learnt a lot and enjoyed every minute
+of it. I know I still have much to learn, but I am very excited about the
+journey ahead. Now, I am actively looking for a full time data analyst&amp;nbsp;position.&lt;/p&gt;
+&lt;p&gt;&lt;span class="caps"&gt;P.S.&lt;/span&gt; Documenting this is kind of stuff online is all very new to me and it feels a little &lt;em&gt;awkward&lt;/em&gt;. Furthermore, it is very likely that I will be fiddling with the layout and the way this site looks
+from time to time. Hopefully, it won&amp;#8217;t irritate the one or two people who
+actually look at&amp;nbsp;it.&lt;/p&gt;</content><category term="Introduction"></category><category term="Daniel"></category></entry></feed>
