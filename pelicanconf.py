@@ -2,11 +2,14 @@
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
 
-AUTHOR = 'Daniel'
+AUTHOR = 'Daniel Whittenbury'
 SITENAME = "dlwhittenbury"
 SITEURL = 'https://dlwhittenbury.github.io'
 
 PATH = 'content'
+STATIC_PATHS = ['articles/AW-1-Obtaining-Loading-Querying-AW','articles/AW-2-Querying-AW-With-Python']
+# ARTICLE_PATHS = STATIC_PATHS
+
 
 TIMEZONE = 'Australia/Adelaide'
 
@@ -36,6 +39,7 @@ SOCIAL = (('Email', 'mailto:whittenburydaniel@gmail.com'),
           ('GoogleScholar', 'https://scholar.google.com/citations?user=3m-Rd7oAAAAJ&hl=en'),
           ('ResearchGate','https://researchgate.net/profile/Daniel_Whittenbury'),
           ('Twitter', 'https://twitter.com/dlwhittenbury'),
+          ('LinkedIn', 'https://linkedin.com/in/daniel-whittenbury-44235a155'),
           )
 
 # ('LinkedIn', 'https://linkedin.com/in/daniel-whittenbury-44235a155'),
