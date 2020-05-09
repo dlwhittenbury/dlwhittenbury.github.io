@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Daniel Whittenbury">
+  <meta name="description" content="AW-3: Creating a HR Power BI report with dynamic measures | Introductio...">
+
+  <base href="https://dlwhittenbury.github.io">
+
+  <!-- <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96"> -->
+
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" type="text/css" media="all">
+  <link rel="stylesheet" href="https://dlwhittenbury.github.io/theme/css/font.css" type="text/css" media="all">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://dlwhittenbury.github.io/theme/css/style.css" type="text/css" media="all">
+
+
+
+  <link rel="stylesheet" href="https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css">
+
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://dlwhittenbury.github.io/theme/js/functions.min.js"></script>
+
+
+
+
+
+<meta name="keywords" content="AdventureWorks, Tutorial, Power BI, Dashboard, Databases">
+
+
+  <title>AW-3: Creating a HR Power BI report with dynamic measures</title>
+
+
+</head>
+
+<body class="home blog">
+
+  <div>
+    <header class="site-header">
+      <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+          <div class="row">
+            <div class="site-navigation-inner col-sm-12">
+              <div class="navbar-header">
+                <button type="button" class="btn navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+              </div>
+              <div class="collapse navbar-collapse navbar-ex1-collapse">
+              <ul id="menu-all-pages" class="nav navbar-nav">
+                <li class="menu-item"><a href="/index.html" >Home
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/about-me.html" >About me
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/publications.html" >Publications
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/resume.html" >Resume
+<i class="fa  fa-lg"></i></a></li>
+              </ul>
+              </div>
+              <div class="social">
+                <a href="mailto:whittenburydaniel@gmail.com" title="Email" >
+<i class="fa fa-envelope fa-lg"></i></a>
+                <a href="https://github.com/dlwhittenbury" title="GitHub" >
+<i class="fa fa-github fa-lg"></i></a>
+                <a href="https://scholar.google.com/citations?user=3m-Rd7oAAAAJ&hl=en" title="GoogleScholar" >
+<i class="fa ai ai-google-scholar-square ai-3x fa-lg"></i></a>
+                <a href="https://researchgate.net/profile/Daniel_Whittenbury" title="ResearchGate" >
+<i class="fa ai ai-researchgate ai-60x fa-lg"></i></a>
+                <a href="https://twitter.com/dlwhittenbury" title="Twitter" >
+<i class="fa fa-twitter fa-lg"></i></a>
+                <a href="https://linkedin.com/in/daniel-whittenbury-44235a155" title="LinkedIn" >
+<i class="fa fa-linkedin fa-lg"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav><!-- .site-navigation -->
+
+      <div class="container">
+
+      <div id="logo">
+        <span class="site-name"><a class="navbar-brand" href="https://dlwhittenbury.github.io"><img width="280" src="images/myAvatar-Circle.png" class="attachment-full size-full" alt="logo">          </a>
+        </span><!-- end of .site-name -->
+      </div><!-- end of #logo -->
+
+    </div>
+
+  </header><!-- #masthead -->
+  </div>
+    <div id="content" class="site-content">
+      <div class="container main-content-area">
+        <div class="row">
+          <div class="main-content-inner col-sm-12 col-md-12">
+            <div id="primary" class="content-area">
+              <div id="main" class="site-main" role="main">
+                <div class="article-container">
+<article>
+  <div class="blog-item-wrap">
+    <div class="post-inner-content">
+      <header class="entry-header page-header">
+        <span class="cat-item"><time datetime="2020-05-09 00:00:00+09:30">Sat 09 May 2020</time></span>
+        <h1 class="entry-title"><a href="https://dlwhittenbury.github.io/aw-3-creating-a-hr-power-bi-report-with-dynamic-measures.html"><span class="caps">AW</span>-3: Creating a <span class="caps">HR</span> Power <span class="caps">BI</span> report with dynamic&nbsp;measures</a></h1>
+      </header><!-- .entry-header -->
+      <div class="fb-like" data-href="https://dlwhittenbury.github.io/aw-3-creating-a-hr-power-bi-report-with-dynamic-measures.html" data-layout="standard" data-action="like" data-show-faces="false" data-share="true"></div>
+      <div class="entry-content">
+        <!-- # AW 3 - Creating a HR Power BI report with dynamic measures -->
+
+<h1>Introduction</h1>
+<p>In this blog we will create a simple Power <span class="caps">BI</span> report for <span class="caps">HR</span> using dynamic
+measures. As mentioned in previous posts in this series, we are using the
+Adventure Works sample databases (AdventureWorks2017 and AdventureWorksDW2017).
+In this post we could choose to work entirely with the <span class="caps">OLTP</span> AdventureWorks2017 database
+as it contains all the information we need. However, we are doing reporting and
+analytics and these are the tasks for which <span class="caps">OLAP</span> systems are designed. The <span class="caps">OLAP</span>
+system AdventureWorksDW2017, however, doesn&#8217;t contain all the information we
+require to complete our report, so we will use the <span class="caps">OLAP</span> data warehouse but also get
+whatever extra data we need from the <span class="caps">OLTP</span>&nbsp;system.</p>
+<p>Throughout creating this report I have taken a large number of screenshots to
+aid reproducibility. Only some of these made it into this blog post. All of the
+screenshots will be available in the
+<a href="https://github.com/dlwhittenbury/AdventureWorks">github repository</a>. If you
+have difficulty following one of the steps below, I encourage you to go check it&nbsp;out.</p>
+<p>Before we begin, we want to emphasise that the data in these databases is not
+current, in fact, <strong>the most current date is 12/07/2014</strong>. This can be
+determined by writing an <span class="caps">SQL</span> query in <span class="caps">SQL</span> Server or in Power <span class="caps">BI</span> by creating a
+measure. For example, in Power <span class="caps">BI</span> we can create a measure using the
+&#8220;Sales SalesOrderHeader&#8221; table from the <span class="caps">OLTP</span> system using the following <span class="caps">DAX</span>&nbsp;code:</p>
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;</span><span class="s">Current</span><span class="s2">&quot;</span> <span class="nv">Date</span> <span class="o">=</span>
+<span class="nv">VAR</span> <span class="nv">MxOD</span> <span class="o">=</span> <span class="nv">MAX</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">Sales SalesOrderHeader</span><span class="s1">&#39;</span>[<span class="nv">OrderDate</span>]<span class="ss">)</span>
+<span class="nv">VAR</span> <span class="nv">MxDD</span> <span class="o">=</span> <span class="nv">MAX</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">Sales SalesOrderHeader</span><span class="s1">&#39;</span>[<span class="nv">DueDate</span>]<span class="ss">)</span>
+<span class="nv">VAR</span> <span class="nv">MxSD</span> <span class="o">=</span> <span class="nv">MAX</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">Sales SalesOrderHeader</span><span class="s1">&#39;</span>[<span class="nv">ShipDate</span>]<span class="ss">)</span>
+<span class="nv">VAR</span> <span class="nv">MxTemp</span> <span class="o">=</span> <span class="nv">MAX</span><span class="ss">(</span><span class="nv">MxOD</span>,<span class="nv">MxDD</span><span class="ss">)</span>
+<span class="k">RETURN</span> <span class="nv">MAX</span><span class="ss">(</span><span class="nv">MxTemp</span>,<span class="nv">MxSD</span><span class="ss">)</span>
+</code></pre></div>
+
+
+<p>Since we have no further use for this table, we will not import it. Instead we
+will just take this date as a given&nbsp;fact.</p>
+<h1>Data&nbsp;Preparation</h1>
+<p>The first thing we need to do is get our data and then prepare it for
+our report. In this report we will be using the <strong>DimEmployee</strong> table from the
+<span class="caps">OLAP</span> system. Go to <strong>Home &gt; Get Data &gt; <span class="caps">SQL</span> Server</strong> in the ribbon menu at the top of
+the screen. Connect to the AdventureWorksDW2017 by entering your server name
+and the database name. Once connected to the database, load only the <strong>DimEmployee</strong> table
+by selecting it in the list and clicking <strong>Transform Data</strong>.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/2-Connect-AWDW2017.png" width="1000" >
+</center></p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/3-Select-DimEmployee.png" width="1000" >
+</center></p>
+<p>Now we are in Power Query. Here we will do quite a few things. First we will want to create
+some new columns. Click on <strong>Add Column &gt; Custom Column</strong> in the Power Query
+ribbon menu to add a new column. We will create 3 new columns this way using the
+M language. They are <strong>Full Name</strong>, <strong>Age</strong> and <strong>Years with the Company</strong>. The M language code for these new columns is as&nbsp;follows:</p>
+<ul>
+<li>
+<p><strong>Full Name:</strong> [FirstName] <span class="amp">&amp;</span> &#8221; &#8221; <span class="amp">&amp;</span>&nbsp;[LastName]</p>
+</li>
+<li>
+<p><strong>Age:</strong> Number.RoundDown(Duration.TotalDays(Date.FromText(&#8220;2014-07-12&#8221;) - [BirthDate] ) /&nbsp;365)</p>
+</li>
+<li>
+<p><strong>Years with Company:</strong> Number.RoundDown(Duration.TotalDays(Date.FromText(&#8220;2014-07-12&#8221;) - [HireDate] )) /&nbsp;365</p>
+</li>
+</ul>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/4-Full-Name.png" width="1000" >
+</center></p>
+<p>The next step is to change the default types for these new columns by clicking
+on the data type symbol on the left of the column name and select the
+appropriate type, i.e.,&nbsp;change</p>
+<ul>
+<li>
+<p><strong>Full Name</strong> to&nbsp;text</p>
+</li>
+<li>
+<p><strong>Age</strong> to whole&nbsp;number</p>
+</li>
+<li>
+<p><strong>Years with Company</strong> to&nbsp;decimal</p>
+</li>
+</ul>
+<p><center>
+  <img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/7-Full-Name-text.png" width="1000" >
+  </center></p>
+<p>We do not need all the columns in this table. To reduce the size of our report
+we will drop all unwanted columns. In addition to the three columns created
+above we will also be&nbsp;using:</p>
+<ul>
+<li>EmployeeKey</li>
+<li>Title</li>
+<li>EmailAddress</li>
+<li>Phone</li>
+<li>MaritalStatus</li>
+<li>SalariedFlag</li>
+<li>Gender</li>
+<li>BaseRate</li>
+<li>VacationHours</li>
+<li>SickLeaveHours</li>
+<li>DepartmentName</li>
+<li>StartDate</li>
+<li>EndDate</li>
+</ul>
+<p>One might think we should include <strong>CurrentFlag</strong>, but as it turns out, all the
+employees in this table are current. We select the desired columns by holding
+<strong>Ctrl</strong> and left clicking on column name. Once all desired columns are selected
+right click on one of the column headers and select <strong>Remove Other Columns</strong>.</p>
+<p>Now that we have prepared the data from this database we will Click on
+<strong>Home &gt; Close <span class="amp">&amp;</span> Apply</strong>. At this point we can save it by going to
+<strong>File &gt; Save As</strong> and naming it (I have named it
+<strong><span class="caps">AW</span>-3-<span class="caps">HR</span>-<span class="caps">PBI</span>-Report-Dynamic-Measures</strong>).</p>
+<p>Before we start creating our report we will get the extra data we require from
+the <span class="caps">OLTP</span> system. To do this, do as before by clicking on
+<strong>Get Data &gt; <span class="caps">SQL</span> Server</strong> and enter your server name again and this time use
+AdventureWorks2017 for the database name. From this database we will only need
+four&nbsp;tables:</p>
+<ul>
+<li>HumanResources.Department</li>
+<li>HumanResources.EmployeeDepartmentHistory</li>
+<li>HumanResources.Shift</li>
+<li>Person.EmailAddress</li>
+</ul>
+<p>Remember to click <strong>Transform Data</strong> as we will need to transform this data and
+merge it with the <strong>DimEmployee</strong> table. We will drop unwanted columns from
+these new tables and then merge it. We first consider the
+<strong>HumanResources Department</strong> table where we only keep the columns <strong>Name</strong> and
+<strong>GroupName</strong>. We rename these columns to <strong>Department Name</strong> and
+<strong>Group Name</strong>, respectively, by clicking on their column&nbsp;headers.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/14-HR-Department-Rename-Delete-Click-Merge-Queries.png" width="800">
+</center></p>
+<p>Now we merge this table with <strong>DimEmployee</strong> by clicking on
+<strong>Merge Queries &gt; Merge Queries as New</strong>. Select the <strong>DimEmployee</strong> table and
+the <strong>DepartmentName</strong> column and the <strong>HumanResources Deparment</strong> and its
+<strong>Department Name</strong> column. For the <strong>Join Kind</strong> select Left&nbsp;Outer.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/15-Merge-DimEmployee-HR-Dept.png" width="1000">
+</center></p>
+<p>If you get asked about privacy levels select ignore and click&nbsp;save.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/16-Privacy-Levels.png" width="1000">
+</center></p>
+<p>It appears as a new table called <strong>Merge1</strong>. Scroll to the far right and you
+will see all of the <strong>DimEmployee</strong> columns and a new column called
+<strong>HumanResources Department</strong>. Click on the two outward pointing arrows next to
+the column header. Select all columns to be kept and click ok. Now you have two
+new columns, one of which is the same as the DepartmentName that was originally
+in <strong>DimEmployee</strong>. We will drop the original and rename the two new columns as
+<strong>Department Name</strong> and <strong>Group Name</strong>. We also rename the table as <strong>Employee</strong>
+in the <strong>Query Settings</strong>.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/18-Select-All.png" width="1000">
+</center></p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/20-Delete-col-rename-others.png" width="1000">
+</center></p>
+<p>For the <strong>HumanResources Shift</strong> table we rename the column <strong>Name</strong> to
+<strong>Shift Type</strong> and only keep <strong>ShiftID</strong> and <strong>Shift Type</strong>.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/22-HR-Shift-Prep.png" width="1000">
+</center></p>
+<p>For <strong>HumanResources EmployeeDepartmentHistory</strong> we keep <strong>BusinessEntityID</strong>
+which is <strong><span class="caps">NOT</span></strong> the same as <strong>EmployeeKey</strong> in the <strong>DimEmployee</strong> and <strong>Employee</strong>
+tables. We also keep <strong>ShiftID</strong>, <strong>StartDate</strong> and <strong>EndDate</strong> which correspond
+to the similarly named columns in the other&nbsp;tables.</p>
+<p>We merge <strong>HumanResources EmployeeDepartmentHistory</strong> with
+<strong>HumanResources Shift</strong> on <strong>ShiftID</strong> using <strong>Merge Queries &gt; Merge Queries</strong>.
+Click on the double arrows in the new column header as done before. Select
+<strong>Shift Type</strong>. Now drop <strong>ShiftID</strong> and rename the new column to <strong>Shift Type</strong>.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/27-EDH-Prep.png" width="1000">
+</center></p>
+<p>We noticed by looking at the data that <strong>EmployeeKey</strong> appears to be
+unique for each position a person may have. For example Rob Walters has had two
+positions. For his first he had the <strong>EmployeeKey</strong> 4 and for the second and
+current one he had the value 5. Whereas <strong>BusinessEntityID</strong> is unique for each employee at Adventure Works. This value is not available in the data warehouse, so to find out how
+<strong>EmployeeKey</strong> and <strong>BusinessEntityID</strong> are related to one another we do so by the employee email
+addresses which are also unique for each employee and this information is available in
+both the <span class="caps">OLTP</span> and <span class="caps">OLAP</span> system. It is in the <strong>DimEmployee</strong> table in the <span class="caps">OLAP</span> system and
+in <strong>Person EmailAddress</strong> table in the <span class="caps">OLTP</span>&nbsp;table.</p>
+<p>We have not yet loaded the <strong>Person EmailAddress</strong> table, we can do this by going to
+<strong>Home &gt; New Source &gt; <span class="caps">SQL</span> Server</strong> and connecting as we did before to the <span class="caps">OLTP</span> system.
+In this table we only need the <strong>BusinessEntityID</strong> and <strong>EmailAddress</strong> columns, we remove
+all others, then merge this query with <strong>HumanResources EmployeeDepartmentHistory</strong>
+on the <strong>EmailAddress</strong>.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/30-EDH-Prep.png" width="1000">
+</center></p>
+<p>Now we merge the <strong>HumanResources EmployeeDepartmentHistory</strong> with the <strong>Employee</strong>
+table. Please note the numbering in the headers of the columns we merge on. We
+do not merge on <strong>EmployeeKey</strong> and <strong>BusinessEntityID</strong> as they are not the same. We
+merge these two tables on <strong>EmailAddress</strong> and <strong>EndDate</strong>. Once again click on the double arrows in the
+new column header. Only keep <strong>Shift Type</strong>, <strong>BusinessEntityID</strong> and uncheck
+<strong>Use original column name as a prefix</strong> this&nbsp;time.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/31-Emp-EDH-Merge.png" width="1000">
+</center></p>
+<p>The data contained in the <strong>Employee</strong> table only contains information about the
+current employees at Adventure Works Cycles. However, people can have more than
+one position at the company over time, i.e., an employee changes department or
+gets promoted. This information is described by the columns <strong>StartDate</strong> and
+<strong>EndDate</strong>, which indicates the start and end date for a particular position. If we
+only desire the employee information in their current role we could filter
+<strong>EndDate</strong> by clicking on the down arrow on the right side of the column name, then
+select (null) in the drop down menu. Finally, to conclude the preparation of this table we sort by <strong>EmployeeKey</strong> and convert
+<strong>EmployeeKey</strong> and <strong>BusinessEntityID</strong> to text&nbsp;type.</p>
+<p>We can now disable the other tables by right clicking on each table and
+unselecting <strong>Enable load</strong>. You may get a warning, but just ignore it,
+because we won&#8217;t be using these tables. Once done, click <strong>Close <span class="amp">&amp;</span> Apply</strong>.</p>
+<h1>Report Page One: <span class="caps">HR</span> Employee&nbsp;Overview</h1>
+<h2>Background</h2>
+<p>Now we are in a position to begin our report. Let&#8217;s start by inculding a simple
+background image. Go to <strong>Visualisations Panel &gt; Form &gt; Page Background</strong> then
+click on <strong>+ Add Image</strong>, then select your image. Here I have used a simple grey
+background. After which, set transparency to 50% and select &#8220;Fit&#8221; in the Image
+Fit dropdown&nbsp;menu.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/40-Background-2.png" width="1000">
+</center></p>
+<h2>Theme</h2>
+<p>Power <span class="caps">BI</span> has many themes to chose from and it&#8217;s quite easy to make your own theme.
+The theme determines the colour palette. To change the theme select <strong>View</strong> in
+the ribbon menu and change theme. I have chosen to use &#8220;City Park&#8221;. Also check
+&#8220;Gridlines&#8221; and &#8220;Snap to grid&#8221; if they are not already selected, these two
+options will help with the layout of figures&nbsp;later.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/41-Theme.png" width="1000">
+</center></p>
+<h2>Title</h2>
+<p>To add a title click <strong>Insert</strong> in the ribbon menu, then click <strong>Text box</strong> and
+add the title text formatted as you like. Every report should have a clear and
+meaningful&nbsp;title.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/42-Title.png" width="1000">
+</center></p>
+<h2>Measures</h2>
+<p>We will now calculate measures to be used in our report. We will begin by
+creating a new table to hold all of our measures. This is useful, because it
+makes it easier to find our measures. Click <strong>Enter Data</strong> to create the empty table
+we will use to contain all of our measures. We will call it <strong>All Measures</strong>.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/43-Enter-Data-All-Measures.png" width="1000">
+</center></p>
+<p>To create a measure in this table, right click on the <strong>All Measures</strong> table in
+the <strong>Fields panel</strong> and click <strong>new measure</strong>.  All the <span class="caps">DAX</span> code is given below and
+also in a separate Excel file available in the&nbsp;repository.</p>
+<h3>Total Number of&nbsp;Employees</h3>
+<div class="highlight"><pre><span></span><code><span class="nv">Total</span> <span class="nv">Employees</span> <span class="o">=</span>
+<span class="nv">VAR</span> <span class="nv">DC</span> <span class="o">=</span> <span class="nv">DISTINCTCOUNT</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">Employee</span><span class="s1">&#39;</span>[<span class="nv">EmployeeKey</span>]<span class="ss">)</span>
+<span class="nv">VAR</span> <span class="nv">CNT</span> <span class="o">=</span> <span class="k">IF</span><span class="ss">(</span><span class="nv">DC</span> <span class="o">=</span> <span class="nv">BLANK</span><span class="ss">()</span>, <span class="mi">0</span>, <span class="nv">DC</span><span class="ss">)</span>
+<span class="k">RETURN</span> <span class="nv">CNT</span>
+</code></pre></div>
+
+
+<p>After adding our first measure we can delete the blank column1 in the <strong>All
+Measures</strong>&nbsp;table.</p>
+<h3>Number of Male&nbsp;Employees</h3>
+<div class="highlight"><pre><span></span><code><span class="n">Men</span> <span class="o">=</span> <span class="n">CALCULATE</span><span class="p">([</span><span class="n">Total</span> <span class="n">Employees</span><span class="p">],</span> <span class="err">&#39;</span><span class="n">Employee</span><span class="err">&#39;</span><span class="p">[</span><span class="n">Gender</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;M&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<h3>Number of Female&nbsp;Employees</h3>
+<div class="highlight"><pre><span></span><code><span class="n">Women</span> <span class="o">=</span> <span class="n">CALCULATE</span><span class="p">([</span><span class="n">Total</span> <span class="n">Employees</span><span class="p">],</span> <span class="err">&#39;</span><span class="n">Employee</span><span class="err">&#39;</span><span class="p">[</span><span class="n">Gender</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;F&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<h3>Average Rate of&nbsp;Pay</h3>
+<div class="highlight"><pre><span></span><code><span class="nf">Avg</span><span class="p">.</span><span class="w"> </span><span class="n">Pay</span><span class="w"> </span><span class="n">Rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AVERAGE</span><span class="p">(</span><span class="s1">&#39;Employee&#39;</span><span class="o">[</span><span class="n">BaseRate</span><span class="o">]</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>We format this measure to <span class="caps">US</span> currency by selecting <strong>Measure tools &gt; $ &gt; English
+(United&nbsp;States)</strong></p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/44-Avg-Pay-Rate-US-Currency.png" width="1000">
+</center></p>
+<h3>Number of Available Sick Leave&nbsp;Hours</h3>
+<div class="highlight"><pre><span></span><code><span class="n">Available</span><span class="w"> </span><span class="n">Sick</span><span class="w"> </span><span class="n">Leave</span><span class="w"> </span><span class="n">Hrs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">SUM</span><span class="p">(</span><span class="s1">&#39;Employee&#39;</span><span class="o">[</span><span class="n">SickLeaveHours</span><span class="o">]</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+
+<h3>Number of Available Holiday Leave&nbsp;Hours</h3>
+<div class="highlight"><pre><span></span><code><span class="n">Available</span><span class="w"> </span><span class="n">Holiday</span><span class="w"> </span><span class="n">Leave</span><span class="w"> </span><span class="n">Hrs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">SUM</span><span class="p">(</span><span class="s1">&#39;Employee&#39;</span><span class="o">[</span><span class="n">VacationHours</span><span class="o">]</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+
+<h3>Average of the Number of Years with the&nbsp;Company</h3>
+<div class="highlight"><pre><span></span><code><span class="k">Avg</span><span class="p">.</span> <span class="n">Duration</span> <span class="o">=</span> <span class="n">AVERAGE</span><span class="p">(</span><span class="s1">&#39;Employee&#39;</span><span class="p">[</span><span class="n">Years</span> <span class="k">with</span> <span class="n">Company</span><span class="p">])</span>
+</code></pre></div>
+
+
+<p>We then proceed to make score cards for each of these measures. This is can be done
+by going to the <strong>Visualisations panel &gt; Score card</strong> and placing the measure in the
+Fields location under the Fields tab which is marked by green. After which
+the score cards can be formatted as desired using the options in the Format tab.
+We will not cover this in detail as it is very simple and you may wish to change
+the appearance as you desire. Experiment with the options&nbsp;available.</p>
+<h2>Dynamic&nbsp;Measures</h2>
+<p>Now we have reached the point were we can create dynamic measures. By this we mean
+we will create a slicer where the buttons are the measures we created above.
+Upon pressing one of these buttons, the measure used in figures will&nbsp;change.</p>
+<p>Create a Metrics table by going to <strong>Home &gt; Enter data</strong> and create two columns <strong>Measure</strong> and <strong>Sorting Ordering</strong>, then enter the details as shown below and click <strong>Load</strong>.
+  <center>
+  <img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/45-Metrics-Table.png" width="1000">
+  </center></p>
+<p>In the Fields panel go to the Metrics table click on <strong>Measure</strong> column. Go to <strong>Column tools &gt; Sort by column &gt; Sorting Order</strong> in the ribbon menu. This will sort the measure column by the Sorting Order&nbsp;column.</p>
+<p>Create a slicer by selecting the <strong>Measure</strong> column in the <strong>Fields</strong> panel and then going to the <strong>Visualisations</strong> panel and selecting slicer. Go to <strong>Format tab &gt; General &gt; Orientation</strong> and select &#8220;Horizontal&#8221;. This will make buttons which we will be able to use to change the measures dynamically. Format these buttons as desired.
+  <center>
+  <img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/46-Slicer.png" width="1000">
+  </center></p>
+<p>Create a new measure called <strong>Selected Metric</strong> and set the default to <strong>Total Employees</strong>. When a button is pressed this measure will return which measure was selected. Here is the <span class="caps">DAX</span>&nbsp;code</p>
+<div class="highlight"><pre><span></span><code><span class="n">Selected</span><span class="w"> </span><span class="n">Metric</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SELECTEDVALUE</span><span class="p">(</span><span class="s1">&#39;Metrics&#39;</span><span class="o">[</span><span class="n">Measure</span><span class="o">]</span><span class="p">,</span><span class="ss">&quot;Total Employees&quot;</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Create another measure which we have called <strong>Measure Logic</strong>. This measure will return the correct numerical value of the selected measure. Note that we have explicilty stated the table that these measures are in, but it is not strictly&nbsp;necessary.</p>
+<div class="highlight"><pre><span></span><code><span class="n">Metric</span> <span class="n">Logic</span> <span class="o">=</span> <span class="n">SWITCH</span><span class="p">(</span><span class="nb">TRUE</span><span class="p">(),</span>
+<span class="err">&#39;</span><span class="n">All</span> <span class="n">Measures</span><span class="err">&#39;</span><span class="p">[</span><span class="n">Selected</span> <span class="n">Metric</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;Total Employees&quot;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">All</span> <span class="n">Measures</span><span class="err">&#39;</span><span class="p">[</span><span class="n">Total</span> <span class="n">Employees</span><span class="p">],</span>
+<span class="err">&#39;</span><span class="n">All</span> <span class="n">Measures</span><span class="err">&#39;</span><span class="p">[</span><span class="n">Selected</span> <span class="n">Metric</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;Sick Leave&quot;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">All</span> <span class="n">Measures</span><span class="err">&#39;</span><span class="p">[</span><span class="n">Available</span> <span class="n">Sick</span> <span class="n">Leave</span> <span class="n">Hrs</span><span class="p">],</span>
+<span class="err">&#39;</span><span class="n">All</span> <span class="n">Measures</span><span class="err">&#39;</span><span class="p">[</span><span class="n">Selected</span> <span class="n">Metric</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;Holiday Leave&quot;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">All</span> <span class="n">Measures</span><span class="err">&#39;</span><span class="p">[</span><span class="n">Available</span> <span class="n">Holiday</span> <span class="n">Leave</span> <span class="n">Hrs</span><span class="p">],</span>
+<span class="err">&#39;</span><span class="n">All</span> <span class="n">Measures</span><span class="err">&#39;</span><span class="p">[</span><span class="n">Selected</span> <span class="n">Metric</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;Avg. Pay Rate&quot;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">All</span> <span class="n">Measures</span><span class="err">&#39;</span><span class="p">[</span><span class="n">Avg</span><span class="p">.</span> <span class="n">Pay</span> <span class="n">Rate</span><span class="p">],</span>
+<span class="err">&#39;</span><span class="n">All</span> <span class="n">Measures</span><span class="err">&#39;</span><span class="p">[</span><span class="n">Selected</span> <span class="n">Metric</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;Avg. Duration&quot;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">All</span> <span class="n">Measures</span><span class="err">&#39;</span><span class="p">[</span><span class="n">Avg</span><span class="p">.</span> <span class="n">Duration</span><span class="p">],</span>
+<span class="err">&#39;</span><span class="n">All</span> <span class="n">Measures</span><span class="err">&#39;</span><span class="p">[</span><span class="n">Total</span> <span class="n">Employees</span><span class="p">])</span>
+</code></pre></div>
+
+
+<p>Create a donut chart with <strong>Measure Logic</strong> and test it out! We have chosen to look at these measures by gender. Go to the <strong>Visualisations panel &gt; Donut &gt; Fields tab</strong> then put <strong>Gender</strong> in the Legend field and <strong>Metric Logic</strong> in the Values field as shown below. We repeat this for <strong>Salaried Flag</strong>, <strong>Marital Status</strong> and <strong>Shift Type</strong>.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/47-Donut-Metric-Logic-by-Gender.png" width="1000">
+</center></p>
+<p>To make these donut charts stand out a bit more we place a slightly transparent rectangle with rounded corners behind them. Go to <strong>Insert &gt; Shape &gt; Rectangle</strong>. Place the rectangle, go to <strong>Format tab &gt; Line</strong> change &#8220;Weight&#8221; to zero to remove border and set &#8220;Rounded edges&#8221; to 20 px. The <strong>Format tab &gt; Fill</strong> and select a matching grey colour and set transparency to 80%. Finally go to <strong>Format &gt; Send Backward &gt; Send to back</strong> in the ribbon menu to place it behind the donut&nbsp;charts.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/48-Other-Donuts-Rectangle.png" width="1000">
+</center></p>
+<p>We also create a bar char in a similar manner. Select <strong>Visualisations &gt; Clustered bar char</strong>, then place <strong>Group Name</strong> in  Axis field, <strong>Shift Type</strong> in Legend and <strong>Metric Logic</strong> in Value. Format as desired.
+To sort we click on the ellipsis (three dots) and go to <strong>Sort by &gt; Metric Logic</strong>.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/49-Bar-Chart.png" width="1000">
+</center></p>
+<p>We also add a last refreshed date and link to the Adventure Works database samples to the bottom of the page. Normally the last refreshed date  would be dynamically calculated by using a measure and a score card, but since there is no recent data and it&#8217;s not going to be updated we simply put it as a text box. An information button can be added to the report by going  to <strong>Insert &gt; Buttons &gt; Information</strong> in the ribbon menu. To add text to the button go to &#8220;Button Text&#8221; and type in the &#8220;Button Text&#8221; field and format as desired. To make it go to a link, go to &#8220;Action&#8221;, select <strong>Web <span class="caps">URL</span></strong> in &#8220;Type&#8221;, then type the <span class="caps">URL</span> in the &#8220;Web <span class="caps">URL</span>&#8221; field. Now while holding <strong>Ctrl</strong> and left clicking your browser will open the webpage. We have chosen to link to Microsoft&#8217;s download page for the Adventure Works sample&nbsp;databases.</p>
+<p>We have now completed the first page of our report now we will create two more pages. We will refrain from repeating many of the steps discussed&nbsp;above.</p>
+<h1>Report Page Two: <span class="caps">HR</span> Employee&nbsp;Analysis</h1>
+<p>We can duplicate the previous page by right clicking on the page name at the bottom and selecting <strong>Duplicate Page</strong>. We will delete the donut visuals, but keep everything else. This report page will be used to do interactive analysis, so we will create multiple dropdown menus allowing us to change the data which is used in the visuals.
+These are created by selecting <strong>Visualisations panel &gt; Slicer</strong>  then placing your desired attribute in the &#8220;Fields&#8221; field. On the slicer, click on the down arrow in the top right corner and select <strong>dropdown</strong>. Format as desired. For the bar chart we will remove the <strong>Shift Type</strong> field from the legend and place the dynamic measure buttons above this figure because this visual will be the only one that will be dynamically changing. We will also add <strong>Department Name</strong> to the Axis field under <strong>Group Name</strong>.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/51-P2-Bar-Chart-Dropdown.png" width="1000">
+</center></p>
+<p>We will now create a scatter plot to show the relationship between the two measures <strong>Avg. Pay Rate</strong> and the <strong>Avg. Duration</strong>  (the average length of time employees stay with the company in years). Go to <strong>Visualisations panel &gt; Scatter</strong> and add fields as shown in the figure. Note that we have placed <strong>BusinessEntityID</strong> in the &#8220;Details&#8221; field to show each employee in the figure and we have colour coded the data points by the group to which they belong by placing <strong>Group Name</strong> in the &#8220;Legend&#8221;&nbsp;field.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/52-Scatter.png" width="1000">
+</center></p>
+<p>This figure has been improved further by going to the <strong>Analytics tab</strong> and adding a minimum, maximum and an average line, e.g., <strong>Analytics tab &gt; Min line</strong> click <strong>+ Add</strong>, select the measure <strong>Avg. Pay Rate</strong>, select &#8220;Position&#8221; to be behind, turn data label on, set text to &#8220;Name and value&#8221; and format as you&nbsp;like.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/53-Analytics-1.png" width="200">
+</center></p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/54-Analytics-2.png" width="200">
+</center></p>
+<h1>Report Page Three: <span class="caps">HR</span> Employee&nbsp;Details</h1>
+<p>The third and final page will be similar to page two, except in stead of visuals we will include a table containing employee details. We begin by duplicating page 2 and deleting the visualisations. To create the table go to <strong>Visualisations panel &gt; Table</strong>. Add the following fields to the &#8220;Values&#8221; field and format as desired. Note that we have changed the field names to be shorter and more descriptive in some&nbsp;cases.</p>
+<p><center>
+<img src="articles/AW-3-Creating-HR-Power-BI-report-dynamic-measures/images/55-Hr-Details.png" width="1000">
+</center></p>
+<h1>Conclusion</h1>
+<p>In this post we have looked at creating a simple Power <span class="caps">BI</span> report for <span class="caps">HR</span> using
+the Adventure Works sample databases. You can find the Power <span class="caps">BI</span> file on my GitHub account in my
+<a href="https://github.com/dlwhittenbury/AdventureWorks">Adventure Works repository</a>. I will also place all the screenshots taken while constructing the report, many of which were not included above.  Included in this repository is also an excel file with all the measure&nbsp;formulas.</p>
+      </div><!-- .entry-content -->
+      <br /><br />
+      <div class="article_meta">
+        Tags:
+          <a href="https://dlwhittenbury.github.io/tag/adventureworks.html">AdventureWorks</a>,          <a href="https://dlwhittenbury.github.io/tag/tutorial.html">Tutorial</a>,          <a href="https://dlwhittenbury.github.io/tag/power-bi.html">Power BI</a>,          <a href="https://dlwhittenbury.github.io/tag/dashboard.html">Dashboard</a>,          <a href="https://dlwhittenbury.github.io/tag/databases.html">Databases</a>      </div>
+    </div>
+  </div>
+</article><!-- #post-## -->
+                </div>
+              </div><!-- #main -->
+          </div><!-- #primary -->
+        </div>
+      </div><!-- close .row -->
+    </div><!-- close .container -->
+  </div><!-- close .site-content -->
+
+
+
+
+  <div id="footer-area">
+    <footer id="colophon" class="site-footer" role="contentinfo">
+      <div class="site-info container">
+        <div class="row">
+                    <div class="copyright col-md-12">
+                    <a href="https://dlwhittenbury.github.io/pages/privacy-policy">Privacy Policy</a> |
+                    <a href="https://dlwhittenbury.github.io/feeds/all.atom.xml">Atom Feed</a> |
+                    <a href="https://dlwhittenbury.github.io/sitemap.xml">Sitemap</a><br />
+                    This site uses the <a href="https://github.com/limbenjamin/voce">voce</a> theme by <a href="//limbenjamin.com/">Benjamin Lim</a><br />
+                    &copy; 2020 <a href="https://dlwhittenbury.github.io">Daniel Whittenbury</a> </div>
+        </div>
+      </div><!-- .site-info -->
+      <div class="scroll-to-top" style="display: none;"><i class="fa fa-angle-up"></i></div><!-- .scroll-to-top -->
+    </footer><!-- #colophon -->
+  </div>
+
+  <script type="text/javascript">
+    window.addEventListener('load', function(){
+    if (window.location.pathname != '/' && window.location.pathname != '/index.html'){
+      window.scroll(0, document.getElementById('main').offsetTop);
+    }})
+  </script>
+
+
+
+
+</body>
+</html>
