@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="Daniel Whittenbury">
-  <meta name="description" content="A listing of all authors on this site">
+  <meta name="description" content="How to get latex in GitHub README files and GitHub pages | This is a very brief blog post about something I found very...">
 
   <base href="https://dlwhittenbury.github.io">
 
@@ -32,9 +32,10 @@
 
 
 
-  <meta name="keywords" content="Circular statistics, Directional statistics, Sampling, Visualisation, GitHub, LaTeX, AdventureWorks, Tutorial, Power BI, Dashboard, Databases, Python, Daniel">
+<meta name="keywords" content="GitHub, LaTeX">
 
-  <title>Authors | dlwhittenbury</title>
+
+  <title>How to get latex in GitHub README files and GitHub pages</title>
 
 
 </head>
@@ -105,12 +106,56 @@
               <div id="main" class="site-main" role="main">
                 <div class="article-container">
 <article>
-  <div class="article_text">
-    <ul>
-      <li><a href="https://dlwhittenbury.github.io/author/daniel.html">Daniel</a> (6)</li>
-    </ul>
+  <div class="blog-item-wrap">
+    <div class="post-inner-content">
+      <header class="entry-header page-header">
+        <span class="cat-item"><time datetime="2020-06-04 00:00:00+09:30">Thu 04 June 2020</time></span>
+        <h1 class="entry-title"><a href="https://dlwhittenbury.github.io/how-to-get-latex-in-github-readme-files-and-github-pages.html">How to get latex in GitHub <span class="caps">README</span> files and GitHub&nbsp;pages</a></h1>
+      </header><!-- .entry-header -->
+      <div class="fb-like" data-href="https://dlwhittenbury.github.io/how-to-get-latex-in-github-readme-files-and-github-pages.html" data-layout="standard" data-action="like" data-show-faces="false" data-share="true"></div>
+      <div class="entry-content">
+        <p>This is a very brief blog post about something I found very useful, and
+I suppose others might benefit from it if they are doing a lot of math and also using
+GitHub or hosting a  website with GitHub&nbsp;pages.</p>
+<p>Github&#8217;s flavour of markdown doesn&#8217;t support LaTeX, which is rather&nbsp;frustrating.</p>
+<!-- <img src="articles/Github-LaTeX/images/cat.jpg" width="100" height="100"/> -->
+
+<p><center>
+<img src="articles/Github-LaTeX/images/cat.png" width="500" >
+</center>
+<!-- <img alt="asd" src="articles/Github-LaTeX/images/cat.jpg"> --></p>
+<p>However, there is a work around. One possible way to do this automatically is to use <a href="https://github.com/leegao/readme2tex">readme2tex</a>. It is incredibly useful. What it does is converts all the LaTeX math into svg images. These images are then used to replace the LaTeX in a new markdown file. They are included into the markdown file using <span class="caps">HTML</span> image&nbsp;tags.</p>
+<h4>To&nbsp;install</h4>
+<div class="highlight"><pre><span></span><code>pip install readme2tex
+</code></pre></div>
+
+
+<h4>To use simply type the following  into the&nbsp;terminal</h4>
+<div class="highlight"><pre><span></span><code>python -m readme2tex  --username nouser --project noproject --nocdn --readme INPUT.md --output OUTPUT.md
+</code></pre></div>
+
+
+<h4>A few&nbsp;notes</h4>
+<p>You may not need to use all the flags that I have used, but that is what
+worked for me. The first 2 flags were used because it cried foul when they
+were not given despite the documentation saying they are optional. I
+simply gave dummy values and it worked just fine. The &#8212;nocdn flag will use
+relative paths for the output images. The &#8212;readme flag is followed by the
+markdown file that is to be processed. The &#8212;output flag is followed by the
+desired name of the processed markdown file, which will have the LaTeX replaced with&nbsp;images.</p>
+<p>Also GitHubs flavour of markdown can be little more sensitive to blank lines, so
+if you have inline equations you should be mindful of blank lines. In particular,
+you should check that your lists are tight, i.e., no blank lines between items. Otherwise you may get unwanted line breaks around your math images for apparently no reason. However, if
+all else fails to remove these unwanted line breaks I found that using the <strong>aside</strong> <span class="caps">HTML</span> tag
+can be useful, as the element does not render as anything special in a&nbsp;browser.</p>
+      </div><!-- .entry-content -->
+      <br /><br />
+      <div class="article_meta">
+        Tags:
+          <a href="https://dlwhittenbury.github.io/tag/github.html">GitHub</a>,          <a href="https://dlwhittenbury.github.io/tag/latex.html">LaTeX</a>      </div>
+    </div>
   </div>
-</article>
+</article><!-- #post-## -->
                 </div>
               </div><!-- #main -->
           </div><!-- #primary -->
@@ -144,6 +189,7 @@
       window.scroll(0, document.getElementById('main').offsetTop);
     }})
   </script>
+
 
 
 
