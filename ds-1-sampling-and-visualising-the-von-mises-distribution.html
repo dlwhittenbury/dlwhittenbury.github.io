@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Daniel Whittenbury">
+  <meta name="description" content="DS-1: Sampling and visualising the von Mises distribution | This is the first in a series of related blog posts/tutorials...">
+
+  <base href="https://dlwhittenbury.github.io">
+
+  <!-- <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96"> -->
+
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" type="text/css" media="all">
+  <link rel="stylesheet" href="https://dlwhittenbury.github.io/theme/css/font.css" type="text/css" media="all">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://dlwhittenbury.github.io/theme/css/style.css" type="text/css" media="all">
+
+
+
+  <link rel="stylesheet" href="https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css">
+
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://dlwhittenbury.github.io/theme/js/functions.min.js"></script>
+
+
+
+
+
+<meta name="keywords" content="Circular statistics, Directional statistics, Sampling, Visualisation">
+
+
+  <title>DS-1: Sampling and visualising the von Mises distribution</title>
+
+
+</head>
+
+<body class="home blog">
+
+  <div>
+    <header class="site-header">
+      <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+          <div class="row">
+            <div class="site-navigation-inner col-sm-12">
+              <div class="navbar-header">
+                <button type="button" class="btn navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+              </div>
+              <div class="collapse navbar-collapse navbar-ex1-collapse">
+              <ul id="menu-all-pages" class="nav navbar-nav">
+                <li class="menu-item"><a href="/index.html" >Home
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/about-me.html" >About me
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/publications.html" >Publications
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/resume.html" >Resume
+<i class="fa  fa-lg"></i></a></li>
+              </ul>
+              </div>
+              <div class="social">
+                <a href="mailto:whittenburydaniel@gmail.com" title="Email" >
+<i class="fa fa-envelope fa-lg"></i></a>
+                <a href="https://github.com/dlwhittenbury" title="GitHub" >
+<i class="fa fa-github fa-lg"></i></a>
+                <a href="https://scholar.google.com/citations?user=3m-Rd7oAAAAJ&hl=en" title="GoogleScholar" >
+<i class="fa ai ai-google-scholar-square ai-3x fa-lg"></i></a>
+                <a href="https://researchgate.net/profile/Daniel_Whittenbury" title="ResearchGate" >
+<i class="fa ai ai-researchgate ai-60x fa-lg"></i></a>
+                <a href="https://twitter.com/dlwhittenbury" title="Twitter" >
+<i class="fa fa-twitter fa-lg"></i></a>
+                <a href="https://linkedin.com/in/daniel-whittenbury-44235a155" title="LinkedIn" >
+<i class="fa fa-linkedin fa-lg"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav><!-- .site-navigation -->
+
+      <div class="container">
+
+      <div id="logo">
+        <span class="site-name"><a class="navbar-brand" href="https://dlwhittenbury.github.io"><img width="280" src="images/myAvatar-Circle.png" class="attachment-full size-full" alt="logo">          </a>
+        </span><!-- end of .site-name -->
+      </div><!-- end of #logo -->
+
+    </div>
+
+  </header><!-- #masthead -->
+  </div>
+    <div id="content" class="site-content">
+      <div class="container main-content-area">
+        <div class="row">
+          <div class="main-content-inner col-sm-12 col-md-12">
+            <div id="primary" class="content-area">
+              <div id="main" class="site-main" role="main">
+                <div class="article-container">
+<article>
+  <div class="blog-item-wrap">
+    <div class="post-inner-content">
+      <header class="entry-header page-header">
+        <span class="cat-item"><time datetime="2020-06-04 00:00:00+09:30">Thu 04 June 2020</time></span>
+        <h1 class="entry-title"><a href="https://dlwhittenbury.github.io/ds-1-sampling-and-visualising-the-von-mises-distribution.html"><span class="caps">DS</span>-1: Sampling and visualising the von Mises&nbsp;distribution</a></h1>
+      </header><!-- .entry-header -->
+      <div class="fb-like" data-href="https://dlwhittenbury.github.io/ds-1-sampling-and-visualising-the-von-mises-distribution.html" data-layout="standard" data-action="like" data-show-faces="false" data-share="true"></div>
+      <div class="entry-content">
+        <p>This is the first in a series of related blog posts/tutorials looking at directional statistics and machine learning. In this first post we will look at the von Mises distribution. In particular, we will implement functions to calculate and sample from the von Mises distribution [1]. Moreover, we will also implement a few functions to visualise circular&nbsp;distributions.</p>
+<p>Strictly speaking one does not need to write their own implementation for calculating the von Mises probability density function or sampling from it, as it is available in the <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.vonmises.html">scipy statistics package</a>.  Numpy also has an implementation as well, which can be found <a href="https://numpy.org/doc/1.16/reference/generated/numpy.random.vonmises.html">here</a>. However, it is quite easy to write your own implementation (see Refs. [2,3]) and you may need to implement your own if you are not working with python. Moreover, these libraries don&#8217;t implement many other functions related to field of directional statistics and this is something we will be looking at doing in this&nbsp;series.</p>
+<p>Why directional statistics? To answer this question we quote Ronald Fisher who in 1953 [4] answered this question very&nbsp;succinctly</p>
+<blockquote>
+<p><span class="dquo">&#8220;</span>The theory of errors was developed by Gauss primarily in relation to the needs of astronomers and surveyors, making rather accurate angular measurements. Because of this accuracy it was appropriate to develop the theory in relation to an infinite linear continuum, or, as multivariate errors came into view, to a Euclidean space of the required dimensionality. The actual topological framework of such measurements, the surface of a sphere, is ignored in the theory as developed, with a certain gain in&nbsp;simplicity.</p>
+<p>It is, therefore, of some little mathematical interest to consider how the theory would have had to be developed if the observations under discussion had in fact involved errors so large that the actual topology had had to be taken into account. The question is not, however, entirely academic, for there are in nature vectors with such large natural dispersions.&#8221; -  <em>R.&nbsp;Fisher</em></p>
+</blockquote>
+<p>Directional statistics has many uses in the sciences and engineering. Here we
+list a few such examples&nbsp;[4,5,6]:</p>
+<ul>
+<li>Earth sciences:<ul>
+<li>paleomagnetism (This was a major driving force behind the development of analysis of spherical data and more generally directional&nbsp;data.)</li>
+<li>earth&nbsp;quakes</li>
+<li>rotation of tectonic&nbsp;plates</li>
+</ul>
+</li>
+<li>Meteorology:<ul>
+<li>Wind&nbsp;directions</li>
+<li>Times of the day at which certain weather events occur, e.g., heavy rain and&nbsp;thunderstorms</li>
+</ul>
+</li>
+<li>Biology:<ul>
+<li>Animal&nbsp;navigation</li>
+<li>Circadian&nbsp;rhythms</li>
+</ul>
+</li>
+<li>Physics:<ul>
+<li>Fractional parts of atomic&nbsp;weights</li>
+<li>Directions of optical axes of&nbsp;crystals</li>
+<li>Distribution on the celestial sphere of high-energy cosmic&nbsp;rays</li>
+</ul>
+</li>
+<li>Engineering:<ul>
+<li>Tracking, e.g., angle of arrival&nbsp;measurements</li>
+</ul>
+</li>
+<li>Other areas:<ul>
+<li>Image&nbsp;analysis</li>
+<li>Psychology and&nbsp;Medicine</li>
+</ul>
+</li>
+</ul>
+<h2>Introduction</h2>
+<p>The von Mises distribution was introduced by Richard von Mises in 1918 [1]. Its probability density function is defined as
+<p align="center"><img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/e757b65a6706540df4a14a0fed278b4c.svg?invert_in_darkmode" align=middle width=259.79415pt height=37.099754999999995pt/></p>
+where <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/27e556cf3caa0673ac49a8f0de3c73ca.svg?invert_in_darkmode" align=middle width=8.173588500000005pt height=22.831379999999992pt/> is the random angular variable, <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/07617f9d8fe48b4a7b3f523d6730eef0.svg?invert_in_darkmode" align=middle width=9.904950000000003pt height=14.155350000000013pt/> is the mean direction such that<img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/28310c5a12dfcd20aabfa0062ec65ad5.svg?invert_in_darkmode" align=middle width=101.92528499999999pt height=22.831379999999992pt/>, <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/5c62da39aa7289df62d937cb24a31161.svg?invert_in_darkmode" align=middle width=9.471165000000003pt height=14.155350000000013pt/> is a measure of the
+concentration of the probability density function and lies in the semi-infinite interval <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/6f24bd704a30c33825c4e7194d1d6d7d.svg?invert_in_darkmode" align=middle width=77.963985pt height=21.18732pt/>. Stricyly speaking the range of <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/27e556cf3caa0673ac49a8f0de3c73ca.svg?invert_in_darkmode" align=middle width=8.173588500000005pt height=22.831379999999992pt/> and <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/07617f9d8fe48b4a7b3f523d6730eef0.svg?invert_in_darkmode" align=middle width=9.904950000000003pt height=14.155350000000013pt/> can be any interval of length <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/5a7b63fcb316fdefe42e319d18ab939a.svg?invert_in_darkmode" align=middle width=18.179370000000002pt height=21.18732pt/>. The larger the concentration, the more concentrated it is about the mean direction.The function
+<img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/6dd8d8363760fb006eee99bd9b4ee0c9.svg?invert_in_darkmode" align=middle width=37.66191pt height=24.65759999999998pt/> is the modified Bessel function of the first kind,
+<p align="center"><img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/b7b8a55b753c63d7489e5e695f13b3c7.svg?invert_in_darkmode" align=middle width=277.22639999999996pt height=38.24238pt/></p></p>
+<p>Angular random variables are more naturally modelled using circular distributions rather than the almost ubiquitous use of normal distributions. They are more natural  for a number of reasons, a few of which we will now briefly&nbsp;mention:</p>
+<ul>
+<li>The von Mises distribution is defined on the correct sample space whereas the
+  normal distribution is not bounded to the interval of length <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/5a7b63fcb316fdefe42e319d18ab939a.svg?invert_in_darkmode" align=middle width=18.179370000000002pt height=21.18732pt/>, e.g., <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/afa300b1275ba6f888241ce5a8872d24.svg?invert_in_darkmode" align=middle width=50.97048pt height=24.65759999999998pt/> or <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/7e86b88f4e1ac8ffd6e9ccf9d05f68f7.svg?invert_in_darkmode" align=middle width=44.663354999999996pt height=24.65759999999998pt/>. The normal distribution can be a good approximation away from the boundaries. However, its use can lead to issues near the&nbsp;boundaries.</li>
+<li>The von Mises distribution has the correct limiting behaviour as <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/d81e3b58d84b37aa22a324c6fbdb7de2.svg?invert_in_darkmode" align=middle width=43.26102pt height=21.18732pt/> whereas the normal distribution does not. The von Mises distribution approaches the uniform distribution on the unit circle in this limit, so that all directions are equally&nbsp;likely.</li>
+<li>Naive use of normal distributions for circular problems can lead to the incorrect fusion of the prior with the measurement likelihood. Therefore, for example, if you were performing angle of arrival measurements in a tracking application you may be incorrectly fusing measurements when performing a Bayesian update.
+<!-- -->
+<!-- I don't know why it doesn't work with LaTeX present, it seems to need it to be another dot point!!! This should not be a dot point!--></li>
+</ul>
+<h3>The mean direction and the&nbsp;variance</h3>
+<aside> As the von Mises distribution can be considered a distribution on the unit circle <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/5b8c662a14899dce042ef027ac525278.svg?invert_in_darkmode" align=middle width=15.685065000000002pt height=26.76201000000001pt/>, one can identify the angle <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/27e556cf3caa0673ac49a8f0de3c73ca.svg?invert_in_darkmode" align=middle width=8.173588500000005pt height=22.831379999999992pt/> with the unit phasor <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/bc9f3e0b1a2f7c80a7e2bb16f6d901e3.svg?invert_in_darkmode" align=middle width=18.920385000000003pt height=27.91271999999999pt/> and the mean direction of the circular random variable <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/c745b9b57c145ec5577b82542b2df546.svg?invert_in_darkmode" align=middle width=10.576500000000003pt height=14.155350000000013pt/> can be computed as follows
+<p align="center"><img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/78a4f00f0635319df4f10647b8792e98.svg?invert_in_darkmode" align=middle width=346.98839999999996pt height=383.7768pt/></p>
+where <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/8fb4664345463a7bc27c742c3eca6960.svg?invert_in_darkmode" align=middle width=11.872245000000005pt height=22.758779999999973pt/> refers to the phase (or angle). The angular distance between two phases can be written as
+<p align="center"><img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/39600d9689b4cd4023aa6d98283f8381.svg?invert_in_darkmode" align=middle width=244.7115pt height=18.887715pt/></p>
+which allows us to calculate the variance of the circular random variable <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/c745b9b57c145ec5577b82542b2df546.svg?invert_in_darkmode" align=middle width=10.576500000000003pt height=14.155350000000013pt/></aside>
+
+<p align="center"><img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/930c5dfd3a7704c7c85613f1858618d0.svg?invert_in_darkmode" align=middle width=394.2312pt height=213.378pt/></p>
+
+<p>The input parameters for the von Mises distribution are the mean direction and the concentration whereas experimental error is commonly given in terms of a variance.
+Fortunately, it is possible to show that the variance is approximately inversely proportional to the concentration, thus allowing us a way to estimate the concentration  using the variance. We rewrite the equation above as
+<p align="center"><img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/6e6262469f5fd34657ea31a5e73d1d02.svg?invert_in_darkmode" align=middle width=492.15374999999995pt height=39.45249pt/></p>
+and we use the expansion for the cosecant function
+<p align="center"><img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/b2096a2119b7a4143ebc1e8eec319475.svg?invert_in_darkmode" align=middle width=328.36814999999996pt height=85.908075pt/></p>
+where the <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/b1219e259c982c6d096ae2348c88a1c7.svg?invert_in_darkmode" align=middle width=27.147285000000004pt height=22.46574pt/> are the Bernoulli numbers. This series converges for <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/2779a38b38470ce41045708fb0427e71.svg?invert_in_darkmode" align=middle width=80.54211pt height=24.65759999999998pt/>. If we keep only the first term
+<p align="center"><img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/476c8e800fd1c9bf79da476695bfb975.svg?invert_in_darkmode" align=middle width=660.5296500000001pt height=264.08414999999997pt/></p>
+One should note that while the regular Bessel functions are oscillatory, the modified Bessel functions are not. The modified Bessel functions of the first kind <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/4ece5964f45211e590588d49893c5e99.svg?invert_in_darkmode" align=middle width=38.430645000000005pt height=24.65759999999998pt/> grow exponentially fast with <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/5c62da39aa7289df62d937cb24a31161.svg?invert_in_darkmode" align=middle width=9.471165000000003pt height=14.155350000000013pt/>. Since the second term is divided by <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/3ae0dbb66505fa6012d13738aa1c8db9.svg?invert_in_darkmode" align=middle width=36.857205pt height=24.65759999999998pt/> the approximation
+<img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/87fb2c146bb85103980b8438c257cb00.svg?invert_in_darkmode" align=middle width=66.58822500000001pt height=26.76201000000001pt/> should be reasonable provided <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/5c62da39aa7289df62d937cb24a31161.svg?invert_in_darkmode" align=middle width=9.471165000000003pt height=14.155350000000013pt/> is large enough. Vice versa if we have an empirically determined variance we could approximate the concentration by <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/543d8dae98eea96a01a1280a66c07a6e.svg?invert_in_darkmode" align=middle width=34.377585pt height=26.76201000000001pt/>.
+In this notebook we will be making use of the algorithm by Best and Fisher to sample the von-Mises distribution. This algorithm only requires sampling of a uniform distribution on <img src="articles/DS-1-Sampling-Visualising-von-Mises/svgs/acf5ce819219b95070be2dbeb8a671e9.svg?invert_in_darkmode" align=middle width=32.87674500000001pt height=24.65759999999998pt/> and using some trignometric and logarithmic functions&nbsp;[2].</p>
+<h2>Implementation</h2>
+<p>All code in this tutorial is available on my Github account in <a href="https://github.com/dlwhittenbury/von-Mises-Sampling">this repository</a>. Writing a function to evaluate the von Mises probability density function is
+relatively easy. Here we show a simple python&nbsp;implementation:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">pdf_von_Mises</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">kappa</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        pdf_von_Mises(theta,mu,kappa)</span>
+<span class="sd">        =============================</span>
+
+<span class="sd">        Calculates the von Mises probability density distribution at the angle theta with mean</span>
+<span class="sd">        direction mu and concentration kappa.</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">            * theta - angle at which to evaluate the von Mises distribution (float or numpy array)</span>
+<span class="sd">            * mu - mean direction (float)</span>
+<span class="sd">            * kappa - concentration (float)</span>
+
+<span class="sd">        OUTPUT:</span>
+
+<span class="sd">             * pdf - the probability density function is an Nx1 (same size as theta) array of values of a von Mises</span>
+<span class="sd">             distribution with mean direction mu and concentration kappa.</span>
+
+<span class="sd">        References:</span>
+<span class="sd">        ===========</span>
+
+<span class="sd">        See the following textbook/monograph</span>
+
+<span class="sd">        [1] N. I. Fisher, Statistical analysis of circular data, Cambridge University Press, (1993).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">kappa</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span> <span class="o">-</span> <span class="n">mu</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">iv</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">kappa</span><span class="p">));</span>
+
+    <span class="k">return</span> <span class="n">pdf</span>
+</code></pre></div>
+
+
+<p>To sample the von Mises distribution one needs to write a more involved function.
+As mentioned above we are implementing the algorithm proposed by Best and Fisher [2].
+We refer the interested reader to [2,3] for further details about the algorithm.
+A python implementation of this algorithm is as&nbsp;follows:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">rand_von_Mises</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">kappa</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        rand_von_Mises(N,mu,kappa)</span>
+<span class="sd">        ==========================</span>
+
+<span class="sd">        Generates theta an Nx1 array of samples of a von Mises distribution</span>
+<span class="sd">        with mean direction mu and concentration kappa.</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">            * N - number of samples to be generated (integer)</span>
+<span class="sd">            * mu - mean direction (float)</span>
+<span class="sd">            * kappa - concentration (float)</span>
+
+<span class="sd">        OUTPUT:</span>
+
+<span class="sd">            * theta - an Nx1 array of samples of a von Mises distribution with mean</span>
+<span class="sd">            direction mu and concentration kappa.</span>
+
+<span class="sd">         References:</span>
+<span class="sd">         ===========</span>
+
+<span class="sd">         Algorithm first given in</span>
+
+<span class="sd">         [1] D. J. Best and N. I. Fisher, Efficient Simulation of the von Mises</span>
+<span class="sd">         Distribution, Applied Statistics, 28, 2, 152--157, (1979).</span>
+
+<span class="sd">         Also given in the following textbook/monograph</span>
+
+<span class="sd">         [2] N. I. Fisher, Statistical analysis of circular data, Cambridge University Press, (1993).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Checks</span>
+    <span class="c1"># =======</span>
+
+    <span class="c1"># N should be a positive non-zero integer scalar</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;N must be a positive non-zero integer.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">N</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;N must be a positive non-zero integer.&quot;</span><span class="p">)</span>
+
+    <span class="c1">#  mu should be a real scalar. It can wrap around the circle, so it can be negative, positive and also</span>
+    <span class="c1">#  outside the range [0,2*pi].</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;mu must be a real scalar number.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># kappa should be positive real scalar</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">kappa</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">kappa</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;kappa must be a positive float.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">kappa</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;kappa must be a positive float.&quot;</span><span class="p">)</span>
+
+    <span class="c1">#  SPECIAL CASE</span>
+    <span class="c1"># ==============</span>
+
+    <span class="c1">#  As kappa -&gt; 0 one obtains the uniform distribution on the circle</span>
+    <span class="n">float_epsilon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+    <span class="k">if</span> <span class="n">kappa</span> <span class="o">&lt;=</span> <span class="n">float_epsilon</span><span class="p">:</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># [0,1] -&gt; [0,2*pi]</span>
+        <span class="k">return</span> <span class="n">theta</span>
+
+    <span class="c1"># MAIN BODY OF ALGORITHM</span>
+    <span class="c1"># =======================</span>
+
+    <span class="c1"># Used same notation as Ref.~[2], p49</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">kappa</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">a</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">kappa</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">b</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">b</span><span class="p">)</span>
+
+    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">while</span> <span class="n">counter</span> <span class="o">&lt;=</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+
+        <span class="c1"># Pseudo-random numbers sampled from a uniform distribution [0,1]</span>
+        <span class="n">U1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span>
+        <span class="n">U2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span>
+        <span class="n">U3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span>
+
+        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">U1</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">r</span> <span class="o">*</span><span class="n">z</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">kappa</span> <span class="o">*</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">f</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="p">((</span><span class="n">c</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="n">U2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span>  <span class="ow">or</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">c</span><span class="o">/</span><span class="n">U2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="p">):</span>
+
+            <span class="n">theta</span><span class="p">[</span><span class="n">counter</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">U3</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">+</span> <span class="n">mu</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>     
+            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">theta</span>
+</code></pre></div>
+
+
+<p>Now we can visualise the von Mises distribution by plotting the pdf and sampling the distribution using the above functions. Code to produce these figures and the data is given in the <a href="https://github.com/dlwhittenbury/von-Mises-Sampling">associated repository</a>. In particular for fixed concentration and varied mean direction we&nbsp;have</p>
+<p><img alt="Fix and vary." src="articles/DS-1-Sampling-Visualising-von-Mises/vm-fix-k-vary-mu.png"></p>
+<p>For fixed mean direction and varied concentration we&nbsp;have</p>
+<p><img alt="Fix and vary." src="articles/DS-1-Sampling-Visualising-von-Mises/vm-fix-mu-vary-k.png"></p>
+<p>The above figures are fairly typical histogram and curve plotting graphics. The figures below are a little more specialised for which we had to implement a few functions using standard matplotlib functions. One such function is <strong>plot_angular_density()</strong> which plots the probability density function of a circular distribution on the unit&nbsp;circle.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">plot_angular_density</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span><span class="n">pdf</span><span class="p">,</span><span class="n">colour</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span><span class="n">maxline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="s2">&quot;off&quot;</span><span class="p">,</span><span class="n">fs</span><span class="o">=</span><span class="mi">16</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        plot_angular_density(theta,pdf,colour=&quot;blue&quot;,maxline=False,axes=&quot;off&quot;,fs=16)</span>
+<span class="sd">        ============================================================================</span>
+
+<span class="sd">        Plots the probability density function of a circular distribution on the unit</span>
+<span class="sd">        circle.</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">            * theta - angular grid - an array of floats.</span>
+<span class="sd">            * pdf - the values of the probability density function on the angular grid theta.</span>
+<span class="sd">            * colour - an optional argument, the colour of the pdf curve, a string.</span>
+<span class="sd">            * maxline - an optional argument, whether or not to include a line connecting the</span>
+<span class="sd">            centre of the circle with the maximum value of pdf, boolean.</span>
+<span class="sd">            * axes - an optional argument, whether or not to include the axes, boolean.</span>
+<span class="sd">            * fs - an optional argument, the fontsize.</span>
+
+<span class="sd">        OUTPUT:</span>
+
+<span class="sd">            * A plot on a circle of a circular distribution.</span>
+<span class="sd">            * ax (axes) - axes on which the plot is constructed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Draw the unit circle</span>
+    <span class="c1"># ====================</span>
+
+    <span class="c1"># Radius</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="c1"># Angular grid</span>
+    <span class="n">ctheta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="mi">500</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Convert polar coordinates to cartesian coordinates</span>
+    <span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">polar2cartesian</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">ctheta</span><span class="p">)</span>
+
+    <span class="c1"># Plot the unit circle</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Draw angular probability density</span>
+    <span class="c1"># ================================</span>
+
+    <span class="c1"># PDF will be drawn on the circle, so we need to account for the radius of the unit circle</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">r</span> <span class="o">+</span> <span class="n">pdf</span>
+
+    <span class="c1"># Convert polar coordinates of the pdf to cartesian coordinates</span>
+    <span class="p">[</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="p">]</span> <span class="o">=</span> <span class="n">polar2cartesian</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">theta</span><span class="p">)</span>
+
+    <span class="c1"># Plot the PDF</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">colour</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Layout</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+
+    <span class="c1">#  Add axes angles in radians</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;$0$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="o">-</span><span class="mf">0.17</span><span class="p">,</span> <span class="mf">0.77</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;$\pi/2$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="o">-</span><span class="mf">0.87</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;$\pi$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="o">-</span><span class="mf">0.17</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.85</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;$\pi/2$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+
+    <span class="c1"># Add axes tick marks</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">maxline</span><span class="p">:</span>
+        <span class="c1"># Add a line from the origin to the maximum of the pdf</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">pdf</span><span class="p">)</span>
+        <span class="n">lx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">xi</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span>
+        <span class="n">ly</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">yi</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span>  
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lx</span><span class="p">,</span><span class="n">ly</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ax</span>
+</code></pre></div>
+
+
+<p>In the next figure this function is used in conjunction with the function <strong>plot_angular_scatter()</strong>, which creates a scatter plot on a circle of samples from a circular&nbsp;distribution.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">plot_angular_scatter</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span><span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ms</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        plot_angular_scatter(samples,labels=None,ms=100)</span>
+<span class="sd">        ================================================</span>
+
+<span class="sd">        Creates a scatter plot on a circle of samples from a circular distribution.</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">            * samples - samples of a circular distribution - either a scalar or array of floats.</span>
+<span class="sd">            * labels - an optional argument containing class labels, default is None.</span>
+<span class="sd">            * ms - an optional argument markersize, default is 100.</span>
+
+<span class="sd">        OUTPUT:</span>
+
+<span class="sd">            * Scatter plot on a circle of samples from a circular distribution.</span>
+<span class="sd">            * ax (axes) - axes on which the plot is constructed.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Plot the unit circle S^{1}</span>
+    <span class="c1"># ==========================</span>
+
+    <span class="c1"># Radius</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="c1"># Angular grid</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="mi">500</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Convert polar coordinates to cartesian coordinates</span>
+    <span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">polar2cartesian</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">theta</span><span class="p">)</span>
+
+    <span class="c1"># Plot the circle</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># zorder=0 puts the circle behind all the data</span>
+
+    <span class="c1"># Make aspect square</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Make the scatter plot of samples</span>
+    <span class="c1"># ================================</span>
+
+    <span class="c1"># Convert polar coordinates to cartesian coordinates</span>
+    <span class="p">[</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="p">]</span> <span class="o">=</span> <span class="n">polar2cartesian</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">samples</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># if there are no labels plot every point a different colour</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">rainbow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)))</span>
+        <span class="n">scatter</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="c1"># if labels are given create a dictionary were the keys are</span>
+        <span class="c1"># the distinct labels and the values are distinct colours</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="n">distinct_colours</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>        
+
+        <span class="c1"># Loop over each distinct class (label)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+            <span class="c1"># Get indices for this distinct class</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="n">k</span><span class="p">]</span>
+
+            <span class="c1"># Get coordinates for this distinct class</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">xi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">yi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
+
+            <span class="c1"># Plot this class</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">dic</span><span class="p">[</span><span class="n">k</span><span class="p">],</span><span class="n">label</span><span class="o">=</span><span class="n">k</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="n">ms</span><span class="p">)</span>   
+
+        <span class="c1"># Turn axes off</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>  
+
+    <span class="k">return</span> <span class="n">ax</span>
+</code></pre></div>
+
+
+<p><img alt="2D density and scatter plot." src="articles/DS-1-Sampling-Visualising-von-Mises/vm-ang-scatter-density.png"></p>
+<p>In the next figure we plot a three dimensional representation of the von Mises
+probability density function using the function <strong>plot_angular_density_3d()</strong>.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">plot_angular_density_3d</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span><span class="n">pdf</span><span class="p">,</span><span class="n">colour</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span><span class="n">axes</span><span class="o">=</span><span class="s2">&quot;off&quot;</span><span class="p">,</span><span class="n">fs</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        plot_angular_density_3d(theta,pdf,colour=&quot;blue&quot;,axes=&quot;off&quot;,fs=16)</span>
+<span class="sd">        ============================================================================</span>
+
+<span class="sd">        Plots the probability density function of a circular distribution on the unit</span>
+<span class="sd">        circle.</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">            * theta - angular grid - an array of floats.</span>
+<span class="sd">            * pdf - the values of the probability density function on the angular grid theta.</span>
+<span class="sd">            * colour - an optional argument, the colour of the pdf curve, a string.</span>
+<span class="sd">            * axes - an optional argument, whether or not to include the axes, boolean.</span>
+<span class="sd">            * fs - an optional argument, the fontsize.</span>
+
+<span class="sd">        OUTPUT:</span>
+
+<span class="sd">            * ax (axes) - Return axes of plot</span>
+<span class="sd">            * A plot on a circle of a circular distribution.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Set projection</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Draw the unit circle</span>
+    <span class="c1"># ====================</span>
+
+    <span class="c1"># Radius</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="c1"># Angular grid</span>
+    <span class="n">ctheta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="mi">500</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Convert polar coordinates to cartesian coordinates</span>
+    <span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">polar2cartesian</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">ctheta</span><span class="p">)</span>
+
+    <span class="c1"># Plot the unit circle</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Draw angular probability density</span>
+    <span class="c1"># ================================</span>
+
+    <span class="c1"># Convert polar coordinates to cartesian coordinates</span>
+    <span class="p">[</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="p">]</span> <span class="o">=</span> <span class="n">polar2cartesian</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">theta</span><span class="p">)</span>
+
+    <span class="n">z</span> <span class="o">=</span> <span class="n">pdf</span>
+
+    <span class="c1"># Plot the PDF</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span><span class="n">yi</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">colour</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+
+    <span class="c1"># Limits</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="c1"># Turn off grid</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Labels</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">zaxis</span><span class="o">.</span><span class="n">set_rotate_label</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Ticks</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">ax</span>
+</code></pre></div>
+
+
+<p><img alt="3D density plot." src="articles/DS-1-Sampling-Visualising-von-Mises/vm-ang-density_3d.png"></p>
+<p>The final two visualisations are polar histograms, which are constructed using the same function <strong>polar_hist()</strong>.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">polar_hist</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">nbins</span><span class="p">,</span><span class="n">colour</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">circle_radius</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        polar_hist(samples, nbins,colour=&quot;blue&quot;,ax=None,label=None,grid=True,circle_radius=1,density=True)</span>
+<span class="sd">        ==================================================================================================</span>
+
+<span class="sd">        Creates a histogram of samples from a circular distribution and plots in on a circle.</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">            * samples - samples from a circular distribution, a scalar or array of floats.</span>
+<span class="sd">            * nbins - number of histogram bins.</span>
+<span class="sd">            * colour - an optional argument, the colour of the histogram.</span>
+<span class="sd">            * ax - an optional argument, ax is an axes object. Use ax to plot multiple polar histograms</span>
+<span class="sd">            on the same set of axes.</span>
+<span class="sd">            * label - an optional argument to pass a label for the data.</span>
+<span class="sd">            * grid - an optional argument, whether or not to show the polar grid.</span>
+<span class="sd">            * circle_radius - an optional argument, it is the radius on which the histogram is plotted.</span>
+<span class="sd">            If you choose density=True, you should accept the default of 1. However, if you set</span>
+<span class="sd">            density=False, you should manually select the radius depending on your data count.</span>
+<span class="sd">            * density - an optional argument, if true the normalised histogram is plotted, else the</span>
+<span class="sd">            count is used.</span>
+
+<span class="sd">        OUTPUT:</span>
+
+<span class="sd">            * A polar histogram plot is created.</span>
+<span class="sd">            * ax - the axes object on which the polar histogram was plotted. Use ax to plot multiple</span>
+<span class="sd">            polar histograms on the same set of axes.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># The polar axis</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">polar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># radius of inner circle</span>
+    <span class="n">bottom</span> <span class="o">=</span> <span class="n">circle_radius</span>
+
+    <span class="c1"># theta grid</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">nbins</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># histogram bin heights and edges</span>
+    <span class="n">bin_heights</span><span class="p">,</span> <span class="n">bin_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span><span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span><span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">)</span>
+
+    <span class="c1"># height of radial bins</span>
+    <span class="n">radii</span> <span class="o">=</span> <span class="n">bin_heights</span>
+
+    <span class="c1"># bin width</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">bin_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">bin_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># bar plot on polar axes</span>
+    <span class="n">bars</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">radii</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="n">bottom</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">colour</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+
+    <span class="c1"># polar grid</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">grid</span><span class="p">:</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_rgrids</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="n">bottom</span><span class="p">],</span> <span class="n">angle</span><span class="o">=</span><span class="mi">222</span><span class="p">,</span><span class="n">labels</span><span class="o">=</span><span class="p">[])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_thetagrids</span><span class="p">([])</span>
+
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">density</span><span class="p">:</span>
+
+            <span class="n">radial</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mf">2.5</span><span class="p">]</span>
+            <span class="n">radial_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">-</span> <span class="n">bottom</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">radial</span><span class="p">]</span>    
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">mx</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">bin_heights</span><span class="p">)</span>      
+            <span class="n">radial</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">mx</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">bottom</span><span class="o">*</span><span class="mi">2</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">bottom</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+            <span class="n">radial_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">-</span> <span class="n">bottom</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">radial</span><span class="p">]</span>
+
+        <span class="c1"># First two labels are inside the inner circle (bottom),</span>
+        <span class="c1"># so remove them</span>
+        <span class="n">radial_labels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">radial_labels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># Update to correct labels</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_rgrids</span><span class="p">(</span><span class="n">radial</span><span class="p">,</span><span class="n">labels</span><span class="o">=</span><span class="n">radial_labels</span><span class="p">)</span>
+
+
+    <span class="k">return</span> <span class="n">ax</span>
+</code></pre></div>
+
+
+<p><img alt="Polar histogram." src="articles/DS-1-Sampling-Visualising-von-Mises/vm-polar-hist.png"></p>
+<p><img alt="Normalised polar histogram." src="articles/DS-1-Sampling-Visualising-von-Mises/vm-polar-hist-normalised.png"></p>
+<h2>Concluding&nbsp;remarks</h2>
+<p>The analysis of circular and more generally directional data is extremely important to many
+fields of study, but it is rarely given the same amount of attention as statistics in
+Euclidean spaces. This is the first in a series of tutorials looking at topics
+in directional statistics and machine learning. Today we looked at one of the
+most important circular distributions which has many applications. We presented
+how one might sample this distribution and also visualise circular data. In later
+tutorials we will consider other important directional distributions and machine
+learning algorithms which make use of&nbsp;them.</p>
+<ul>
+<li>Please note not all code is given in the blog article. For all code including
+all supporting functions please see the <a href="https://github.com/dlwhittenbury/von-Mises-Sampling">associated repository</a>.  </li>
+</ul>
+<h2>References</h2>
+<ol>
+<li>Von Mises, R., Uber die &#8216;Ganzzahligkeit&#8217; der Atomgewichte und verwandte Fragen, Physikalische Zeitschrift, 19, 490&#8212;500,&nbsp;(1918).</li>
+<li>Best, <span class="caps">D. J.</span> and Fisher, <span class="caps">N. I.</span>, Efficient Simulation of the von-Mises Distribution, J. Appl. Stat.,28, 152&#8212;157,&nbsp;(1979).</li>
+<li>Fisher, N. I., Statistical Analysis of Circular Data, , Cambridge University Press,&nbsp;(1993)</li>
+<li>Fisher, R., Dispersion on a Sphere, Proceedings of the Royal Society of London. Series A, Mathematical and Physical Sciences, Vol. 217, No. 1130, pp. 295-305&nbsp;(1953).</li>
+<li>Mardia, <span class="caps">K.V.</span> and Jupp, P.E., Directional Statistics. John Wiley <span class="amp">&amp;</span> Sons, London&nbsp;(2000).</li>
+</ol>
+      </div><!-- .entry-content -->
+      <br /><br />
+      <div class="article_meta">
+        Tags:
+          <a href="https://dlwhittenbury.github.io/tag/circular-statistics.html">Circular statistics</a>,          <a href="https://dlwhittenbury.github.io/tag/directional-statistics.html">Directional statistics</a>,          <a href="https://dlwhittenbury.github.io/tag/sampling.html">Sampling</a>,          <a href="https://dlwhittenbury.github.io/tag/visualisation.html">Visualisation</a>      </div>
+    </div>
+  </div>
+</article><!-- #post-## -->
+                </div>
+              </div><!-- #main -->
+          </div><!-- #primary -->
+        </div>
+      </div><!-- close .row -->
+    </div><!-- close .container -->
+  </div><!-- close .site-content -->
+
+
+
+
+  <div id="footer-area">
+    <footer id="colophon" class="site-footer" role="contentinfo">
+      <div class="site-info container">
+        <div class="row">
+                    <div class="copyright col-md-12">
+                    <a href="https://dlwhittenbury.github.io/pages/privacy-policy">Privacy Policy</a> |
+                    <a href="https://dlwhittenbury.github.io/feeds/all.atom.xml">Atom Feed</a> |
+                    <a href="https://dlwhittenbury.github.io/sitemap.xml">Sitemap</a><br />
+                    This site uses the <a href="https://github.com/limbenjamin/voce">voce</a> theme by <a href="//limbenjamin.com/">Benjamin Lim</a><br />
+                    &copy; 2020 <a href="https://dlwhittenbury.github.io">Daniel Whittenbury</a> </div>
+        </div>
+      </div><!-- .site-info -->
+      <div class="scroll-to-top" style="display: none;"><i class="fa fa-angle-up"></i></div><!-- .scroll-to-top -->
+    </footer><!-- #colophon -->
+  </div>
+
+  <script type="text/javascript">
+    window.addEventListener('load', function(){
+    if (window.location.pathname != '/' && window.location.pathname != '/index.html'){
+      window.scroll(0, document.getElementById('main').offsetTop);
+    }})
+  </script>
+
+
+
+
+</body>
+</html>

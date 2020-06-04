@@ -136,12 +136,12 @@ current, in fact, <strong>the most current date is 12/07/2014</strong>. This can
 determined by writing an <span class="caps">SQL</span> query in <span class="caps">SQL</span> Server or in Power <span class="caps">BI</span> by creating a
 measure. For example, in Power <span class="caps">BI</span> we can create a measure using the
 &#8220;Sales SalesOrderHeader&#8221; table from the <span class="caps">OLTP</span> system using the following <span class="caps">DAX</span>&nbsp;code:</p>
-<div class="highlight"><pre><span></span><code><span class="s2">&quot;</span><span class="s">Current</span><span class="s2">&quot;</span> <span class="nv">Date</span> <span class="o">=</span>
-<span class="nv">VAR</span> <span class="nv">MxOD</span> <span class="o">=</span> <span class="nv">MAX</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">Sales SalesOrderHeader</span><span class="s1">&#39;</span>[<span class="nv">OrderDate</span>]<span class="ss">)</span>
-<span class="nv">VAR</span> <span class="nv">MxDD</span> <span class="o">=</span> <span class="nv">MAX</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">Sales SalesOrderHeader</span><span class="s1">&#39;</span>[<span class="nv">DueDate</span>]<span class="ss">)</span>
-<span class="nv">VAR</span> <span class="nv">MxSD</span> <span class="o">=</span> <span class="nv">MAX</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">Sales SalesOrderHeader</span><span class="s1">&#39;</span>[<span class="nv">ShipDate</span>]<span class="ss">)</span>
-<span class="nv">VAR</span> <span class="nv">MxTemp</span> <span class="o">=</span> <span class="nv">MAX</span><span class="ss">(</span><span class="nv">MxOD</span>,<span class="nv">MxDD</span><span class="ss">)</span>
-<span class="k">RETURN</span> <span class="nv">MAX</span><span class="ss">(</span><span class="nv">MxTemp</span>,<span class="nv">MxSD</span><span class="ss">)</span>
+<div class="highlight"><pre><span></span><code><span class="ss">&quot;Current&quot;</span><span class="w"> </span><span class="nc">Date</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="nf">VAR</span><span class="w"> </span><span class="n">MxOD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">MAX</span><span class="p">(</span><span class="s1">&#39;Sales SalesOrderHeader&#39;</span><span class="o">[</span><span class="n">OrderDate</span><span class="o">]</span><span class="p">)</span><span class="w"></span>
+<span class="nf">VAR</span><span class="w"> </span><span class="n">MxDD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">MAX</span><span class="p">(</span><span class="s1">&#39;Sales SalesOrderHeader&#39;</span><span class="o">[</span><span class="n">DueDate</span><span class="o">]</span><span class="p">)</span><span class="w"></span>
+<span class="nf">VAR</span><span class="w"> </span><span class="n">MxSD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">MAX</span><span class="p">(</span><span class="s1">&#39;Sales SalesOrderHeader&#39;</span><span class="o">[</span><span class="n">ShipDate</span><span class="o">]</span><span class="p">)</span><span class="w"></span>
+<span class="nf">VAR</span><span class="w"> </span><span class="n">MxTemp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">MAX</span><span class="p">(</span><span class="n">MxOD</span><span class="p">,</span><span class="n">MxDD</span><span class="p">)</span><span class="w"></span>
+<span class="k">RETURN</span><span class="w"> </span><span class="nf">MAX</span><span class="p">(</span><span class="n">MxTemp</span><span class="p">,</span><span class="n">MxSD</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
 
@@ -357,10 +357,10 @@ we will use to contain all of our measures. We will call it <strong>All Measures
 the <strong>Fields panel</strong> and click <strong>new measure</strong>.  All the <span class="caps">DAX</span> code is given below and
 also in a separate Excel file available in the&nbsp;repository.</p>
 <h3>Total Number of&nbsp;Employees</h3>
-<div class="highlight"><pre><span></span><code><span class="nv">Total</span> <span class="nv">Employees</span> <span class="o">=</span>
-<span class="nv">VAR</span> <span class="nv">DC</span> <span class="o">=</span> <span class="nv">DISTINCTCOUNT</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">Employee</span><span class="s1">&#39;</span>[<span class="nv">EmployeeKey</span>]<span class="ss">)</span>
-<span class="nv">VAR</span> <span class="nv">CNT</span> <span class="o">=</span> <span class="k">IF</span><span class="ss">(</span><span class="nv">DC</span> <span class="o">=</span> <span class="nv">BLANK</span><span class="ss">()</span>, <span class="mi">0</span>, <span class="nv">DC</span><span class="ss">)</span>
-<span class="k">RETURN</span> <span class="nv">CNT</span>
+<div class="highlight"><pre><span></span><code><span class="n">Total</span><span class="w"> </span><span class="n">Employees</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="nf">VAR</span><span class="w"> </span><span class="n">DC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DISTINCTCOUNT</span><span class="p">(</span><span class="s1">&#39;Employee&#39;</span><span class="o">[</span><span class="n">EmployeeKey</span><span class="o">]</span><span class="p">)</span><span class="w"></span>
+<span class="nf">VAR</span><span class="w"> </span><span class="n">CNT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">IF</span><span class="p">(</span><span class="n">DC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BLANK</span><span class="p">(),</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">DC</span><span class="p">)</span><span class="w"></span>
+<span class="k">RETURN</span><span class="w"> </span><span class="n">CNT</span><span class="w"></span>
 </code></pre></div>
 
 
@@ -397,7 +397,7 @@ Measures</strong>&nbsp;table.</p>
 
 
 <h3>Average of the Number of Years with the&nbsp;Company</h3>
-<div class="highlight"><pre><span></span><code><span class="k">Avg</span><span class="p">.</span> <span class="n">Duration</span> <span class="o">=</span> <span class="n">AVERAGE</span><span class="p">(</span><span class="s1">&#39;Employee&#39;</span><span class="p">[</span><span class="n">Years</span> <span class="k">with</span> <span class="n">Company</span><span class="p">])</span>
+<div class="highlight"><pre><span></span><code><span class="err">Avg. Duration = AVERAGE(&#39;Employee&#39;[Years with Company])</span>
 </code></pre></div>
 
 

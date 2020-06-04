@@ -128,17 +128,17 @@ necessary packages installed to follow the remaining parts of this&nbsp;tutorial
 <p>From the anaconda prompt create an anaconda environment called whatever you like. I
 have chosen to name it <strong>da-py37</strong>, <strong>da</strong> for <strong>d</strong>ata <strong>a</strong>nalysis and <strong>py37</strong> for the <strong>py</strong>thon
 version to be&nbsp;installed.</p>
-<div class="highlight"><pre><span></span><code><span class="n">conda</span> <span class="k">create</span> <span class="c1">--name da-py37 python=3.7</span>
+<div class="highlight"><pre><span></span><code><span class="err">conda create --name da-py37 python=3.7</span>
 </code></pre></div>
 
 
 <p>Activate your&nbsp;environment</p>
-<div class="highlight"><pre><span></span><code><span class="n">conda</span> <span class="n">activate</span> <span class="n">da</span><span class="o">-</span><span class="n">py37</span>
+<div class="highlight"><pre><span></span><code><span class="err">conda activate da-py37</span>
 </code></pre></div>
 
 
 <p>Install the necessary&nbsp;packages</p>
-<div class="highlight"><pre><span></span><code><span class="n">conda</span> <span class="n">install</span> <span class="n">numpy</span> <span class="n">pandas</span> <span class="n">pillow</span> <span class="n">jupyter</span> <span class="n">pyodbc</span>
+<div class="highlight"><pre><span></span><code><span class="err">conda install numpy pandas pillow jupyter pyodbc</span>
 </code></pre></div>
 
 
@@ -151,7 +151,7 @@ the packages installed. You do not necessarily need to do this, but I think it
 is good practice to create a requirements file that contains a list of all
 packages used in this project for later use. It is very handy for
 reproducibility, especially if you intend to try to do something similar later&nbsp;on.</p>
-<div class="highlight"><pre><span></span><code><span class="n">conda</span> <span class="n">list</span> <span class="o">-</span><span class="n">e</span> <span class="o">&gt;</span> <span class="n">aw</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+<div class="highlight"><pre><span></span><code><span class="err">conda list -e &gt; aw-2-requirements.txt</span>
 </code></pre></div>
 
 
@@ -176,7 +176,7 @@ We will be making use of the <strong>dbo.DimEmployee</strong> table in this&nbsp
 </center></p>
 <h2>3. Connecting to the Adventure Works&nbsp;Database</h2>
 <h3>Import&nbsp;packages</h3>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">pyodbc</span>
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 <span class="kn">import</span> <span class="nn">io</span>
@@ -231,7 +231,7 @@ df.info()
 <p>In the image above we notice that the table stores the photos of each of the 296
 employees. To print the very first entry in the EmployeePhoto field we do the&nbsp;following:</p>
 <div class="highlight"><pre><span></span><code><span class="n">pic</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">EmployeePhoto</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="k">print</span><span class="p">(</span><span class="n">pic</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pic</span><span class="p">)</span>
 </code></pre></div>
 
 
