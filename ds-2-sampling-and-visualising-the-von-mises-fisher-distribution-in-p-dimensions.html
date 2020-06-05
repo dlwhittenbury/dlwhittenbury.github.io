@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Daniel Whittenbury">
+  <meta name="description" content="DS-2: Sampling and visualising the von Mises-Fisher Distribution in p dimensions | This is the second in a series of...">
+
+  <base href="https://dlwhittenbury.github.io">
+
+  <!-- <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96"> -->
+
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" type="text/css" media="all">
+  <link rel="stylesheet" href="https://dlwhittenbury.github.io/theme/css/font.css" type="text/css" media="all">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://dlwhittenbury.github.io/theme/css/style.css" type="text/css" media="all">
+
+
+
+  <link rel="stylesheet" href="https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css">
+
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://dlwhittenbury.github.io/theme/js/functions.min.js"></script>
+
+
+
+
+
+<meta name="keywords" content="Circular statistics, Directional statistics, Sampling, Visualisation, von Mises-Fisher">
+
+
+  <title>DS-2: Sampling and visualising the von Mises-Fisher Distribution in p dimensions</title>
+
+
+</head>
+
+<body class="home blog">
+
+  <div>
+    <header class="site-header">
+      <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+          <div class="row">
+            <div class="site-navigation-inner col-sm-12">
+              <div class="navbar-header">
+                <button type="button" class="btn navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+              </div>
+              <div class="collapse navbar-collapse navbar-ex1-collapse">
+              <ul id="menu-all-pages" class="nav navbar-nav">
+                <li class="menu-item"><a href="/index.html" >Home
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/about-me.html" >About me
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/publications.html" >Publications
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/resume.html" >Resume
+<i class="fa  fa-lg"></i></a></li>
+              </ul>
+              </div>
+              <div class="social">
+                <a href="mailto:whittenburydaniel@gmail.com" title="Email" >
+<i class="fa fa-envelope fa-lg"></i></a>
+                <a href="https://github.com/dlwhittenbury" title="GitHub" >
+<i class="fa fa-github fa-lg"></i></a>
+                <a href="https://scholar.google.com/citations?user=3m-Rd7oAAAAJ&hl=en" title="GoogleScholar" >
+<i class="fa ai ai-google-scholar-square ai-3x fa-lg"></i></a>
+                <a href="https://researchgate.net/profile/Daniel_Whittenbury" title="ResearchGate" >
+<i class="fa ai ai-researchgate ai-60x fa-lg"></i></a>
+                <a href="https://twitter.com/dlwhittenbury" title="Twitter" >
+<i class="fa fa-twitter fa-lg"></i></a>
+                <a href="https://linkedin.com/in/daniel-whittenbury-44235a155" title="LinkedIn" >
+<i class="fa fa-linkedin fa-lg"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav><!-- .site-navigation -->
+
+      <div class="container">
+
+      <div id="logo">
+        <span class="site-name"><a class="navbar-brand" href="https://dlwhittenbury.github.io"><img width="280" src="images/myAvatar-Circle.png" class="attachment-full size-full" alt="logo">          </a>
+        </span><!-- end of .site-name -->
+      </div><!-- end of #logo -->
+
+    </div>
+
+  </header><!-- #masthead -->
+  </div>
+    <div id="content" class="site-content">
+      <div class="container main-content-area">
+        <div class="row">
+          <div class="main-content-inner col-sm-12 col-md-12">
+            <div id="primary" class="content-area">
+              <div id="main" class="site-main" role="main">
+                <div class="article-container">
+<article>
+  <div class="blog-item-wrap">
+    <div class="post-inner-content">
+      <header class="entry-header page-header">
+        <span class="cat-item"><time datetime="2020-06-05 00:00:00+09:30">Fri 05 June 2020</time></span>
+        <h1 class="entry-title"><a href="https://dlwhittenbury.github.io/ds-2-sampling-and-visualising-the-von-mises-fisher-distribution-in-p-dimensions.html"><span class="caps">DS</span>-2: Sampling and visualising the von Mises-Fisher Distribution in p&nbsp;dimensions</a></h1>
+      </header><!-- .entry-header -->
+      <div class="fb-like" data-href="https://dlwhittenbury.github.io/ds-2-sampling-and-visualising-the-von-mises-fisher-distribution-in-p-dimensions.html" data-layout="standard" data-action="like" data-show-faces="false" data-share="true"></div>
+      <div class="entry-content">
+        <p></p>
+
+<p>This is the second in a series of related blog posts/tutorials looking at directional statistics and machine learning. In this second post we will look at the von Mises-Fisher distribution. In particular, we will implement functions to calculate and sample from the von Mises-Fisher distribution [1]. Moreover, we will also implement a few functions to visualise spherical&nbsp;data.</p>
+<p>In our previous post we looked at the von Mises distribution. In particular, we showed how one could sample from it and how one could visualise circular data. This distribution is available in the <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.vonmises.html">scipy statistics package</a>.  Numpy also has an implementation as well, which can be found <a href="https://numpy.org/doc/1.16/reference/generated/numpy.random.vonmises.html">here</a>. However, as we saw in the last post it is quite easy to write your own implementation (see Refs. [2,3]), which may be needed if you are working with a language other than  python. However, these libraries don’t implement many other functions related to field of directional statistics and this is something we will be looking at doing in this series. In fact, there isn&#8217;t any
+implementations for the von Mises-Fisher distribution, which is the focus of this&nbsp;tutorial.</p>
+<h1>Introduction</h1>
+<p><aside>
+The von Mises-Fisher distribution is the natural extension of the von Mises distribution on the unit circle <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/5b8c662a14899dce042ef027ac525278.svg?invert_in_darkmode" align=middle width=15.685065000000002pt height=26.76201000000001pt/> to the hypersphere <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/258473048a3e40f69e0d6f07e271b40f.svg?invert_in_darkmode" align=middle width=32.735505pt height=26.76201000000001pt/>. A unit hyper-sphere <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/258473048a3e40f69e0d6f07e271b40f.svg?invert_in_darkmode" align=middle width=32.735505pt height=26.76201000000001pt/> can be considered to be embedded in <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/2ec6e630f199f589a2402fdf3e0289d5.svg?invert_in_darkmode" align=middle width=8.270625000000004pt height=14.155350000000013pt/>-dimensional Euclidean space <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/9eb21ee42d3c7cd6efde3aeb874919f7.svg?invert_in_darkmode" align=middle width=18.648795000000003pt height=22.64855999999997pt/>, e.g., the simplest example being the unit circle which is denoted <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/5b8c662a14899dce042ef027ac525278.svg?invert_in_darkmode" align=middle width=15.685065000000002pt height=26.76201000000001pt/> and is embedded in <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/3177e934cf575c08431076a1a5479ba5.svg?invert_in_darkmode" align=middle width=18.424725000000002pt height=26.76201000000001pt/>. The next simplest example would be the unit sphere denoted <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/af8e5954807db7f9489c60a53aa3170e.svg?invert_in_darkmode" align=middle width=15.685065000000002pt height=26.76201000000001pt/>, embedded in <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/fabbfebc4049d77e28eefb36851e7538.svg?invert_in_darkmode" align=middle width=18.424725000000002pt height=26.76201000000001pt/> and so on.</aside></p>
+<aside>
+If one considers the natural logarithm of the von Mises probability density function <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/ae89c88aab21cf0ff0a0ef2960712ff4.svg?invert_in_darkmode" align=middle width=63.217439999999996pt height=24.65759999999998pt/>, then it becomes clear how it should be generalised to higher dimensions. As discussed in Ref. [1], if one takes the natural logarithm of the von Mises distribution it is found to be linear in a unit random vector. This is now demonstrated, <p align="center"><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/b0e6e21597cd8b363f3311e2edc39107.svg?invert_in_darkmode" align=middle width=361.1916pt height=41.09589pt/></p>
+where we have defined two unit vectors <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/c675de927d56f6ad8de50d4b32b3ade7.svg?invert_in_darkmode" align=middle width=11.636295000000004pt height=14.61206999999998pt/> and <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/b0ea07dc5c00127344a1cad40467b8de.svg?invert_in_darkmode" align=middle width=9.977220000000004pt height=14.61206999999998pt/> such that
+<p align="center"><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/56b6e4e07411c6c77471ff55e6f5bf34.svg?invert_in_darkmode" align=middle width=298.683pt height=18.887715pt/></p>
+and we have used the following trignometric identity
+<p align="center"><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/3ef9a7521b597f0863367a0a3b106737.svg?invert_in_darkmode" align=middle width=284.6283pt height=16.438356pt/></p>
+<p></p>
+</aside>
+
+<aside>
+From this we see that the appropriate generalisation to the (<img src="articles/DS-2-Sampling-Visualising-vMF/svgs/585cf0d6605a58bb5df9e272ae37244a.svg?invert_in_darkmode" align=middle width=36.580995pt height=21.18732pt/>)-dimensional hypersphere has a log density linear in <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/b0ea07dc5c00127344a1cad40467b8de.svg?invert_in_darkmode" align=middle width=9.977220000000004pt height=14.61206999999998pt/>. The <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/e2a76d86ec85e324e69f8fae708fd256.svg?invert_in_darkmode" align=middle width=49.366515pt height=24.65759999999998pt/>-dimension von Mises-Fisher probability density function for a unit random vector <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/bcb0f7eb7527053f856939957bf17082.svg?invert_in_darkmode" align=middle width=104.19188999999999pt height=26.76201000000001pt/> is
+<p align="center"><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/eafcbc644d413bc418109ca227996e69.svg?invert_in_darkmode" align=middle width=521.8356pt height=40.591155pt/></p>
+</aside>
+
+<p>where</p>
+<ul>
+<li><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/6a6fe86330308a87a8ee9dc6cbbd8468.svg?invert_in_darkmode" align=middle width=39.608085pt height=21.18732pt/> is the&nbsp;concentration</li>
+<li><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/c675de927d56f6ad8de50d4b32b3ade7.svg?invert_in_darkmode" align=middle width=11.636295000000004pt height=14.61206999999998pt/> is the mean direction and is a unit vector (<img src="articles/DS-2-Sampling-Visualising-vMF/svgs/352c440b9551cb664a4a9ce4e95f5dcb.svg?invert_in_darkmode" align=middle width=58.211505pt height=24.65759999999998pt/>)  </li>
+<li><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/b0ea07dc5c00127344a1cad40467b8de.svg?invert_in_darkmode" align=middle width=9.977220000000004pt height=14.61206999999998pt/> is the random unit&nbsp;vector</li>
+<li><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/6dd8d8363760fb006eee99bd9b4ee0c9.svg?invert_in_darkmode" align=middle width=37.66191pt height=24.65759999999998pt/> is the modified Bessel function of the first kind of order <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/d9be69cde9034fb3f2c583593ba15324.svg?invert_in_darkmode" align=middle width=84.10379999999999pt height=24.65759999999998pt/></li>
+<li><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/a358ac087b9c9fe175b640eab27b8cb6.svg?invert_in_darkmode" align=middle width=41.60376pt height=24.65759999999998pt/> is the normalisation coefficient which can be shown to be dependent only on <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/5c62da39aa7289df62d937cb24a31161.svg?invert_in_darkmode" align=middle width=9.471165000000003pt height=14.155350000000013pt/> and the dimension <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/2ec6e630f199f589a2402fdf3e0289d5.svg?invert_in_darkmode" align=middle width=8.270625000000004pt height=14.155350000000013pt/></li>
+</ul>
+<p>A few&nbsp;observations:</p>
+<ul>
+<li>the distribution is rotationally symmetric about <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/c675de927d56f6ad8de50d4b32b3ade7.svg?invert_in_darkmode" align=middle width=11.636295000000004pt height=14.61206999999998pt/></li>
+<li>If <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/9afe6a256a9817c76b579e6f5db9a578.svg?invert_in_darkmode" align=middle width=12.995565000000004pt height=22.46574pt/> is an orthogonal transformation (<img src="articles/DS-2-Sampling-Visualising-vMF/svgs/135a0774e947d2f7ce3fd27395747bbd.svg?invert_in_darkmode" align=middle width=67.22364pt height=27.91271999999999pt/>),&nbsp;then</li>
+</ul>
+<p><p align="center"><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/782d4a88e7a92440e3b399646ace0b35.svg?invert_in_darkmode" align=middle width=727.2457499999999pt height=20.53161pt/></p></p>
+<ul>
+<li>A useful property is that under&nbsp;multiplication</li>
+</ul>
+<p><p align="center"><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/6480d07aae49fda4e7a0afa18ebcf7cd.svg?invert_in_darkmode" align=middle width=256.31265pt height=16.438356pt/></p></p>
+<p>where <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/c6214f610160ab71e401aad3b2b94ccd.svg?invert_in_darkmode" align=middle width=166.7457pt height=36.095235pt/> and <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/e8a593da7f0bba20b1fab38ec9138508.svg?invert_in_darkmode" align=middle width=139.630755pt height=16.438356pt/>.</p>
+<ul>
+<li>as <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/a8ddeef2457c522217f0ed8c15cad38a.svg?invert_in_darkmode" align=middle width=51.48016499999999pt height=14.155350000000013pt/> the clustering about the mean direction <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/c675de927d56f6ad8de50d4b32b3ade7.svg?invert_in_darkmode" align=middle width=11.636295000000004pt height=14.61206999999998pt/>&nbsp;increases</li>
+</ul>
+<p>A few special&nbsp;cases:</p>
+<ul>
+<li><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/dd219889f998228a1617614c92634791.svg?invert_in_darkmode" align=middle width=39.608085pt height=21.18732pt/> it is the uniform distribution on the <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/e2a76d86ec85e324e69f8fae708fd256.svg?invert_in_darkmode" align=middle width=49.366515pt height=24.65759999999998pt/>-dimensional&nbsp;hypersphere</li>
+<li>In the case of the unit sphere the normalisation coefficient simplifies to
+<p align="center"><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/cb85b9f01fbd1172554667b9ae067db0.svg?invert_in_darkmode" align=middle width=106.79592pt height=29.474114999999998pt/></p></li>
+</ul>
+<aside>
+The unit random vector <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/b0ea07dc5c00127344a1cad40467b8de.svg?invert_in_darkmode" align=middle width=9.977220000000004pt height=14.61206999999998pt/> can be decomposed using a tangent-normal decomposition, i.e., components tangent to and perpendicular to the mean direction such that <p align="center"><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/494f3e602f81db87ad561e25c82fcd80.svg?invert_in_darkmode" align=middle width=312.24435pt height=116.55253499999999pt/></p> where</aside>
+
+<ul>
+<li><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/0e349fc2aef77c89092f43703d3fa3ec.svg?invert_in_darkmode" align=middle width=61.33908pt height=20.222069999999988pt/>,</li>
+<li><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/9b01f373e7f612f2167eba987505e609.svg?invert_in_darkmode" align=middle width=14.002560000000004pt height=22.46574pt/> is the p-dimensional identity&nbsp;matrix,</li>
+<li><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/5697399e4d5acd18e5be0dd798df59c8.svg?invert_in_darkmode" align=middle width=115.43977500000001pt height=38.012699999999995pt/>  such that <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/fe3c740027fc7a9369d05391ef3d9720.svg?invert_in_darkmode" align=middle width=8.852745000000004pt height=22.831379999999992pt/> is normal to <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/c675de927d56f6ad8de50d4b32b3ade7.svg?invert_in_darkmode" align=middle width=11.636295000000004pt height=14.61206999999998pt/>,</li>
+<li>and we have used pythagorus&#8217; theorem (<img src="articles/DS-2-Sampling-Visualising-vMF/svgs/b9fb52015914e9a78c01125d80ee753c.svg?invert_in_darkmode" align=middle width=86.168115pt height=26.76201000000001pt/>)
+<p align="center"><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/a340e1681b406ce898f95eb7c630857f.svg?invert_in_darkmode" align=middle width=627.8480999999999pt height=19.481385pt/></p>
+which leads us to
+<p align="center"><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/a661a562073134f713a8ae2ec9b496af.svg?invert_in_darkmode" align=middle width=186.70409999999998pt height=21.50577pt/></p></li>
+</ul>
+<aside>
+<p></p>
+
+In the tangent-normal decomposition we see that <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/4f4f4e395762a3af4575de74c019ebb5.svg?invert_in_darkmode" align=middle width=5.936155500000004pt height=20.222069999999988pt/> is invariant under rotation about <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/c675de927d56f6ad8de50d4b32b3ade7.svg?invert_in_darkmode" align=middle width=11.636295000000004pt height=14.61206999999998pt/>, because it is parallel to <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/c675de927d56f6ad8de50d4b32b3ade7.svg?invert_in_darkmode" align=middle width=11.636295000000004pt height=14.61206999999998pt/>, while <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/fe3c740027fc7a9369d05391ef3d9720.svg?invert_in_darkmode" align=middle width=8.852745000000004pt height=22.831379999999992pt/> transforms as <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/b96e1291be0436a17d1a9b3c083b9fa4.svg?invert_in_darkmode" align=middle width=56.27159999999999pt height=22.831379999999992pt/>. Thus the conditional distribution of <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/9caa965937882d24fad03d1d5fd37881.svg?invert_in_darkmode" align=middle width=19.355160000000005pt height=24.65759999999998pt/> is uniform on <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/a2ee7f2ddc665e9c01d9e1e8e98bbc2a.svg?invert_in_darkmode" align=middle width=32.735505pt height=26.76201000000001pt/> [1]. It therefore follows that [1] </aside>
+
+<p></p>
+
+<ul>
+<li><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/fe3c740027fc7a9369d05391ef3d9720.svg?invert_in_darkmode" align=middle width=8.852745000000004pt height=22.831379999999992pt/> and <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/4f4f4e395762a3af4575de74c019ebb5.svg?invert_in_darkmode" align=middle width=5.936155500000004pt height=20.222069999999988pt/> are&nbsp;independent</li>
+<li><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/fe3c740027fc7a9369d05391ef3d9720.svg?invert_in_darkmode" align=middle width=8.852745000000004pt height=22.831379999999992pt/> is uniform on <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/a2ee7f2ddc665e9c01d9e1e8e98bbc2a.svg?invert_in_darkmode" align=middle width=32.735505pt height=26.76201000000001pt/></li>
+</ul>
+<aside>
+To visualise what is happening here. Consider the following diagram for the dimension <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/39cd1e5f222b0b87f4a26f8b97296bd2.svg?invert_in_darkmode" align=middle width=38.407545000000006pt height=21.18732pt/>. </aside>
+
+<!-- ![Tangent-normal decomposition](./tangent-normal-decomp.jpg) -->
+
+<p><center>
+<img src="articles/DS-2-Sampling-Visualising-vMF/tangent-normal-decomp.jpg" width="400">
+</center></p>
+<aside>
+It can be seen that a rotation of <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/b0ea07dc5c00127344a1cad40467b8de.svg?invert_in_darkmode" align=middle width=9.977220000000004pt height=14.61206999999998pt/> about <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/c675de927d56f6ad8de50d4b32b3ade7.svg?invert_in_darkmode" align=middle width=11.636295000000004pt height=14.61206999999998pt/> decomposed into components parallel
+and perpendicular to <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/c675de927d56f6ad8de50d4b32b3ade7.svg?invert_in_darkmode" align=middle width=11.636295000000004pt height=14.61206999999998pt/> results in no change in <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/4f4f4e395762a3af4575de74c019ebb5.svg?invert_in_darkmode" align=middle width=5.936155500000004pt height=20.222069999999988pt/>, however, the vector <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/fe3c740027fc7a9369d05391ef3d9720.svg?invert_in_darkmode" align=middle width=8.852745000000004pt height=22.831379999999992pt/> sweeps out a unit circle (<img src="articles/DS-2-Sampling-Visualising-vMF/svgs/116a6ec9537fe0befd30911c70aae18f.svg?invert_in_darkmode" align=middle width=126.41111999999998pt height=26.76201000000001pt/>).
+</aside>
+
+<h1>Simulation</h1>
+<p>Ulrich in 1984 [2] gave an algorithm to sample the von Mises-Fisher distribution, which was later improved upon by Wood in 1994 [3]. From the above considerations it is obvious that a von Mises-Fisher sample can be simulated&nbsp;by</p>
+<ul>
+<li>generating <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/fe3c740027fc7a9369d05391ef3d9720.svg?invert_in_darkmode" align=middle width=8.852745000000004pt height=22.831379999999992pt/> from the uniform distribution on <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/a2ee7f2ddc665e9c01d9e1e8e98bbc2a.svg?invert_in_darkmode" align=middle width=32.735505pt height=26.76201000000001pt/></li>
+<li>generating <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/4f4f4e395762a3af4575de74c019ebb5.svg?invert_in_darkmode" align=middle width=5.936155500000004pt height=20.222069999999988pt/> on the interval <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/699628c77c65481a123e3649944c0d51.svg?invert_in_darkmode" align=middle width=45.662265000000005pt height=24.65759999999998pt/> from the marginal distribution, which can be shown to be [1]
+<p align="center"><img src="articles/DS-2-Sampling-Visualising-vMF/svgs/f1bd26c980610941defe7ac1d7de9a4b.svg?invert_in_darkmode" align=middle width=314.53455pt height=45.50238pt/></p>
+<p></p></li>
+<li>and then combining them using <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/68bbbbcca7638a69a3f53372316421df.svg?invert_in_darkmode" align=middle width=133.73051999999998pt height=28.71230999999999pt/> to produce pseudo-random unit vectors with a von Mises-Fisher&nbsp;distribution</li>
+</ul>
+<p></p>
+
+<aside>
+Sampling the uniform distribution on a unit hyper-sphere is relatively simple and can be done a number of different ways [4]. We will use an algorithm proposed by Muller in 1959 [5]. This algorithm requires sampling of the normal distribution in the appropriate dimension (<img src="articles/DS-2-Sampling-Visualising-vMF/svgs/b83616ab3c2e1ed8e77f7287d8741bad.svg?invert_in_darkmode" align=middle width=36.581160000000004pt height=24.65759999999998pt/> for one sample) and creating a unit vector out of these samples.
+</aside>
+
+<p></p>
+
+<aside>
+To sample the marginal distribution of <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/4f4f4e395762a3af4575de74c019ebb5.svg?invert_in_darkmode" align=middle width=5.936155500000004pt height=20.222069999999988pt/> we will follow the Ulrich [2] and Wood [3] and use rejection sampling. We will simply state the algorithm we will use to sample the von Mises-Fisher distribution and refer the interested reader to [2], [3], and [6] for the further details regarding the derivation of the algorithm.
+</aside>
+
+<p></p>
+
+<aside>
+To simplify the algorithm we will simulate the von Mises-Fisher samples for a chosen <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/5c62da39aa7289df62d937cb24a31161.svg?invert_in_darkmode" align=middle width=9.471165000000003pt height=14.155350000000013pt/> and the mean direction <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/1e56b6bacf7c9e83eac9d83fc93baa80.svg?invert_in_darkmode" align=middle width=118.71370499999999pt height=27.91271999999999pt/>. Afterwhich, we will then rotate to the desired <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/c675de927d56f6ad8de50d4b32b3ade7.svg?invert_in_darkmode" align=middle width=11.636295000000004pt height=14.61206999999998pt/>.
+</aside>
+
+<h2>Algorithm</h2>
+<p><center>
+<img src="articles/DS-2-Sampling-Visualising-vMF/algorithm.png" width=800>
+</center></p>
+<h1>Implementation</h1>
+<h2>Sampling the uniform distribution on a <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/2ec6e630f199f589a2402fdf3e0289d5.svg?invert_in_darkmode" align=middle width=8.270625000000004pt height=14.155350000000013pt/>-dimensional&nbsp;hyper-sphere</h2>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">rand_uniform_hypersphere</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        rand_uniform_hypersphere(N,p)</span>
+<span class="sd">        =============================</span>
+
+<span class="sd">        Generate random samples from the uniform distribution on the (p-1)-dimensional</span>
+<span class="sd">        hypersphere $\mathbb{S}^{p-1} \subset \mathbb{R}^{p}$. We use the method by</span>
+<span class="sd">        Muller [1], see also Ref. [2] for other methods.</span>
+
+<span class="sd">        INPUT:  </span>
+
+<span class="sd">            * N (int) - Number of samples</span>
+<span class="sd">            * p (int) - The dimension of the generated samples on the (p-1)-dimensional hypersphere.</span>
+<span class="sd">                - p = 2 for the unit circle $\mathbb{S}^{1}$</span>
+<span class="sd">                - p = 3 for the unit sphere $\mathbb{S}^{2}$</span>
+<span class="sd">            Note that the (p-1)-dimensional hypersphere $\mathbb{S}^{p-1} \subset \mathbb{R}^{p}$ and the</span>
+<span class="sd">            samples are unit vectors in $\mathbb{R}^{p}$ that lie on the sphere $\mathbb{S}^{p-1}$.</span>
+
+<span class="sd">    References:</span>
+
+<span class="sd">    [1] Muller, M. E. &quot;A Note on a Method for Generating Points Uniformly on N-Dimensional Spheres.&quot;</span>
+<span class="sd">    Comm. Assoc. Comput. Mach. 2, 19-20, Apr. 1959.</span>
+
+<span class="sd">    [2] https://mathworld.wolfram.com/SpherePointPicking.html</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">p</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;p must be a positive integer.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check N&gt;0 and is an int</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">N</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;N must be a non-zero positive integer.&quot;</span><span class="p">)</span>
+
+    <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,(</span><span class="n">N</span><span class="p">,</span><span class="n">p</span><span class="p">))</span>
+
+    <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">v</span>
+</code></pre></div>
+
+
+<h3>Consider the special case of the unit circle ( <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/90264925fb137831c8f410cd14c75cff.svg?invert_in_darkmode" align=middle width=38.407545000000006pt height=21.18732pt/>&nbsp;)</h3>
+<p>Generate 50 samples of the uniform distribution on the unit&nbsp;circle.</p>
+<div class="highlight"><pre><span></span><code><span class="n">data</span> <span class="o">=</span> <span class="n">rand_uniform_hypersphere</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</code></pre></div>
+
+
+<!-- ![](uniform-sphere-p-2-scatter.png) -->
+
+<p><center>
+<img src="articles/DS-2-Sampling-Visualising-vMF/uniform-sphere-p-2-scatter.png" width=700>
+</center></p>
+<h3>Consider the case of unit sphere ( <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/39cd1e5f222b0b87f4a26f8b97296bd2.svg?invert_in_darkmode" align=middle width=38.407545000000006pt height=21.18732pt/>&nbsp;)</h3>
+<p>Generate 1000 samples of the uniform distribution on the unit&nbsp;sphere.</p>
+<div class="highlight"><pre><span></span><code><span class="n">data3D</span> <span class="o">=</span> <span class="n">rand_uniform_hypersphere</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+
+
+<!-- ![](uniform-sphere-p-3-scatter.png) -->
+
+<p><center>
+<img src="articles/DS-2-Sampling-Visualising-vMF/uniform-sphere-p-3-scatter.png" width=800>
+</center></p>
+<h2>Sampling the marginal distribution of <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/4f4f4e395762a3af4575de74c019ebb5.svg?invert_in_darkmode" align=middle width=5.936155500000004pt height=20.222069999999988pt/> using rejections&nbsp;sampling</h2>
+<p>As mentioned above we use rejection sampling to sample the marginal&nbsp;distribution.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">rand_t_marginal</span><span class="p">(</span><span class="n">kappa</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        rand_t_marginal(kappa,p,N=1)</span>
+<span class="sd">        ============================</span>
+
+<span class="sd">        Samples the marginal distribution of t using rejection sampling of Wood [3].</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">            * kappa (float) - concentration        </span>
+<span class="sd">            * p (int) - The dimension of the generated samples on the (p-1)-dimensional hypersphere.</span>
+<span class="sd">                - p = 2 for the unit circle $\mathbb{S}^{1}$</span>
+<span class="sd">                - p = 3 for the unit sphere $\mathbb{S}^{2}$</span>
+<span class="sd">            Note that the (p-1)-dimensional hypersphere $\mathbb{S}^{p-1} \subset \mathbb{R}^{p}$ and the</span>
+<span class="sd">            samples are unit vectors in $\mathbb{R}^{p}$ that lie on the sphere $\mathbb{S}^{p-1}$.</span>
+<span class="sd">            * N (int) - number of samples</span>
+
+<span class="sd">        OUTPUT:</span>
+
+<span class="sd">            * samples (array of floats of shape (N,1)) - samples of the marginal distribution of t</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Check kappa &gt;= 0 is numeric</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">kappa</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">((</span><span class="nb">type</span><span class="p">(</span><span class="n">kappa</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">kappa</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;kappa must be a non-negative number.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">p</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;p must be a positive integer.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check N&gt;0 and is an int</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">N</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;N must be a non-zero positive integer.&quot;</span><span class="p">)</span>
+
+
+    <span class="c1"># Start of algorithm</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">kappa</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">4.0</span> <span class="o">*</span> <span class="n">kappa</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">))</span>    
+    <span class="n">x0</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">kappa</span> <span class="o">*</span> <span class="n">x0</span> <span class="o">+</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">x0</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="c1"># Loop over number of samples</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+
+        <span class="c1"># Continue unil you have an acceptable sample</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+
+            <span class="c1"># Sample Beta distribution</span>
+            <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span> <span class="p">)</span>
+
+            <span class="c1"># Sample Uniform distribution</span>
+            <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">high</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+            <span class="c1"># W is essentially t</span>
+            <span class="n">W</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">Z</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">Z</span><span class="p">)</span>
+
+            <span class="c1"># Check whether to accept or reject</span>
+            <span class="k">if</span> <span class="n">kappa</span> <span class="o">*</span> <span class="n">W</span> <span class="o">+</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">x0</span><span class="o">*</span><span class="n">W</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">U</span><span class="p">):</span>
+
+                <span class="c1"># Accept sample</span>
+                <span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">W</span>
+                <span class="k">break</span>
+
+    <span class="k">return</span> <span class="n">samples</span>
+</code></pre></div>
+
+
+<p>Finally, we can put it all together to sample the von Mises-Fisher&nbsp;distribution.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">rand_von_mises_fisher</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">kappa</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        rand_von_mises_fisher(mu,kappa,N=1)</span>
+<span class="sd">        ===================================</span>
+
+<span class="sd">        Samples the von Mises-Fisher distribution with mean direction mu and concentration kappa.</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">            * mu (array of floats of shape (p,1)) - mean direction. This should be a unit vector.</span>
+<span class="sd">            * kappa (float) - concentration.</span>
+<span class="sd">            * N (int) - Number of samples.</span>
+
+<span class="sd">        OUTPUT:</span>
+
+<span class="sd">            * samples (array of floats of shape (N,p)) - samples of the von Mises-Fisher distribution</span>
+<span class="sd">            with mean direction mu and concentration kappa.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="c1"># Check that mu is a unit vector</span>
+    <span class="n">eps</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">8</span><span class="p">)</span> <span class="c1"># Precision</span>
+    <span class="n">norm_mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">norm_mu</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">eps</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;mu must be a unit vector.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check kappa &gt;= 0 is numeric</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">kappa</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">((</span><span class="nb">type</span><span class="p">(</span><span class="n">kappa</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">kappa</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;kappa must be a non-negative number.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check N&gt;0 and is an int</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">N</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;N must be a non-zero positive integer.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Dimension p</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
+
+    <span class="c1"># Make sure that mu has a shape of px1</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mu</span><span class="p">,(</span><span class="n">p</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="c1"># Array to store samples</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="n">p</span><span class="p">))</span>
+
+    <span class="c1">#  Component in the direction of mu (Nx1)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">rand_t_marginal</span><span class="p">(</span><span class="n">kappa</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+
+    <span class="c1"># Component orthogonal to mu (Nx(p-1))</span>
+    <span class="n">xi</span> <span class="o">=</span> <span class="n">rand_uniform_hypersphere</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># von-Mises-Fisher samples Nxp</span>
+
+    <span class="c1"># Component in the direction of mu (Nx1).</span>
+    <span class="c1"># Note that here we are choosing an</span>
+    <span class="c1"># intermediate mu = [1, 0, 0, 0, ..., 0] later</span>
+    <span class="c1"># we rotate to the desired mu below</span>
+    <span class="n">samples</span><span class="p">[:,[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">t</span>
+
+    <span class="c1"># Component orthogonal to mu (Nx(p-1))</span>
+    <span class="n">samples</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matlib</span><span class="o">.</span><span class="n">repmat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">xi</span>
+
+    <span class="c1"># Rotation of samples to desired mu</span>
+    <span class="n">O</span> <span class="o">=</span> <span class="n">null_space</span><span class="p">(</span><span class="n">mu</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">mu</span><span class="p">,</span><span class="n">O</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">samples</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">return</span> <span class="n">samples</span>
+</code></pre></div>
+
+
+<h3>Consider the case of unit sphere ( <img src="articles/DS-2-Sampling-Visualising-vMF/svgs/39cd1e5f222b0b87f4a26f8b97296bd2.svg?invert_in_darkmode" align=middle width=38.407545000000006pt height=21.18732pt/>&nbsp;)</h3>
+<p>We now create four sets of samples with different mean direction and concentration.
+Each set will have 500 samples. Note that we have normalised our mean direction vectors to be unit vectors. This normalisation is required by <strong>rand_von_mises_fisher()</strong>.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># All sets have the same number of data points</span>
+<span class="n">Nsim</span> <span class="o">=</span> <span class="mi">500</span>
+
+<span class="c1"># Set 1</span>
+<span class="n">mu1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">mu1</span> <span class="o">=</span> <span class="n">mu1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mu1</span><span class="p">)</span>
+<span class="n">kappa1</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">data1</span> <span class="o">=</span> <span class="n">rand_von_mises_fisher</span><span class="p">(</span><span class="n">mu1</span><span class="p">,</span><span class="n">kappa</span><span class="o">=</span><span class="n">kappa1</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="n">Nsim</span><span class="p">)</span>
+
+<span class="c1"># Set 2</span>
+<span class="n">mu2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">mu2</span> <span class="o">=</span> <span class="n">mu2</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mu2</span><span class="p">)</span>
+<span class="n">kappa2</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">data2</span> <span class="o">=</span> <span class="n">rand_von_mises_fisher</span><span class="p">(</span><span class="n">mu2</span><span class="p">,</span><span class="n">kappa</span><span class="o">=</span><span class="n">kappa2</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="n">Nsim</span><span class="p">)</span>
+
+<span class="c1"># Set 3</span>
+<span class="n">mu3</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">mu3</span> <span class="o">=</span> <span class="n">mu3</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mu3</span><span class="p">)</span>
+<span class="n">kappa3</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">data3</span> <span class="o">=</span> <span class="n">rand_von_mises_fisher</span><span class="p">(</span><span class="n">mu3</span><span class="p">,</span><span class="n">kappa</span><span class="o">=</span><span class="n">kappa3</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="n">Nsim</span><span class="p">)</span>
+
+<span class="c1"># Set 4</span>
+<span class="n">mu4</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">mu4</span> <span class="o">=</span> <span class="n">mu4</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mu4</span><span class="p">)</span>
+<span class="n">kappa4</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">data4</span> <span class="o">=</span> <span class="n">rand_von_mises_fisher</span><span class="p">(</span><span class="n">mu4</span><span class="p">,</span><span class="n">kappa</span><span class="o">=</span><span class="n">kappa4</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="n">Nsim</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>To visual this data we have written two functions to accomplish this. The main function
+is <strong>plot_3d_scatter()</strong>, which is used to plot the 3D samples and a transparent sphere.
+The second is <strong>plot_arrow()</strong> (see <a href="https://github.com/dlwhittenbury/von-Mises-Fisher-Sampling">associated repository</a>) used to plot arrows in the mean direction of the&nbsp;samples.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">plot_3d_scatter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">colour</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="n">sz</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span><span class="n">el</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">az</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">sph</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">sph_colour</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span><span class="n">sph_alpha</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span>
+                    <span class="n">eq_line</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">pol_line</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">grd</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        plot_3d_scatter()</span>
+<span class="sd">        =================</span>
+
+<span class="sd">        Plots 3D samples on the surface of a sphere.</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">            * data (array of floats of shape (N,3)) - samples of a spherical distribution such as von Mises-Fisher.</span>
+<span class="sd">            * ax (axes) - axes on which the plot is constructed.</span>
+<span class="sd">            * colour (string) - colour of the scatter plot.</span>
+<span class="sd">            * sz (float) - size of points.</span>
+<span class="sd">            * el (float) - elevation angle of the plot.</span>
+<span class="sd">            * az (float) - azimuthal angle of the plot.</span>
+<span class="sd">            * sph (boolean) - whether or not to inclde a sphere.</span>
+<span class="sd">            * sph_colour (string) - colour of the sphere if included.</span>
+<span class="sd">            * sph_alpha (float) - the opacity/alpha value of the sphere.</span>
+<span class="sd">            * eq_line (boolean) - whether or not to include an equatorial line.</span>
+<span class="sd">            * pol_line (boolean) - whether or not to include a polar line.</span>
+<span class="sd">            * grd (boolean) - whether or not to include a grid.</span>
+
+<span class="sd">        OUTPUT:</span>
+
+<span class="sd">            * ax (axes) - axes on which the plot is contructed.</span>
+<span class="sd">            * Plot of 3D samples on the surface of a sphere.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="c1"># The polar axis</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Check that data is 3D (data should be Nx3)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">d</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;data should be of shape Nx3, i.e., each data point should be 3D.&quot;</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">data</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span><span class="n">s</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">colour</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">az</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">1.5</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">1.5</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zlim</span><span class="p">(</span><span class="o">-</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">1.5</span><span class="p">)</span>
+
+    <span class="c1"># Add a shaded unit sphere</span>
+    <span class="k">if</span> <span class="n">sph</span><span class="p">:</span>
+        <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span><span class="mi">30</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">:</span><span class="mi">30</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">sph_colour</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="n">sph_alpha</span><span class="p">)</span>
+
+    <span class="c1"># Add an equitorial line</span>
+    <span class="k">if</span> <span class="n">eq_line</span><span class="p">:</span>
+        <span class="c1"># t = theta, p = phi</span>
+        <span class="n">eqt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">eqp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">eqx</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">eqt</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">eqp</span><span class="p">)</span>
+        <span class="n">eqy</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">eqt</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">eqp</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">eqz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+
+        <span class="c1"># Equator line</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">eqx</span><span class="p">,</span><span class="n">eqy</span><span class="p">,</span><span class="n">eqz</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Add a polar line</span>
+    <span class="k">if</span> <span class="n">pol_line</span><span class="p">:</span>
+        <span class="c1"># t = theta, p = phi</span>
+        <span class="n">eqt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">eqp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">eqx</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">eqt</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">eqp</span><span class="p">)</span>
+        <span class="n">eqy</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">eqt</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">eqp</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">eqz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+
+        <span class="c1"># Polar line</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">eqx</span><span class="p">,</span><span class="n">eqz</span><span class="p">,</span><span class="n">eqy</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Draw a centre point</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">sz</span><span class="p">)</span>    
+
+    <span class="c1"># Turn off grid</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">grd</span><span class="p">)</span>
+
+    <span class="c1"># Ticks</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zticks</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">ax</span>
+</code></pre></div>
+
+
+<p>Putting these together we visualise the four sets of samples. Note that the samples on the far side of the sphere are of a lighter shade to exhibit the fact they are on the other side of the&nbsp;sphere.</p>
+<div class="highlight"><pre><span></span><code><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+
+<span class="c1"># Set 1</span>
+<span class="n">plot_3d_scatter</span><span class="p">(</span><span class="n">data1</span><span class="p">,</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">plot_arrow</span><span class="p">(</span><span class="n">mu1</span><span class="p">,</span><span class="n">ax</span><span class="p">,</span><span class="n">colour</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+
+<span class="c1"># Set 2</span>
+<span class="n">plot_3d_scatter</span><span class="p">(</span><span class="n">data2</span><span class="p">,</span><span class="n">ax</span><span class="p">,</span><span class="n">colour</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+<span class="n">plot_arrow</span><span class="p">(</span><span class="n">mu2</span><span class="p">,</span><span class="n">ax</span><span class="p">,</span><span class="n">colour</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">)</span>
+
+<span class="c1"># Set 3</span>
+<span class="n">plot_3d_scatter</span><span class="p">(</span><span class="n">data3</span><span class="p">,</span><span class="n">ax</span><span class="p">,</span><span class="n">colour</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+<span class="n">plot_arrow</span><span class="p">(</span><span class="n">mu3</span><span class="p">,</span><span class="n">ax</span><span class="p">,</span><span class="n">colour</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">)</span>
+
+<span class="c1"># Set 4</span>
+<span class="n">plot_3d_scatter</span><span class="p">(</span><span class="n">data4</span><span class="p">,</span><span class="n">ax</span><span class="p">,</span><span class="n">colour</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
+<span class="n">plot_arrow</span><span class="p">(</span><span class="n">mu4</span><span class="p">,</span><span class="n">ax</span><span class="p">,</span><span class="n">colour</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">)</span>
+
+<span class="c1"># Labels</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+
+<span class="c1"># Viewing angle</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">120</span><span class="p">)</span>
+</code></pre></div>
+
+
+<!-- ![](vmf-sphere-p-3-scatter-w-arrows.png) -->
+
+<p><center>
+<img src="articles/DS-2-Sampling-Visualising-vMF/vmf-sphere-p-3-scatter-w-arrows.png" width=800>
+</center></p>
+<p>If you want to make the 3D image interactive in the jupyter notebook, so you can rotate to a better angle. This is easily done by including the&nbsp;command</p>
+<div class="highlight"><pre><span></span><code><span class="o">%</span><span class="n">matplotlib</span> <span class="n">notebook</span>
+</code></pre></div>
+
+
+<p>before plotting the image. If you want to revert back, simply&nbsp;use</p>
+<div class="highlight"><pre><span></span><code><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+</code></pre></div>
+
+
+<h1>Concluding&nbsp;remarks</h1>
+<p>The analysis of circular and more generally directional data is extremely important to many
+fields of study, but it is rarely given the same amount of attention as statistics in
+Euclidean spaces. This is the second in a series of tutorials looking at topics
+in directional statistics and machine learning. Today we looked at one of the
+most important hyper-spherical distributions which has many applications ranging from astrophysics to paleomagnetism. We presented how one might sample the von Mises-Fisher distribution. This is important because there are no implementations available in the usual python libraries. We also showed how one can visualise spherical data. In later tutorials we will consider other important directional distributions and machine learning algorithms which make use of&nbsp;them.</p>
+<ul>
+<li>Please note not all code is given in the blog article. For all code including
+all supporting functions please see the <a href="https://github.com/dlwhittenbury/von-Mises-Fisher-Sampling">associated repository</a>.  </li>
+</ul>
+<h1>References</h1>
+<ol>
+<li>Mardia, <span class="caps">K.V.</span> and Jupp, P.E., Directional Statistics. John Wiley <span class="amp">&amp;</span> Sons, London&nbsp;(2000).</li>
+<li>Ulrich, G., Computer Generation of Distributions on the m-sphere, Appl. Statist. 33, No. 2. pp. 158-163,&nbsp;(1984).</li>
+<li>Wood, <span class="caps">A. T.</span> A., Simulation of the von Mises Fisher distribution, Communications in Statistics - Simulation and Computation, 23 , 157-164&nbsp;(1994).</li>
+<li><a href="https://mathworld.wolfram.com/SpherePointPicking.html">https://mathworld.wolfram.com/SpherePointPicking.html</a></li>
+<li>Muller, <span class="caps">M. E.</span>&#8220;A Note on a Method for Generating Points Uniformly on N-Dimensional Spheres.&#8221;
+    Comm. Assoc. Comput. Mach. 2, 19-20, Apr.&nbsp;(1959).</li>
+<li>Hornik, Kurt and Grün, Bettina, movMF: An R Package for Fitting Mixtures of von Mises-Fisher Distributions, Journal of Statistical Software, 58 (10), pp. 1-31&nbsp;(2014).</li>
+<li>Drawing a fancy vector see <a href="https://stackoverflow.com/questions/11140163/plotting-a-3d-cube-a-sphere-and-a-vector-in-matplotlib">https://stackoverflow.com/questions/11140163/plotting-a-3d-cube-a-sphere-and-a-vector-in-matplotlib</a></li>
+</ol>
+      </div><!-- .entry-content -->
+      <br /><br />
+      <div class="article_meta">
+        Tags:
+          <a href="https://dlwhittenbury.github.io/tag/circular-statistics.html">Circular statistics</a>,          <a href="https://dlwhittenbury.github.io/tag/directional-statistics.html">Directional statistics</a>,          <a href="https://dlwhittenbury.github.io/tag/sampling.html">Sampling</a>,          <a href="https://dlwhittenbury.github.io/tag/visualisation.html">Visualisation</a>,          <a href="https://dlwhittenbury.github.io/tag/von-mises-fisher.html">von Mises-Fisher</a>      </div>
+    </div>
+  </div>
+</article><!-- #post-## -->
+                </div>
+              </div><!-- #main -->
+          </div><!-- #primary -->
+        </div>
+      </div><!-- close .row -->
+    </div><!-- close .container -->
+  </div><!-- close .site-content -->
+
+
+
+
+  <div id="footer-area">
+    <footer id="colophon" class="site-footer" role="contentinfo">
+      <div class="site-info container">
+        <div class="row">
+                    <div class="copyright col-md-12">
+                    <a href="https://dlwhittenbury.github.io/pages/privacy-policy">Privacy Policy</a> |
+                    <a href="https://dlwhittenbury.github.io/feeds/all.atom.xml">Atom Feed</a> |
+                    <a href="https://dlwhittenbury.github.io/sitemap.xml">Sitemap</a><br />
+                    This site uses the <a href="https://github.com/limbenjamin/voce">voce</a> theme by <a href="//limbenjamin.com/">Benjamin Lim</a><br />
+                    &copy; 2020 <a href="https://dlwhittenbury.github.io">Daniel Whittenbury</a> </div>
+        </div>
+      </div><!-- .site-info -->
+      <div class="scroll-to-top" style="display: none;"><i class="fa fa-angle-up"></i></div><!-- .scroll-to-top -->
+    </footer><!-- #colophon -->
+  </div>
+
+  <script type="text/javascript">
+    window.addEventListener('load', function(){
+    if (window.location.pathname != '/' && window.location.pathname != '/index.html'){
+      window.scroll(0, document.getElementById('main').offsetTop);
+    }})
+  </script>
+
+
+
+
+</body>
+</html>
