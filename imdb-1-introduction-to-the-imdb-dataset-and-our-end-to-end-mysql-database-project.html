@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Daniel Whittenbury">
+  <meta name="description" content="IMDb 1: Introduction to the IMDb dataset and our end-to-end MySQL database project | Introduction to the project In this series of blog posts we...">
+
+  <base href="https://dlwhittenbury.github.io">
+
+  <!-- <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96"> -->
+
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" type="text/css" media="all">
+  <link rel="stylesheet" href="https://dlwhittenbury.github.io/theme/css/font.css" type="text/css" media="all">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://dlwhittenbury.github.io/theme/css/style.css" type="text/css" media="all">
+
+
+
+  <link rel="stylesheet" href="https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css">
+
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://dlwhittenbury.github.io/theme/js/functions.min.js"></script>
+
+
+
+
+
+<meta name="keywords" content="MySQL, Databases, SQL, ETL, IMDb">
+
+
+  <title>IMDb 1: Introduction to the IMDb dataset and our end-to-end MySQL database project</title>
+
+
+</head>
+
+<body class="home blog">
+
+  <div>
+    <header class="site-header">
+      <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+          <div class="row">
+            <div class="site-navigation-inner col-sm-12">
+              <div class="navbar-header">
+                <button type="button" class="btn navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+              </div>
+              <div class="collapse navbar-collapse navbar-ex1-collapse">
+              <ul id="menu-all-pages" class="nav navbar-nav">
+                <li class="menu-item"><a href="/index.html" >Home
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/about-me.html" >About me
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/publications.html" >Publications
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/resume.html" >Resume
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/dashboards-and-reports.html" >Dashboards and Reports
+<i class="fa  fa-lg"></i></a></li>
+              </ul>
+              </div>
+              <div class="social">
+                <a href="mailto:whittenburydaniel@gmail.com" title="Email" >
+<i class="fa fa-envelope fa-lg"></i></a>
+                <a href="https://github.com/dlwhittenbury" title="GitHub" >
+<i class="fa fa-github fa-lg"></i></a>
+                <a href="https://scholar.google.com/citations?user=3m-Rd7oAAAAJ&hl=en" title="GoogleScholar" >
+<i class="fa ai ai-google-scholar-square ai-3x fa-lg"></i></a>
+                <a href="https://researchgate.net/profile/Daniel_Whittenbury" title="ResearchGate" >
+<i class="fa ai ai-researchgate ai-60x fa-lg"></i></a>
+                <a href="https://twitter.com/dlwhittenbury" title="Twitter" >
+<i class="fa fa-twitter fa-lg"></i></a>
+                <a href="https://linkedin.com/in/daniel-whittenbury-44235a155" title="LinkedIn" >
+<i class="fa fa-linkedin fa-lg"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav><!-- .site-navigation -->
+
+      <div class="container">
+
+      <div id="logo">
+        <span class="site-name"><a class="navbar-brand" href="https://dlwhittenbury.github.io"><img width="280" src="images/myAvatar-Circle.png" class="attachment-full size-full" alt="logo">          </a>
+        </span><!-- end of .site-name -->
+      </div><!-- end of #logo -->
+
+    </div>
+
+  </header><!-- #masthead -->
+  </div>
+    <div id="content" class="site-content">
+      <div class="container main-content-area">
+        <div class="row">
+          <div class="main-content-inner col-sm-12 col-md-12">
+            <div id="primary" class="content-area">
+              <div id="main" class="site-main" role="main">
+                <div class="article-container">
+<article>
+  <div class="blog-item-wrap">
+    <div class="post-inner-content">
+      <header class="entry-header page-header">
+        <span class="cat-item"><time datetime="2020-06-24 08:00:00+09:30">Wed 24 June 2020</time></span>
+        <h1 class="entry-title"><a href="https://dlwhittenbury.github.io/imdb-1-introduction-to-the-imdb-dataset-and-our-end-to-end-mysql-database-project.html">IMDb 1: Introduction to the IMDb dataset and our end-to-end MySQL database&nbsp;project</a></h1>
+      </header><!-- .entry-header -->
+      <div class="fb-like" data-href="https://dlwhittenbury.github.io/imdb-1-introduction-to-the-imdb-dataset-and-our-end-to-end-mysql-database-project.html" data-layout="standard" data-action="like" data-show-faces="false" data-share="true"></div>
+      <div class="entry-content">
+        <!-- # IMDb 1: Introduction to the IMDb dataset and our end-to-end MySQL project -->
+
+<!-- Designing a MySQL database and performing ETL for IMDb data using python -->
+
+<!-- Use IMDb data to:
+
+- Designing
+- ETL
+- Data exploration and visualisation
+- Missing data issues -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/imdb.png" width="500">
+</center></p>
+<h2>Introduction to the&nbsp;project</h2>
+<p>In this series of blog posts we will present an end-to-end database project using MySQL and the IMDb dataset. The code and images for this project are shared in the associated <a href="https://github.com/dlwhittenbury/MySQL_IMDb_Project">GitHub repository</a>. The purpose of this project was originally to be pedagogical and now we will share what we learnt along the way. In this project we designed and built a MySQL database to store the Internet Movie Database
+(IMDb) dataset. We then explored and visualised the data. This project required a fair amount of work, so this project will be presented in four parts. In this first post we will introduce the dataset and summarise the most import aspects of the&nbsp;project.</p>
+<p>The purpose of this project was to do the&nbsp;following:</p>
+<ul>
+<li>
+<p>Learn about and use the database management system&nbsp;MySQL.</p>
+</li>
+<li>
+<p>Learn the essentials of database design, e.g., Entity-Relationship diagrams,
+logical schema, and database&nbsp;normalisation.</p>
+</li>
+<li>
+<p>To perform <span class="caps">ETL</span> (Extract-Transform-Load) on the IMDb data using&nbsp;python.</p>
+</li>
+<li>
+<p>Practice database querying by posing basic and more complex queries using
+MySQL directly and also by using&nbsp;python.</p>
+</li>
+<li>
+<p>Visualise IMDb data using&nbsp;python.</p>
+</li>
+</ul>
+<p>The tangible steps we took in this project&nbsp;are:</p>
+<ul>
+<li>
+<p>Understand the data in the IMDb&nbsp;dataset.</p>
+</li>
+<li>
+<p>Design a relational database and store the IMDb data in&nbsp;it.</p>
+</li>
+<li>
+<p>Modelled the database using an Entity-Relationship (<span class="caps">ER</span>) and logical schema&nbsp;diagrams.</p>
+</li>
+<li>Performed <span class="caps">ETL</span>, i.e., we extracted the data from the tab separated files and
+  transformed it into normalised and restructured tables using python, which were
+  then loaded into new&nbsp;files.</li>
+<li>Created a MySQL&nbsp;database.</li>
+<li>Loaded transformed data into the normalised&nbsp;database.</li>
+<li>Added primary and foreign key&nbsp;constraints.</li>
+<li>
+<p>Created database&nbsp;indexes.</p>
+</li>
+<li>
+<p>Asked questions of the IMDb data, so as to practice simple and more complex <span class="caps">SQL</span>&nbsp;queries.</p>
+</li>
+<li>
+<p>Performed further exploration and also visualisation of the data using&nbsp;python.</p>
+</li>
+<li>
+<p>Throughout we adhered to <span class="caps">SQL</span> style conventions, e.g., please see <span class="caps">SQL</span> Style
+guide <a href="https://www.sqlstyle.guide/">https://www.sqlstyle.guide/</a>. In particular, underscores were used in
+attribute names rather than camel case, which is used in the IMDb data&nbsp;files.</p>
+</li>
+</ul>
+<h2>Introduction to the IMDb&nbsp;dataset</h2>
+<p>The IMDb dataset consists of 7 compressed tab-separated-value (*.tsv) files, which are explained and available for download from <a href="https://www.imdb.com/interfaces/">here</a>. The data is refreshed daily, although the data used in this project was obtained on <strong>29/11/2019</strong>. Each of these gzipped tab-separated-values (<span class="caps">TSV</span>) formatted files in the <span class="caps">UTF</span>-8 character set. The first line in each file contains headers that describe what is in each column. A &#8220;\N&#8221; is used to denote that a particular field is missing or has a <span class="caps">NULL</span> value for that title or name. It should be noted that the data available for download from the IMDb website is not the full dataset, but it will suffice for our purposes. Later we will discuss
+some of the data issues. The available IMDb data files are as&nbsp;follows:</p>
+<h3>name.basics.tsv.gz</h3>
+<p>Contains the following information for&nbsp;names:</p>
+<ul>
+<li>nconst (string) - alphanumeric unique identifier of the&nbsp;name/person.</li>
+<li>primaryName (string)– name by which the person is most often&nbsp;credited.</li>
+<li>birthYear – in <span class="caps">YYYY</span>&nbsp;format.</li>
+<li>deathYear – in <span class="caps">YYYY</span> format if applicable, else&nbsp;&#8220;\N&#8221;.</li>
+<li>primaryProfession (array of strings) – the top-3 professions of the&nbsp;person.</li>
+<li>knownForTitles (array of tconsts) – titles the person is known&nbsp;for.</li>
+</ul>
+<h3>title.basics.tsv.gz</h3>
+<p>Contains the following information for&nbsp;titles:</p>
+<ul>
+<li>tconst (string) - alphanumeric unique identifier of the&nbsp;title.</li>
+<li>titleType (string) – the type/format of the title (e.g. movie, short,
+    tvseries, tvepisode, video,&nbsp;etc).</li>
+<li>primaryTitle (string) – the more popular title / the title used by the
+  filmmakers on promotional materials at the point of&nbsp;release.</li>
+<li>originalTitle (string) - original title, in the original&nbsp;language.</li>
+<li>isAdult (boolean) - 0: non-adult title; 1: adult&nbsp;title.</li>
+<li>startYear (<span class="caps">YYYY</span>) – represents the release year of a title. In the case of <span class="caps">TV</span>
+  Series, it is the series start&nbsp;year.</li>
+<li>endYear (<span class="caps">YYYY</span>) – <span class="caps">TV</span> Series end year. &#8220;\N&#8221; for all other title&nbsp;types.</li>
+<li>runtimeMinutes – primary runtime of the title, in&nbsp;minutes.</li>
+<li>genres (string array) – includes up to three genres associated with the&nbsp;title.</li>
+</ul>
+<h3>title.akas.tsv.gz</h3>
+<p>Contains the following information for&nbsp;titles:</p>
+<ul>
+<li>titleId (string) - a tconst which is an alphanumeric unique identifier of
+  the&nbsp;title.</li>
+<li>ordering (integer) – a number to uniquely identify rows for a given&nbsp;titleId.</li>
+<li>title (string) – the localised&nbsp;title.</li>
+<li>region (string) - the region for this version of the&nbsp;title.</li>
+<li>language (string) - the language of the&nbsp;title.</li>
+<li>
+<p>types (array) - Enumerated set of attributes for this alternative title. One
+  or more of the following: &#8220;alternative&#8221;, &#8220;dvd&#8221;, &#8220;festival&#8221;, &#8220;tv&#8221;, &#8220;video&#8221;,
+  &#8220;working&#8221;, &#8220;original&#8221;, &#8220;imdbDisplay&#8221;. New values may be added in the future
+  without warning.
+  <strong>Please note that types is said to be an array. In the data we have this
+  appears to not be true. There appears to be only one string for each pair of
+  titleId and ordering values. Also, there are many <span class="caps">NULL</span> (\N) values in this
+  field&nbsp;(~95%).</strong></p>
+</li>
+<li>
+<p>attributes (array) - Additional terms to describe this alternative title,
+  not enumerated.
+  <strong>Please note that attributes is said to be an array. In the data we have this
+  appears to not be true. There appears to be only one string for each pair of
+  titleId and ordering values. There are many <span class="caps">NULL</span> (\N) values in this field&nbsp;(~99%).</strong></p>
+</li>
+<li>
+<p>isOriginalTitle (boolean) – 0: not original title; 1: original&nbsp;title.</p>
+</li>
+</ul>
+<h3>title.crew.tsv.gz</h3>
+<p>Contains the director and writer information for all the titles in IMDb. Fields&nbsp;include:</p>
+<ul>
+<li>tconst (string) - alphanumeric unique identifier of the&nbsp;title.</li>
+<li>directors (array of nconsts) - director(s) of the given&nbsp;title.</li>
+<li>writers (array of nconsts) – writer(s) of the given&nbsp;title.</li>
+</ul>
+<h3>title.episode.tsv.gz</h3>
+<p>Contains the tv episode information. Fields&nbsp;include:</p>
+<ul>
+<li>tconst (string) - alphanumeric identifier of&nbsp;episode.</li>
+<li>parentTconst (string) - alphanumeric identifier of the parent <span class="caps">TV</span>&nbsp;Series.</li>
+<li>seasonNumber (integer) – season number the episode belongs&nbsp;to.</li>
+<li>episodeNumber (integer) – episode number of the tconst in the <span class="caps">TV</span>&nbsp;series.</li>
+</ul>
+<h3>title.principals.tsv.gz</h3>
+<p>Contains the principal cast/crew for&nbsp;titles</p>
+<ul>
+<li>tconst (string) - alphanumeric unique identifier of the&nbsp;title.</li>
+<li>ordering (integer) – a number to uniquely identify rows for a given&nbsp;titleId.</li>
+<li>nconst (string) - alphanumeric unique identifier of the&nbsp;name/person.</li>
+<li>category (string) - the category of job that person was&nbsp;in.</li>
+<li>job (string) - the specific job title if applicable, else&nbsp;&#8220;\N&#8221;.</li>
+<li>characters (string) - the name of the character played if applicable, else
+  &#8220;\N&#8221; (It is really &#8220;[role1,role2,&#8230;.]&#8221; or&nbsp;&#8220;\N&#8221;).</li>
+</ul>
+<h3>title.ratings.tsv.gz</h3>
+<p>Contains the IMDb rating and votes information for&nbsp;titles</p>
+<ul>
+<li>tconst (string) - alphanumeric unique identifier of the&nbsp;title.</li>
+<li>averageRating – weighted average of all the individual user&nbsp;ratings.</li>
+<li>numVotes - number of votes the title has&nbsp;received.</li>
+</ul>
+<h3>IMDb dataset license&nbsp;details</h3>
+<p>Subsets of IMDb data are available for access to customers for personal and
+non-commercial use. You can hold local copies of this data, and it is subject to
+our terms and conditions. Please refer to the
+<a href="https://help.imdb.com/article/imdb/general-information/can-i-use-imdb-data-in-my-software/G5JTRESSHJBBHTGX?pf_rd_m=A2FGELUUNOQJNL&amp;pf_rd_p=3aefe545-f8d3-4562-976a-e5eb47d1bb18&amp;pf_rd_r=0J8FC9NDYKWB18MEW883&amp;pf_rd_s=center-1&amp;pf_rd_t=60601&amp;pf_rd_i=interfaces&amp;ref_=fea_mn_lk1#">Non-Commercial Licensing</a> and <a href="https://www.imdb.com/conditions?pf_rd_m=A2FGELUUNOQJNL&amp;pf_rd_p=3aefe545-f8d3-4562-976a-e5eb47d1bb18&amp;pf_rd_r=0J8FC9NDYKWB18MEW883&amp;pf_rd_s=center-1&amp;pf_rd_t=60601&amp;pf_rd_i=interfaces&amp;ref_=fea_mn_lk2">copyright/license</a> and verify&nbsp;compliance.</p>
+<h3>A few WARNINGs about the IMDb&nbsp;dataset</h3>
+<p>The IMDb data base contains details of adult titles. If this is likely to offend you or others that see your work, then you can filter these titles out by using the field isAdult in&nbsp;title.basics.tsv.gz.</p>
+<p>The IMDb dataset is a noisy dataset. In particular, there are some issues with missing data which affected how we added constraints to the database. These are discussed in the note <strong>IMDb_data_issues.md</strong> in the <a href="https://github.com/dlwhittenbury/MySQL_IMDb_Project">GitHub repository</a>. Of course, missing data could be obtained by scraping the IMDb site but this was beyond the scope of the&nbsp;project.</p>
+<h2>Conclusion</h2>
+<p>In this first post we have introduced our end-to-end database project and the IMDb dataset. In our next post we will look at a database design to store this data and we will perform the necessary <span class="caps">ETL</span> tasks using&nbsp;python.</p>
+<h2>Further&nbsp;Reading</h2>
+<ol>
+<li>IMDb dataset can be found <a href="https://www.imdb.com/interfaces/">here</a>.</li>
+</ol>
+      </div><!-- .entry-content -->
+      <br /><br />
+      <div class="article_meta">
+        Tags:
+          <a href="https://dlwhittenbury.github.io/tag/mysql.html">MySQL</a>,          <a href="https://dlwhittenbury.github.io/tag/databases.html">Databases</a>,          <a href="https://dlwhittenbury.github.io/tag/sql.html">SQL</a>,          <a href="https://dlwhittenbury.github.io/tag/etl.html">ETL</a>,          <a href="https://dlwhittenbury.github.io/tag/imdb.html">IMDb</a>      </div>
+    </div>
+  </div>
+</article><!-- #post-## -->
+                </div>
+              </div><!-- #main -->
+          </div><!-- #primary -->
+        </div>
+      </div><!-- close .row -->
+    </div><!-- close .container -->
+  </div><!-- close .site-content -->
+
+
+
+
+  <div id="footer-area">
+    <footer id="colophon" class="site-footer" role="contentinfo">
+      <div class="site-info container">
+        <div class="row">
+                    <div class="copyright col-md-12">
+                    <a href="https://dlwhittenbury.github.io/pages/privacy-policy">Privacy Policy</a> |
+                    <a href="https://dlwhittenbury.github.io/feeds/all.atom.xml">Atom Feed</a> |
+                    <a href="https://dlwhittenbury.github.io/sitemap.xml">Sitemap</a><br />
+                    This site uses the <a href="https://github.com/limbenjamin/voce">voce</a> theme by <a href="//limbenjamin.com/">Benjamin Lim</a><br />
+                    &copy; 2020 <a href="https://dlwhittenbury.github.io">Daniel Whittenbury</a> </div>
+        </div>
+      </div><!-- .site-info -->
+      <div class="scroll-to-top" style="display: none;"><i class="fa fa-angle-up"></i></div><!-- .scroll-to-top -->
+    </footer><!-- #colophon -->
+  </div>
+
+  <script type="text/javascript">
+    window.addEventListener('load', function(){
+    if (window.location.pathname != '/' && window.location.pathname != '/index.html'){
+      window.scroll(0, document.getElementById('main').offsetTop);
+    }})
+  </script>
+
+
+
+
+</body>
+</html>

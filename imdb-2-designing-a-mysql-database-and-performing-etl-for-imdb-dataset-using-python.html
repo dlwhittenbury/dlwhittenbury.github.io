@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Daniel Whittenbury">
+  <meta name="description" content="IMDb 2: Designing a MySQL database and performing ETL for IMDb dataset using python | Designing the relational database In...">
+
+  <base href="https://dlwhittenbury.github.io">
+
+  <!-- <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96"> -->
+
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" type="text/css" media="all">
+  <link rel="stylesheet" href="https://dlwhittenbury.github.io/theme/css/font.css" type="text/css" media="all">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://dlwhittenbury.github.io/theme/css/style.css" type="text/css" media="all">
+
+
+
+  <link rel="stylesheet" href="https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css">
+
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://dlwhittenbury.github.io/theme/js/functions.min.js"></script>
+
+
+
+
+
+<meta name="keywords" content="MySQL, Databases, SQL, ETL, IMDb">
+
+
+  <title>IMDb 2: Designing a MySQL database and performing ETL for IMDb dataset using python</title>
+
+
+</head>
+
+<body class="home blog">
+
+  <div>
+    <header class="site-header">
+      <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+          <div class="row">
+            <div class="site-navigation-inner col-sm-12">
+              <div class="navbar-header">
+                <button type="button" class="btn navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+              </div>
+              <div class="collapse navbar-collapse navbar-ex1-collapse">
+              <ul id="menu-all-pages" class="nav navbar-nav">
+                <li class="menu-item"><a href="/index.html" >Home
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/about-me.html" >About me
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/publications.html" >Publications
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/resume.html" >Resume
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/dashboards-and-reports.html" >Dashboards and Reports
+<i class="fa  fa-lg"></i></a></li>
+              </ul>
+              </div>
+              <div class="social">
+                <a href="mailto:whittenburydaniel@gmail.com" title="Email" >
+<i class="fa fa-envelope fa-lg"></i></a>
+                <a href="https://github.com/dlwhittenbury" title="GitHub" >
+<i class="fa fa-github fa-lg"></i></a>
+                <a href="https://scholar.google.com/citations?user=3m-Rd7oAAAAJ&hl=en" title="GoogleScholar" >
+<i class="fa ai ai-google-scholar-square ai-3x fa-lg"></i></a>
+                <a href="https://researchgate.net/profile/Daniel_Whittenbury" title="ResearchGate" >
+<i class="fa ai ai-researchgate ai-60x fa-lg"></i></a>
+                <a href="https://twitter.com/dlwhittenbury" title="Twitter" >
+<i class="fa fa-twitter fa-lg"></i></a>
+                <a href="https://linkedin.com/in/daniel-whittenbury-44235a155" title="LinkedIn" >
+<i class="fa fa-linkedin fa-lg"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav><!-- .site-navigation -->
+
+      <div class="container">
+
+      <div id="logo">
+        <span class="site-name"><a class="navbar-brand" href="https://dlwhittenbury.github.io"><img width="280" src="images/myAvatar-Circle.png" class="attachment-full size-full" alt="logo">          </a>
+        </span><!-- end of .site-name -->
+      </div><!-- end of #logo -->
+
+    </div>
+
+  </header><!-- #masthead -->
+  </div>
+    <div id="content" class="site-content">
+      <div class="container main-content-area">
+        <div class="row">
+          <div class="main-content-inner col-sm-12 col-md-12">
+            <div id="primary" class="content-area">
+              <div id="main" class="site-main" role="main">
+                <div class="article-container">
+<article>
+  <div class="blog-item-wrap">
+    <div class="post-inner-content">
+      <header class="entry-header page-header">
+        <span class="cat-item"><time datetime="2020-06-24 09:00:00+09:30">Wed 24 June 2020</time></span>
+        <h1 class="entry-title"><a href="https://dlwhittenbury.github.io/imdb-2-designing-a-mysql-database-and-performing-etl-for-imdb-dataset-using-python.html">IMDb 2: Designing a MySQL database and performing <span class="caps">ETL</span> for IMDb dataset using&nbsp;python</a></h1>
+      </header><!-- .entry-header -->
+      <div class="fb-like" data-href="https://dlwhittenbury.github.io/imdb-2-designing-a-mysql-database-and-performing-etl-for-imdb-dataset-using-python.html" data-layout="standard" data-action="like" data-show-faces="false" data-share="true"></div>
+      <div class="entry-content">
+        <!-- # IMDb 2: Designing a MySQL database and performing ETL for IMDb data using python -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/imdb.png" width="500">
+</center></p>
+<h2>Designing the relational&nbsp;database</h2>
+<p>In this series of blog posts we will present an end-to-end database project using MySQL the IMDb dataset. This is the second in the series of posts on my database project. In this post we will present the Entity-Relationship (<span class="caps">ER</span>) and logical schema diagrams for our relational database. We will also discuss the Extract-Transform-Load (<span class="caps">ETL</span>)  tasks we performed using python. Today we will not go into the details of how to design a normalised database as this can take up a large portion of a university level course on databases. Instead we will refer the interested reader to the fantastic book by Ramakrishnan and Gehrke [1] and the incredibly useful set of video lectures for the course <a href="http://yusanlin.com/cmpsc431w/lectures.html"><span class="caps">CMPSC431W</span>: Database Management Systems</a> taught at Penn State by Yu-San Lin [2]. We will now present our&nbsp;design.</p>
+<p>For this project we used <a href="https://www.yworks.com/products/yed">yEd</a> to create our Entity-Relationship (<span class="caps">ER</span>) and logical schema&nbsp;diagrams.</p>
+<blockquote>
+<p><span class="dquo">&#8220;</span>yEd is a powerful desktop application that can be used to quickly and effectively generate high-quality diagrams.
+Create diagrams manually, or import your external data for analysis. Our automatic layout algorithms arrange even large data sets with just the press of a&nbsp;button.&#8221;</p>
+<p><span class="dquo">&#8220;</span>yEd is freely available and runs on all major platforms: Windows, Unix/Linux, and&nbsp;macOS.&#8221;</p>
+</blockquote>
+<p>We really liked this software. It was very easy to use with simple <span class="caps">GUI</span>.</p>
+<!-- ![yEd](images/yEd-sw.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/yEd-sw.png" width="1000">
+</center></p>
+<!-- ![yEd logo](images/yEd-logo.png) -->
+
+<h3>Entity-Relationship (<span class="caps">ER</span>)&nbsp;diagram</h3>
+<p>The IMDb data as provided is not normalised. We designed the entity-relationship diagram for our IMDb relational database. This was created using <a href="https://www.yworks.com/products/yed">yEd</a> and is shown&nbsp;below.</p>
+<!-- ![IMDb ER diagram.](images/db_design/imdb-er-diagram.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/db_design/imdb-er-diagram.png" width="1000">
+</center></p>
+<p>As one can see it is a reasonably complex database, but, not as complex as one
+may find in production business systems. However, it will suffice for our&nbsp;purposes.</p>
+<h3>Logical&nbsp;schema</h3>
+<p>We then normalise our <span class="caps">ER</span> diagram and obtain the logical schema illustrated below. Note the&nbsp;following:</p>
+<ul>
+<li>
+<p>New tables were created for multi-valued attributes, such as&nbsp;Title_genres.</p>
+</li>
+<li>
+<p>We pulled the rating information attributes from the Titles entity, because many titles didn&#8217;t have a rating. If we were to store them in the Titles table, then we would have stored many <span class="caps">NULL</span> values. Instead we decided to separate this information, by putting it into the table&nbsp;Title_ratings.</p>
+</li>
+</ul>
+<!-- ![IMDb logical schema diagram.](images/db_design/imdb-logical-schema.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/db_design/imdb-logical-schema.png" width="1000">
+</center></p>
+<p>This diagram was also created using <a href="https://www.yworks.com/products/yed">yEd</a>. Note
+that in this diagram we have denote primary keys by <span class="caps">PK</span> and foreign keys by <span class="caps">FK</span>.</p>
+<h2>Extract-Transform-Load: Preparing the IMDb&nbsp;data</h2>
+<p>The <span class="caps">ETL</span> part of this project was done using a single python script. The script  <code>imdb_converter.py</code>
+reads in the 7 data files, cleans and normalises the IMDb data. After which, the
+desired set of tables are output as tab-separate-value (tsv) files. It was written
+to be as modular as possible with separate functions written to perform specific
+tasks. The functions that were implemented&nbsp;are:</p>
+<ul>
+<li>unzip_files(folder)</li>
+<li>make_Aliases(title_akas)</li>
+<li>make_Alias_types(title_akas)</li>
+<li>make_Alias_attributes(title_akas)</li>
+<li>make_Directors_and_Writers(title_crew)</li>
+<li>make_Episode_belongs_to(title_episode)</li>
+<li>make_Names_(name_basics)</li>
+<li>make_Name_worked_as(name_basics)</li>
+<li>make_Known_for(name_basics)</li>
+<li>make_Principals(title_principals)</li>
+<li>make_Had_role(title_principals)</li>
+<li>make_Titles(title_basics)</li>
+<li>make_Title_genres(title_basics)</li>
+<li>make_Title_ratings(title_ratings)</li>
+</ul>
+<p>From the names and the comments their purpose should be clear. The python script is show&nbsp;below</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Imports</span>
+<span class="c1"># -------</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">gzip</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="c1"># Helper functions</span>
+<span class="c1">#------------------</span>
+
+<span class="c1"># Used to unzip IMDb data files</span>
+<span class="k">def</span> <span class="nf">unzip_files</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        unzip_files():</span>
+<span class="sd">        ==============</span>
+
+<span class="sd">        Unzip all gzipped files in folder.</span>
+
+<span class="sd">        INPUT:</span>
+<span class="sd">        ======</span>
+
+<span class="sd">        folder (string) - Path to folder containing the zip files.</span>
+
+<span class="sd">        OUTPUT:</span>
+<span class="sd">        =======</span>
+
+<span class="sd">        out_files (array of strings) - Paths to unzipped files.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">out_files</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># For each file in folder</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+
+        <span class="c1"># If it is gzipped unzip it</span>
+        <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">):</span>
+
+            <span class="n">in_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+
+            <span class="n">out_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.gz&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+            <span class="n">out_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out_file_path</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Unzipping &#39;</span><span class="p">,</span><span class="n">in_file_path</span><span class="p">,</span><span class="s1">&#39; to &#39;</span><span class="p">,</span><span class="n">out_file_path</span><span class="p">)</span>
+
+            <span class="c1"># Unzip current file</span>
+            <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">in_file_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_in</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_file_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_out</span><span class="p">:</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">f_in</span><span class="p">,</span> <span class="n">f_out</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out_files</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<span class="c1"># Functions to process IMDb data</span>
+<span class="c1">#-------------------------------</span>
+
+<span class="c1"># Create Aliases table</span>
+<span class="k">def</span> <span class="nf">make_Aliases</span><span class="p">(</span><span class="n">title_akas</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make_Aliases():</span>
+<span class="sd">        ===============</span>
+
+<span class="sd">        Creates Aliases table from from title.akas.tsv.</span>
+
+<span class="sd">        INPUT:</span>
+<span class="sd">        ======</span>
+
+<span class="sd">        title_akas (pandas dataframe) - Contains the title.akas.tsv data table.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># title.akas.tsv</span>
+    <span class="c1"># FORMAT: [&#39;titleId&#39;, &#39;ordering&#39;, &#39;title&#39;, &#39;region&#39;, &#39;language&#39;, &#39;types&#39;,</span>
+    <span class="c1"># &#39;attributes&#39;, &#39;isOriginalTitle&#39;]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Making &#39;Aliases&#39; table&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Extract columns</span>
+    <span class="n">Aliases</span> <span class="o">=</span> <span class="n">title_akas</span><span class="p">[[</span><span class="s1">&#39;titleId&#39;</span><span class="p">,</span><span class="s1">&#39;ordering&#39;</span><span class="p">,</span><span class="s1">&#39;title&#39;</span><span class="p">,</span><span class="s1">&#39;region&#39;</span><span class="p">,</span><span class="s1">&#39;language&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;isOriginalTitle&#39;</span><span class="p">]]</span>
+
+    <span class="c1"># Rename columns</span>
+    <span class="n">Aliases</span> <span class="o">=</span> <span class="n">Aliases</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;titleId&#39;</span><span class="p">:</span><span class="s1">&#39;title_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;isOriginalTitle&#39;</span><span class="p">:</span><span class="s1">&#39;is_original_title&#39;</span>
+    <span class="p">})</span>
+
+    <span class="c1"># Output to file</span>
+    <span class="n">Aliases</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;Aliases.tsv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">na_rep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\N&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<span class="c1"># Create Alias_types table</span>
+<span class="k">def</span> <span class="nf">make_Alias_types</span><span class="p">(</span><span class="n">title_akas</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make_Alias_types():</span>
+<span class="sd">        ===================</span>
+
+<span class="sd">        Creates Alias_types table from from title.akas.tsv.</span>
+
+<span class="sd">        INPUT:</span>
+<span class="sd">        ======</span>
+
+<span class="sd">        title_akas (pandas dataframe) - Contains the title.akas.tsv data table.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># title.akas.tsv</span>
+    <span class="c1"># FORMAT: [&#39;titleId&#39;, &#39;ordering&#39;, &#39;title&#39;, &#39;region&#39;, &#39;language&#39;, &#39;types&#39;,</span>
+    <span class="c1"># &#39;attributes&#39;, &#39;isOriginalTitle&#39;]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Making &#39;Alias_types&#39; table&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Extract columns</span>
+    <span class="n">Alias_types</span> <span class="o">=</span> <span class="n">title_akas</span><span class="p">[[</span><span class="s1">&#39;titleId&#39;</span><span class="p">,</span><span class="s1">&#39;ordering&#39;</span><span class="p">,</span><span class="s1">&#39;types&#39;</span><span class="p">]]</span>
+
+    <span class="c1"># Rename columns</span>
+    <span class="n">Alias_types</span> <span class="o">=</span> <span class="n">Alias_types</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;titleId&#39;</span><span class="p">:</span><span class="s1">&#39;title_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;types&#39;</span><span class="p">:</span><span class="s1">&#39;type&#39;</span>
+    <span class="p">})</span>
+
+    <span class="c1"># types is said to be an array. In the data we have this appears to not be</span>
+    <span class="c1"># true. There appears to be only one string for each pair of titleId and</span>
+    <span class="c1"># ordering values. There are many NULL (\N) values (~95%) in this field. We</span>
+    <span class="c1"># don&#39;t keep these NULL values. Only entries with non-NULL values in the</span>
+    <span class="c1"># field are kept and if if there is no entry in this table for a given</span>
+    <span class="c1"># title_id and ordering pair it is considered to be NULL.</span>
+    <span class="n">Alias_types</span> <span class="o">=</span> <span class="n">Alias_types</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="c1"># Output to file</span>
+    <span class="n">Alias_types</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;Alias_types.tsv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">na_rep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\N&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<span class="c1"># Create Alias_attributes table</span>
+<span class="k">def</span> <span class="nf">make_Alias_attributes</span><span class="p">(</span><span class="n">title_akas</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make_Alias_attributes():</span>
+<span class="sd">        ========================</span>
+
+<span class="sd">        Creates Alias_attributes table from from title.akas.tsv.</span>
+
+<span class="sd">        INPUT:</span>
+<span class="sd">        ======</span>
+
+<span class="sd">        title_akas (pandas dataframe) - Contains the title.akas.tsv data table.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># title.akas.tsv</span>
+    <span class="c1"># FORMAT: [&#39;titleId&#39;, &#39;ordering&#39;, &#39;title&#39;, &#39;region&#39;, &#39;language&#39;, &#39;types&#39;,</span>
+    <span class="c1"># &#39;attributes&#39;, &#39;isOriginalTitle&#39;]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Making &#39;Alias_attributes&#39; table&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Extract columns</span>
+    <span class="n">Alias_attributes</span> <span class="o">=</span>  <span class="n">title_akas</span><span class="p">[[</span><span class="s1">&#39;titleId&#39;</span><span class="p">,</span><span class="s1">&#39;ordering&#39;</span><span class="p">,</span><span class="s1">&#39;attributes&#39;</span><span class="p">]]</span>
+
+    <span class="c1"># Rename columns</span>
+    <span class="n">Alias_attributes</span> <span class="o">=</span> <span class="n">Alias_attributes</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;titleId&#39;</span><span class="p">:</span><span class="s1">&#39;title_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;attributes&#39;</span><span class="p">:</span><span class="s1">&#39;attribute&#39;</span>
+    <span class="p">})</span>
+
+    <span class="c1"># attributes is said to be an array. In the data we have this appears to not</span>
+    <span class="c1"># be true. There appears to be only one string for each pair of titleId and</span>
+    <span class="c1"># ordering values. There are many NULL (\N) values (~99%) in this field. We</span>
+    <span class="c1"># don&#39;t keep these NULL values. Only entries with non-NULL values in the</span>
+    <span class="c1"># field are kept and if if there is no entry in this table for a given</span>
+    <span class="c1"># title_id and ordering pair it is considered to be NULL.</span>
+    <span class="n">Alias_attributes</span> <span class="o">=</span> <span class="n">Alias_attributes</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="c1"># Output to file</span>
+    <span class="n">Alias_attributes</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;Alias_attributes.tsv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">na_rep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\N&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<span class="c1"># Create Directors and Writers tables</span>
+<span class="k">def</span> <span class="nf">make_Directors_and_Writers</span><span class="p">(</span><span class="n">title_crew</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make_Directors_and_Writers():</span>
+<span class="sd">        =============================</span>
+
+<span class="sd">        Creates the Directors and Writers tables from title.crew.tsv.</span>
+
+<span class="sd">        INPUT:</span>
+<span class="sd">        ======</span>
+
+<span class="sd">        title_crew (pandas dataframe) - Contains the title.crew.tsv data table.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># title.crew.tsv</span>
+    <span class="c1"># FORMAT: [&#39;tconst&#39;, &#39;directors&#39;, &#39;writers&#39;]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Making &#39;Directors&#39; and &#39;Writers&#39; tables&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Here we have directors and writers which contain a comma separated list of</span>
+    <span class="c1"># nconst. We will output title_id (tconst), name_id (nconst)</span>
+    <span class="n">Directors</span> <span class="o">=</span> <span class="n">title_crew</span><span class="p">[[</span><span class="s1">&#39;tconst&#39;</span><span class="p">,</span><span class="s1">&#39;directors&#39;</span><span class="p">]]</span>
+    <span class="n">Writers</span> <span class="o">=</span> <span class="n">title_crew</span><span class="p">[[</span><span class="s1">&#39;tconst&#39;</span><span class="p">,</span><span class="s1">&#39;writers&#39;</span><span class="p">]]</span>
+
+    <span class="c1"># Rename columns</span>
+    <span class="n">Directors</span> <span class="o">=</span> <span class="n">Directors</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;tconst&#39;</span><span class="p">:</span><span class="s1">&#39;title_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;directors&#39;</span><span class="p">:</span><span class="s1">&#39;name_id&#39;</span>
+    <span class="p">})</span>
+    <span class="n">Writers</span> <span class="o">=</span> <span class="n">Writers</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;tconst&#39;</span><span class="p">:</span><span class="s1">&#39;title_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;writers&#39;</span><span class="p">:</span><span class="s1">&#39;name_id&#39;</span>
+    <span class="p">})</span>
+
+    <span class="c1"># Drop NULL entries</span>
+    <span class="n">Directors</span> <span class="o">=</span> <span class="n">Directors</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="n">Writers</span> <span class="o">=</span> <span class="n">Writers</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="c1"># Explode name_id into separate entries</span>
+    <span class="n">Directors</span> <span class="o">=</span> <span class="n">Directors</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">name_id</span><span class="o">=</span><span class="n">Directors</span><span class="o">.</span><span class="n">name_id</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="s1">&#39;name_id&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">Writers</span> <span class="o">=</span> <span class="n">Writers</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">name_id</span><span class="o">=</span><span class="n">Writers</span><span class="o">.</span><span class="n">name_id</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="s1">&#39;name_id&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Output to file</span>
+    <span class="n">Directors</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;Directors.tsv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">na_rep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\N&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">Writers</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;Writers.tsv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">na_rep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\N&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<span class="c1"># Create Episode_belongs_to table</span>
+<span class="k">def</span> <span class="nf">make_Episode_belongs_to</span><span class="p">(</span><span class="n">title_episode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make_Episode_belongs_to():</span>
+<span class="sd">        ==========================</span>
+
+<span class="sd">        Creates the Episode_belongs_to table from title.episode.tsv.</span>
+
+<span class="sd">        INPUT:</span>
+<span class="sd">        ======</span>
+
+<span class="sd">        title_episode (pandas dataframe) - Contains the title.episode.tsv data table.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># title.episode.tsv</span>
+    <span class="c1"># FORMAT: [&#39;tconst&#39;, &#39;parentTconst&#39;, &#39;seasonNumber&#39;, &#39;episodeNumber&#39;]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Making &#39;Episode_belongs_to&#39; table&quot;</span><span class="p">)</span>
+
+    <span class="c1"># No change other than column names</span>
+
+    <span class="c1"># Rename columns</span>
+    <span class="n">Episode_belongs_to</span> <span class="o">=</span> <span class="n">title_episode</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;tconst&#39;</span><span class="p">:</span><span class="s1">&#39;title_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;parentTconst&#39;</span><span class="p">:</span><span class="s1">&#39;parent_tv_show_title_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;seasonNumber&#39;</span><span class="p">:</span><span class="s1">&#39;season_number&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;episodeNumber&#39;</span><span class="p">:</span><span class="s1">&#39;episode_number&#39;</span>
+    <span class="p">})</span>
+
+    <span class="c1"># Output to file</span>
+    <span class="n">Episode_belongs_to</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;Episode_belongs_to.tsv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">na_rep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\N&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<span class="c1"># Create Names_ table</span>
+<span class="k">def</span> <span class="nf">make_Names_</span><span class="p">(</span><span class="n">name_basics</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make_Names_():</span>
+<span class="sd">        ==============</span>
+
+<span class="sd">        Creates the Names_ table from name.basics.tsv.</span>
+
+<span class="sd">        INPUT:</span>
+<span class="sd">        ======</span>
+
+<span class="sd">        name_basics (pandas dataframe) - Contains the name.basics.tsv data table.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># name.basics.tsv has columns:</span>
+    <span class="c1"># FORMAT: [&#39;nconst&#39;, &#39;primaryName&#39;, &#39;birthYear&#39;, &#39;deathYear&#39;,</span>
+    <span class="c1"># &#39;primaryProfession&#39;, &#39;knownForTitles&#39;]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Making &#39;Names_&#39; table&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Extract columns from name_basics for Names_ table</span>
+    <span class="n">Names_</span> <span class="o">=</span> <span class="n">name_basics</span><span class="p">[[</span><span class="s1">&#39;nconst&#39;</span><span class="p">,</span><span class="s1">&#39;primaryName&#39;</span><span class="p">,</span><span class="s1">&#39;birthYear&#39;</span><span class="p">,</span><span class="s1">&#39;deathYear&#39;</span><span class="p">]]</span>
+
+    <span class="c1"># Rename columns</span>
+    <span class="n">Names_</span><span class="o">=</span> <span class="n">Names_</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;nconst&#39;</span><span class="p">:</span><span class="s1">&#39;name_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;primaryName&#39;</span><span class="p">:</span><span class="s1">&#39;name_&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;birthYear&#39;</span><span class="p">:</span><span class="s1">&#39;birth_year&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;deathYear&#39;</span><span class="p">:</span><span class="s1">&#39;death_year&#39;</span>
+    <span class="p">})</span>
+
+    <span class="c1"># Output to file</span>
+    <span class="n">Names_</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;Names_.tsv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">na_rep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\N&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<span class="c1"># Create Name_worked_as table</span>
+<span class="k">def</span> <span class="nf">make_Name_worked_as</span><span class="p">(</span><span class="n">name_basics</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make_Name_worked_as():</span>
+<span class="sd">        ======================</span>
+
+<span class="sd">        Creates the Name_worked_as table from name.basics.tsv.</span>
+
+<span class="sd">        INPUT:</span>
+<span class="sd">        ======</span>
+
+<span class="sd">        name_basics (pandas dataframe) - Contains the name.basics.tsv data table.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># name.basics.tsv has columns:</span>
+    <span class="c1"># FORMAT: [&#39;nconst&#39;, &#39;primaryName&#39;, &#39;birthYear&#39;, &#39;deathYear&#39;,</span>
+    <span class="c1"># &#39;primaryProfession&#39;, &#39;knownForTitles&#39;]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Making &#39;Name_worked_as&#39; table&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Extract columns from name_basics for Name_worked_as table</span>
+    <span class="n">Name_worked_as</span> <span class="o">=</span> <span class="n">name_basics</span><span class="p">[[</span><span class="s1">&#39;nconst&#39;</span><span class="p">,</span><span class="s1">&#39;primaryProfession&#39;</span><span class="p">]]</span>
+
+    <span class="c1"># There are NaN values, drop them? Yes, because both are used as a primary key</span>
+    <span class="n">Name_worked_as</span> <span class="o">=</span> <span class="n">Name_worked_as</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="c1"># Rename columns</span>
+    <span class="n">Name_worked_as</span> <span class="o">=</span> <span class="n">Name_worked_as</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;nconst&#39;</span><span class="p">:</span><span class="s1">&#39;name_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;primaryProfession&#39;</span><span class="p">:</span><span class="s1">&#39;profession&#39;</span>
+    <span class="p">})</span>
+
+    <span class="c1"># primaryProfessions is a comma separated string, we need to &#39;explode&#39; this</span>
+    <span class="n">Name_worked_as</span> <span class="o">=</span> <span class="n">Name_worked_as</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">profession</span><span class="o">=</span><span class="n">Name_worked_as</span><span class="o">.</span><span class="n">profession</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="s1">&#39;profession&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Output to file</span>
+    <span class="n">Name_worked_as</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;Name_worked_as.tsv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">na_rep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\N&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<span class="c1"># Create Known_for table</span>
+<span class="k">def</span> <span class="nf">make_Known_for</span><span class="p">(</span><span class="n">name_basics</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make_Known_for():</span>
+<span class="sd">        =================</span>
+
+<span class="sd">        Creates Known_for table from name.basics.tsv.</span>
+
+<span class="sd">        INPUT:</span>
+<span class="sd">        ======</span>
+
+<span class="sd">        name_basics (pandas dataframe) - Contains the name.basics.tsv data table.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># name.basics.tsv has columns:</span>
+    <span class="c1"># FORMAT: [&#39;nconst&#39;, &#39;primaryName&#39;, &#39;birthYear&#39;, &#39;deathYear&#39;,</span>
+    <span class="c1"># &#39;primaryProfession&#39;, &#39;knownForTitles&#39;]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Making &#39;Known_for&#39; table&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Extract columns from name_basics for Known_for table</span>
+    <span class="n">Known_for</span> <span class="o">=</span> <span class="n">name_basics</span><span class="p">[[</span><span class="s1">&#39;nconst&#39;</span><span class="p">,</span><span class="s1">&#39;knownForTitles&#39;</span><span class="p">]]</span>
+
+    <span class="c1"># There are NaN values, drop them? Yes, because both are used as a primary key</span>
+    <span class="n">Known_for</span> <span class="o">=</span> <span class="n">Known_for</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="c1"># Rename columns</span>
+    <span class="n">Known_for</span> <span class="o">=</span> <span class="n">Known_for</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;nconst&#39;</span><span class="p">:</span><span class="s1">&#39;name_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;knownForTitles&#39;</span><span class="p">:</span><span class="s1">&#39;title_id&#39;</span>
+    <span class="p">})</span>
+
+    <span class="c1"># knownForTitles is a comma separated string, we need to &#39;explode&#39; this</span>
+    <span class="n">Known_for</span> <span class="o">=</span> <span class="n">Known_for</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">title_id</span><span class="o">=</span><span class="n">Known_for</span><span class="o">.</span><span class="n">title_id</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="s1">&#39;title_id&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Output to file</span>
+    <span class="n">Known_for</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;Known_for.tsv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">na_rep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\N&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<span class="c1"># Create Principals table</span>
+<span class="k">def</span> <span class="nf">make_Principals</span><span class="p">(</span><span class="n">title_principals</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make_Principals():</span>
+<span class="sd">        ==================</span>
+
+<span class="sd">        Create Principals table from title.principals.tsv.</span>
+
+<span class="sd">        INPUT:</span>
+<span class="sd">        ======</span>
+
+<span class="sd">        title_principals (pandas dataframe) - Contains the title.principals.tsv data table.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># title.principals.tsv</span>
+    <span class="c1"># FORMAT: [&#39;tconst&#39;, &#39;ordering&#39;, &#39;nconst&#39;, &#39;category&#39;, &#39;job&#39;, &#39;characters&#39;]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Making &#39;Principals&#39; table&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Extract columnns</span>
+    <span class="n">Principals</span> <span class="o">=</span> <span class="n">title_principals</span><span class="p">[[</span><span class="s1">&#39;tconst&#39;</span><span class="p">,</span><span class="s1">&#39;ordering&#39;</span><span class="p">,</span><span class="s1">&#39;nconst&#39;</span><span class="p">,</span><span class="s1">&#39;category&#39;</span><span class="p">,</span><span class="s1">&#39;job&#39;</span><span class="p">]]</span>
+
+    <span class="c1"># Rename columns</span>
+    <span class="n">Principals</span> <span class="o">=</span> <span class="n">Principals</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;tconst&#39;</span><span class="p">:</span><span class="s1">&#39;title_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;nconst&#39;</span><span class="p">:</span><span class="s1">&#39;name_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;category&#39;</span><span class="p">:</span><span class="s1">&#39;job_category&#39;</span><span class="p">,</span>
+    <span class="p">})</span>
+
+    <span class="c1"># Output to file</span>
+    <span class="n">Principals</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;Principals.tsv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">na_rep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\N&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<span class="c1"># Create Had_role table</span>
+<span class="k">def</span> <span class="nf">make_Had_role</span><span class="p">(</span><span class="n">title_principals</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make_Had_role():</span>
+<span class="sd">        ================</span>
+
+<span class="sd">        Create Had_role table from title.principals.tsv.</span>
+
+<span class="sd">        INPUT:</span>
+<span class="sd">        ======</span>
+
+<span class="sd">        title_principals (pandas dataframe) - Contains the title.principals.tsv data table.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># title.principals.tsv</span>
+    <span class="c1"># FORMAT: [&#39;tconst&#39;, &#39;ordering&#39;, &#39;nconst&#39;, &#39;category&#39;, &#39;job&#39;, &#39;characters&#39;]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Making &#39;Had_role&#39; table&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Extract columns</span>
+    <span class="n">Had_role</span> <span class="o">=</span> <span class="n">title_principals</span><span class="p">[[</span><span class="s1">&#39;tconst&#39;</span><span class="p">,</span><span class="s1">&#39;nconst&#39;</span><span class="p">,</span><span class="s1">&#39;characters&#39;</span><span class="p">]]</span>
+
+    <span class="c1"># Rename columns</span>
+    <span class="n">Had_role</span> <span class="o">=</span>  <span class="n">Had_role</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;tconst&#39;</span><span class="p">:</span><span class="s1">&#39;title_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;nconst&#39;</span><span class="p">:</span><span class="s1">&#39;name_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;characters&#39;</span><span class="p">:</span><span class="s1">&#39;role_&#39;</span>
+    <span class="p">})</span>
+
+    <span class="c1"># Drop NULL entries (~50%)</span>
+    <span class="n">Had_role</span> <span class="o">=</span> <span class="n">Had_role</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="c1"># role_ entries are formatted as [&quot;Mum&quot;,&quot;Tidy Ted&quot;,&quot;Fang&quot;], we will remove</span>
+    <span class="c1"># all &quot;[]&quot;</span>
+    <span class="n">Had_role</span><span class="p">[</span><span class="s1">&#39;role_&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Had_role</span><span class="p">[</span><span class="s1">&#39;role_&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;[</span><span class="se">\&quot;</span><span class="s1">\[\]]&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># also replace slashes \ with vertical bars |</span>
+    <span class="n">Had_role</span><span class="p">[</span><span class="s1">&#39;role_&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Had_role</span><span class="p">[</span><span class="s1">&#39;role_&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
+
+    <span class="c1"># and explode the list into separate entries</span>
+    <span class="n">Had_role</span> <span class="o">=</span> <span class="n">Had_role</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">role_</span><span class="o">=</span><span class="n">Had_role</span><span class="o">.</span><span class="n">role_</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="s1">&#39;role_&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># There is some duplicate data, this is easily seen</span>
+    <span class="c1">#Had_role[Had_role.duplicated()]</span>
+    <span class="c1"># See a specific example</span>
+    <span class="c1">#Had_role[Had_role[&#39;title_id&#39;].str.contains(&#39;tt0003960&#39;) &amp; Had_role[&#39;name_id&#39;].str.contains(&#39;nm0220672&#39;) &amp; Had_role[&#39;role_&#39;].str.contains(&#39;Ballerina&#39;)]</span>
+    <span class="c1"># Slight character font differences which lead to more duplicates. Not</span>
+    <span class="c1"># considered a duplicate in python, but MySQL cannot tell the difference</span>
+    <span class="c1"># unless you change the character set! We could do the following</span>
+    <span class="c1">#Had_role[&#39;role_&#39;] = Had_role[&#39;role_&#39;].str.replace(&#39;ì&#39;,&#39;i&#39;)</span>
+    <span class="c1">#Had_role[&#39;role_&#39;] = Had_role[&#39;role_&#39;].str.replace(&#39;ä&#39;,&#39;a&#39;)</span>
+    <span class="c1"># however, we do not bother to remove these or others.</span>
+    <span class="c1"># Also, MySQL cannot tell the difference between lower and upper case unless</span>
+    <span class="c1"># you change the character set! There are some entries which differ only by</span>
+    <span class="c1"># capitalisation, so we ensure that every entry has title capitalisation.</span>
+    <span class="n">Had_role</span><span class="p">[</span><span class="s1">&#39;role_&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Had_role</span><span class="p">[</span><span class="s1">&#39;role_&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+
+    <span class="c1"># Remove spaces at the start and end of an value</span>
+    <span class="n">Had_role</span><span class="p">[</span><span class="s1">&#39;role_&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Had_role</span><span class="p">[</span><span class="s1">&#39;role_&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;^ | $&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Drop these duplicates</span>
+    <span class="n">Had_role</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="s1">&#39;first&#39;</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Output to file</span>
+    <span class="n">Had_role</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;Had_role.tsv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">na_rep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\N&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<span class="c1"># Create Titles table</span>
+<span class="k">def</span> <span class="nf">make_Titles</span><span class="p">(</span><span class="n">title_basics</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make_Titles():</span>
+<span class="sd">        ==============</span>
+
+<span class="sd">        Create Titles table from title.basics.tsv.</span>
+
+<span class="sd">        INPUT:</span>
+<span class="sd">        ======</span>
+
+<span class="sd">        title_basics (pandas dataframe) - Contains the title.basics.tsv data table.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># title.basics.tsv</span>
+    <span class="c1"># FORMAT: [&#39;tconst&#39;, &#39;titleType&#39;, &#39;primaryTitle&#39;, &#39;originalTitle&#39;,</span>
+    <span class="c1"># &#39;isAdult&#39;, &#39;startYear&#39;, &#39;endYear&#39;, &#39;runtimeMinutes&#39;, &#39;genres&#39;]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Making &#39;Titles&#39; table&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Extract columns from title_basics for Titles table</span>
+    <span class="n">Titles</span> <span class="o">=</span> <span class="n">title_basics</span><span class="p">[[</span><span class="s1">&#39;tconst&#39;</span><span class="p">,</span><span class="s1">&#39;titleType&#39;</span><span class="p">,</span><span class="s1">&#39;primaryTitle&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;originalTitle&#39;</span><span class="p">,</span> <span class="s1">&#39;isAdult&#39;</span><span class="p">,</span> <span class="s1">&#39;startYear&#39;</span><span class="p">,</span> <span class="s1">&#39;endYear&#39;</span><span class="p">,</span> <span class="s1">&#39;runtimeMinutes&#39;</span><span class="p">]]</span>
+
+    <span class="c1"># Rename columns</span>
+    <span class="n">Titles</span> <span class="o">=</span> <span class="n">Titles</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;tconst&#39;</span><span class="p">:</span><span class="s1">&#39;title_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;titleType&#39;</span><span class="p">:</span><span class="s1">&#39;title_type&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;primaryTitle&#39;</span><span class="p">:</span><span class="s1">&#39;primary_title&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;originalTitle&#39;</span><span class="p">:</span><span class="s1">&#39;original_title&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;isAdult&#39;</span><span class="p">:</span><span class="s1">&#39;is_adult&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;startYear&#39;</span><span class="p">:</span><span class="s1">&#39;start_year&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;endYear&#39;</span><span class="p">:</span><span class="s1">&#39;end_year&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;runtimeMinutes&#39;</span><span class="p">:</span><span class="s1">&#39;runtime_minutes&#39;</span>
+    <span class="p">})</span>
+
+    <span class="c1"># Output to file</span>
+    <span class="n">Titles</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;Titles.tsv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">na_rep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\N&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<span class="c1"># Create Title_genres table</span>
+<span class="k">def</span> <span class="nf">make_Title_genres</span><span class="p">(</span><span class="n">title_basics</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make_Title_genres():</span>
+<span class="sd">        ====================</span>
+
+<span class="sd">        Create Title_genres table from title.basics.tsv.</span>
+
+<span class="sd">        INPUT:</span>
+<span class="sd">        ======</span>
+
+<span class="sd">        title_basics (pandas dataframe) - Contains the title.basics.tsv data table.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># title.basics.tsv</span>
+    <span class="c1"># FORMAT: [&#39;tconst&#39;, &#39;titleType&#39;, &#39;primaryTitle&#39;, &#39;originalTitle&#39;,</span>
+    <span class="c1"># &#39;isAdult&#39;, &#39;startYear&#39;, &#39;endYear&#39;, &#39;runtimeMinutes&#39;, &#39;genres&#39;]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Making &#39;Title_genres&#39; table&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Extract columns</span>
+    <span class="n">Title_genres</span> <span class="o">=</span> <span class="n">title_basics</span><span class="p">[[</span><span class="s1">&#39;tconst&#39;</span><span class="p">,</span><span class="s1">&#39;genres&#39;</span><span class="p">]]</span>
+
+    <span class="c1"># Rename columns</span>
+    <span class="n">Title_genres</span> <span class="o">=</span> <span class="n">Title_genres</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;tconst&#39;</span><span class="p">:</span><span class="s1">&#39;title_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;genres&#39;</span><span class="p">:</span><span class="s1">&#39;genre&#39;</span>
+    <span class="p">})</span>
+
+    <span class="c1"># There are NaN values, drop them? Yes, because both are used as a primary key</span>
+    <span class="n">Title_genres</span> <span class="o">=</span> <span class="n">Title_genres</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="c1"># genres is a comma separated string, we need to &#39;explode&#39; this</span>
+    <span class="n">Title_genres</span> <span class="o">=</span> <span class="n">Title_genres</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">genre</span><span class="o">=</span><span class="n">Title_genres</span><span class="o">.</span><span class="n">genre</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="s1">&#39;genre&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Output to file</span>
+    <span class="n">Title_genres</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;Title_genres.tsv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">na_rep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\N&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<span class="c1"># Create Title_ratings (just renaming columns)</span>
+<span class="k">def</span> <span class="nf">make_Title_ratings</span><span class="p">(</span><span class="n">title_ratings</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make_Title_ratings():</span>
+<span class="sd">        =====================</span>
+
+<span class="sd">        Create Title_ratings (just renaming columns) from title.ratings.tsv.</span>
+
+<span class="sd">        INPUT:</span>
+<span class="sd">        ======</span>
+
+<span class="sd">        title_ratings (pandas dataframe) - Contains the title.ratings.tsv data table.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># title.ratings.tsv</span>
+    <span class="c1"># FORMAT: [&#39;tconst&#39;, &#39;averageRating&#39;, &#39;numVotes&#39;]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Making &#39;Title_ratings&#39; table&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Rename columns</span>
+    <span class="n">Title_ratings</span> <span class="o">=</span> <span class="n">title_ratings</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;tconst&#39;</span><span class="p">:</span><span class="s1">&#39;title_id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;averageRating&#39;</span><span class="p">:</span><span class="s1">&#39;average_rating&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;numVotes&#39;</span><span class="p">:</span><span class="s1">&#39;num_votes&#39;</span>
+    <span class="p">})</span>
+
+    <span class="c1"># Output to file</span>
+    <span class="n">Title_ratings</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;Title_ratings.tsv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">na_rep</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\N&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1">#------------------------ END OF FUNCTION DEFINITIONS --------------------------</span>
+
+
+
+<span class="c1"># Set path to IMDb data</span>
+<span class="c1"># ---------------------</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="s1">&#39;./imdb_data&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Looking for IMDb data in: &#39;</span><span class="p">,</span><span class="n">data_path</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># Unzip IMDb data files</span>
+<span class="c1">#----------------------</span>
+<span class="n">data_files</span> <span class="o">=</span> <span class="n">unzip_files</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
+
+
+<span class="c1"># Read in and process all IMDb data files</span>
+<span class="c1"># ---------------------------------------</span>
+
+<span class="c1"># title.akas.tsv</span>
+<span class="c1">#----------------</span>
+<span class="c1"># FORMAT: [&#39;titleId&#39;, &#39;ordering&#39;, &#39;title&#39;, &#39;region&#39;, &#39;language&#39;, &#39;types&#39;,</span>
+<span class="c1"># &#39;attributes&#39;, &#39;isOriginalTitle&#39;]</span>
+
+<span class="c1"># Read title.akas</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;Reading title.akas.tsv ...&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">title_akas</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span><span class="s1">&#39;title.akas.tsv&#39;</span><span class="p">),</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;titleId&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;ordering&#39;</span><span class="p">:</span><span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;region&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;language&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;types&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">,</span><span class="s1">&#39;attributes&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;isOriginalTitle&#39;</span><span class="p">:</span><span class="s1">&#39;Int64&#39;</span><span class="p">},</span>
+    <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">na_values</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">N&#39;</span><span class="p">,</span><span class="n">quoting</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># Make tables</span>
+<span class="n">make_Aliases</span><span class="p">(</span><span class="n">title_akas</span><span class="p">)</span>
+<span class="n">make_Alias_types</span><span class="p">(</span><span class="n">title_akas</span><span class="p">)</span>
+<span class="n">make_Alias_attributes</span><span class="p">(</span><span class="n">title_akas</span><span class="p">)</span>
+
+<span class="c1"># Delete title_akas, no longer need this dataframe</span>
+<span class="k">del</span> <span class="n">title_akas</span>
+
+<span class="c1"># title.crew.tsv</span>
+<span class="c1">#----------------</span>
+<span class="c1"># FORMAT:  [&#39;tconst&#39;, &#39;directors&#39;, &#39;writers&#39;]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;Reading title.crew.tsv&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># Read title.crew</span>
+<span class="n">title_crew</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span><span class="s1">&#39;title.crew.tsv&#39;</span><span class="p">),</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">na_values</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">N&#39;</span><span class="p">)</span>
+
+<span class="c1"># Make table</span>
+<span class="n">make_Directors_and_Writers</span><span class="p">(</span><span class="n">title_crew</span><span class="p">)</span>
+
+<span class="c1"># Delete title_crew, no longer need this dataframe</span>
+<span class="k">del</span> <span class="n">title_crew</span>
+
+<span class="c1"># title.episode.tsv</span>
+<span class="c1">#------------------</span>
+<span class="c1"># FORMAT: [&#39;tconst&#39;, &#39;parentTconst&#39;, &#39;seasonNumber&#39;, &#39;episodeNumber&#39;]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;Reading title.episode.tsv ...&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># Read title.episode</span>
+<span class="n">title_episode</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span><span class="s1">&#39;title.episode.tsv&#39;</span><span class="p">),</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;tconst&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;parentTconst&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;seasonNumber&#39;</span><span class="p">:</span><span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;episodeNumber&#39;</span><span class="p">:</span><span class="s1">&#39;Int64&#39;</span><span class="p">},</span>
+    <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">na_values</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">N&#39;</span><span class="p">)</span>
+
+<span class="c1"># Make table</span>
+<span class="n">make_Episode_belongs_to</span><span class="p">(</span><span class="n">title_episode</span><span class="p">)</span>
+
+<span class="c1"># Delete title_episode, no longer need this dataframe</span>
+<span class="k">del</span> <span class="n">title_episode</span>
+
+<span class="c1"># name.basics.tsv</span>
+<span class="c1">#-----------------</span>
+<span class="c1"># FORMAT:  [&#39;nconst&#39;, &#39;primaryName&#39;, &#39;birthYear&#39;, &#39;deathYear&#39;,</span>
+<span class="c1"># &#39;primaryProfession&#39;, &#39;knownForTitles&#39;]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;Reading name.basics.tsv ...&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># Read name.basics</span>
+<span class="n">name_basics</span>  <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span><span class="s1">&#39;name.basics.tsv&#39;</span><span class="p">),</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nconst&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;primaryName&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;birthYear&#39;</span><span class="p">:</span><span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;deathYear&#39;</span><span class="p">:</span><span class="s1">&#39;Int64&#39;</span><span class="p">,</span> <span class="s1">&#39;primaryProfession&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;knownForTitles&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">},</span>
+    <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">na_values</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">N&#39;</span><span class="p">)</span>
+
+<span class="c1"># Make tables</span>
+<span class="n">make_Names_</span><span class="p">(</span><span class="n">name_basics</span><span class="p">)</span>
+<span class="n">make_Name_worked_as</span><span class="p">(</span><span class="n">name_basics</span><span class="p">)</span>
+<span class="n">make_Known_for</span><span class="p">(</span><span class="n">name_basics</span><span class="p">)</span>
+
+<span class="c1"># Delete name_basics, no longer need this dataframe</span>
+<span class="k">del</span> <span class="n">name_basics</span>
+
+<span class="c1"># title.principals.tsv</span>
+<span class="c1">#---------------------</span>
+<span class="c1"># FORMAT: [&#39;tconst&#39;, &#39;ordering&#39;, &#39;nconst&#39;, &#39;category&#39;, &#39;job&#39;, &#39;characters&#39;]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;Reading title.principals.tsv ...&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># Read title.principals</span>
+<span class="n">title_principals</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span><span class="s1">&#39;title.principals.tsv&#39;</span><span class="p">),</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">na_values</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">N&#39;</span><span class="p">)</span>
+
+<span class="c1"># Make tables</span>
+<span class="n">make_Principals</span><span class="p">(</span><span class="n">title_principals</span><span class="p">)</span>
+<span class="n">make_Had_role</span><span class="p">(</span><span class="n">title_principals</span><span class="p">)</span>
+
+<span class="c1"># Delete title_principals, no longer need this dataframe</span>
+<span class="k">del</span> <span class="n">title_principals</span>
+
+<span class="c1"># title.basics.tsv</span>
+<span class="c1">#------------------</span>
+<span class="c1"># FORMAT: [&#39;tconst&#39;, &#39;titleType&#39;, &#39;primaryTitle&#39;, &#39;originalTitle&#39;, &#39;isAdult&#39;,</span>
+<span class="c1"># &#39;startYear&#39;, &#39;endYear&#39;, &#39;runtimeMinutes&#39;, &#39;genres&#39;]</span>
+<span class="c1"># quoting = 3 used to ignore quotation marks, done because in some cases the was</span>
+<span class="c1"># one missing, e.g., primaryTitle was &quot;Rolling in the Deep Dish</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;Reading title.basics.tsv ...&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># Read title.basics</span>
+<span class="n">title_basics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span><span class="s1">&#39;title.basics.tsv&#39;</span><span class="p">),</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;tconst&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;titleType&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;primaryTitle&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;originalTitle&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;isAdult&#39;</span><span class="p">:</span><span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="s1">&#39;startYear&#39;</span><span class="p">:</span><span class="s1">&#39;Int64&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;endYear&#39;</span><span class="p">:</span><span class="s1">&#39;Int64&#39;</span><span class="p">,</span> <span class="s1">&#39;runtimeMinutes&#39;</span><span class="p">:</span><span class="s1">&#39;Int64&#39;</span><span class="p">,</span> <span class="s1">&#39;genres&#39;</span><span class="p">:</span><span class="s1">&#39;str&#39;</span><span class="p">},</span>
+    <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">na_values</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">N&#39;</span><span class="p">,</span><span class="n">quoting</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># Make tables</span>
+<span class="n">make_Titles</span><span class="p">(</span><span class="n">title_basics</span><span class="p">)</span>
+<span class="n">make_Title_genres</span><span class="p">(</span><span class="n">title_basics</span><span class="p">)</span>
+
+<span class="c1"># Delete title_basics, no longer need this dataframe</span>
+<span class="k">del</span> <span class="n">title_basics</span>
+
+<span class="c1"># title.ratings.tsv</span>
+<span class="c1">#-------------------</span>
+<span class="c1"># FORMAT: [&#39;tconst&#39;, &#39;averageRating&#39;, &#39;numVotes&#39;]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;Reading title.ratings.tsv ...&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># Read title.ratings</span>
+<span class="n">title_ratings</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span><span class="s1">&#39;title.ratings.tsv&#39;</span><span class="p">),</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">na_values</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">N&#39;</span><span class="p">)</span>
+
+<span class="c1"># Make table</span>
+<span class="n">make_Title_ratings</span><span class="p">(</span><span class="n">title_ratings</span><span class="p">)</span>
+
+<span class="c1"># Delete title_ratings, no longer need this dataframe</span>
+<span class="k">del</span> <span class="n">title_ratings</span>
+</code></pre></div>
+
+
+<p>The python script was written to be as modular as possible and made use of the
+pandas and numpy libraries. Running this python script in the terminal we get the following&nbsp;output:</p>
+<!-- ![Terminal screenshot imdb_converter.py](images/terminal_screenshots/Terminal_screenshot-imdb_converter.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/terminal_screenshots/Terminal_screenshot-imdb_converter.png" width="1000">
+</center></p>
+<h2>Conclusion</h2>
+<p>In this post we designed a relational database to store the IMDb dataset, used yEd to create the <span class="caps">ER</span> and logical schema diagrams and used python to perform <span class="caps">ETL</span> tasks. In the next post, the third in the series, we will create the database in MySQL we designed using <span class="caps">SQL</span> scripts, load the data into the database, add primary and foreign key constraints and index the database. The code and images for this project are shared in the <a href="https://github.com/dlwhittenbury/MySQL_IMDb_Project">GitHub repository</a>.</p>
+<h2>Further&nbsp;Reading</h2>
+<ol>
+<li>
+<p>R. Ramakrishnan and J. Gehrke, Database management systems, 3rd edition, Mc Graw-Hill.
+<a href="http://pages.cs.wisc.edu/~dbbook/openAccess/thirdEdition/supporting_material.htm">Companion&nbsp;site</a></p>
+</li>
+<li>
+<p>Yu-San Lin, <span class="caps">CMPSC431W</span>: Database Management Systems fall 2015 video lectures, Penn State.
+<a href="http://yusanlin.com/cmpsc431w/lectures.html">Course&nbsp;site</a></p>
+</li>
+</ol>
+      </div><!-- .entry-content -->
+      <br /><br />
+      <div class="article_meta">
+        Tags:
+          <a href="https://dlwhittenbury.github.io/tag/mysql.html">MySQL</a>,          <a href="https://dlwhittenbury.github.io/tag/databases.html">Databases</a>,          <a href="https://dlwhittenbury.github.io/tag/sql.html">SQL</a>,          <a href="https://dlwhittenbury.github.io/tag/etl.html">ETL</a>,          <a href="https://dlwhittenbury.github.io/tag/imdb.html">IMDb</a>      </div>
+    </div>
+  </div>
+</article><!-- #post-## -->
+                </div>
+              </div><!-- #main -->
+          </div><!-- #primary -->
+        </div>
+      </div><!-- close .row -->
+    </div><!-- close .container -->
+  </div><!-- close .site-content -->
+
+
+
+
+  <div id="footer-area">
+    <footer id="colophon" class="site-footer" role="contentinfo">
+      <div class="site-info container">
+        <div class="row">
+                    <div class="copyright col-md-12">
+                    <a href="https://dlwhittenbury.github.io/pages/privacy-policy">Privacy Policy</a> |
+                    <a href="https://dlwhittenbury.github.io/feeds/all.atom.xml">Atom Feed</a> |
+                    <a href="https://dlwhittenbury.github.io/sitemap.xml">Sitemap</a><br />
+                    This site uses the <a href="https://github.com/limbenjamin/voce">voce</a> theme by <a href="//limbenjamin.com/">Benjamin Lim</a><br />
+                    &copy; 2020 <a href="https://dlwhittenbury.github.io">Daniel Whittenbury</a> </div>
+        </div>
+      </div><!-- .site-info -->
+      <div class="scroll-to-top" style="display: none;"><i class="fa fa-angle-up"></i></div><!-- .scroll-to-top -->
+    </footer><!-- #colophon -->
+  </div>
+
+  <script type="text/javascript">
+    window.addEventListener('load', function(){
+    if (window.location.pathname != '/' && window.location.pathname != '/index.html'){
+      window.scroll(0, document.getElementById('main').offsetTop);
+    }})
+  </script>
+
+
+
+
+</body>
+</html>

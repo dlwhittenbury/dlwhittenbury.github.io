@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Daniel Whittenbury">
+  <meta name="description" content="IMDb 3: Building the IMDb MySQL database | In our third post in this series we will finally build the MySQL database. MySQL is an open-source...">
+
+  <base href="https://dlwhittenbury.github.io">
+
+  <!-- <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96"> -->
+
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" type="text/css" media="all">
+  <link rel="stylesheet" href="https://dlwhittenbury.github.io/theme/css/font.css" type="text/css" media="all">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://dlwhittenbury.github.io/theme/css/style.css" type="text/css" media="all">
+
+
+
+  <link rel="stylesheet" href="https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css">
+
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://dlwhittenbury.github.io/theme/js/functions.min.js"></script>
+
+
+
+
+
+<meta name="keywords" content="MySQL, Databases, SQL, ETL, IMDb">
+
+
+  <title>IMDb 3: Building the IMDb MySQL database</title>
+
+
+</head>
+
+<body class="home blog">
+
+  <div>
+    <header class="site-header">
+      <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+          <div class="row">
+            <div class="site-navigation-inner col-sm-12">
+              <div class="navbar-header">
+                <button type="button" class="btn navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+              </div>
+              <div class="collapse navbar-collapse navbar-ex1-collapse">
+              <ul id="menu-all-pages" class="nav navbar-nav">
+                <li class="menu-item"><a href="/index.html" >Home
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/about-me.html" >About me
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/publications.html" >Publications
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/resume.html" >Resume
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/dashboards-and-reports.html" >Dashboards and Reports
+<i class="fa  fa-lg"></i></a></li>
+              </ul>
+              </div>
+              <div class="social">
+                <a href="mailto:whittenburydaniel@gmail.com" title="Email" >
+<i class="fa fa-envelope fa-lg"></i></a>
+                <a href="https://github.com/dlwhittenbury" title="GitHub" >
+<i class="fa fa-github fa-lg"></i></a>
+                <a href="https://scholar.google.com/citations?user=3m-Rd7oAAAAJ&hl=en" title="GoogleScholar" >
+<i class="fa ai ai-google-scholar-square ai-3x fa-lg"></i></a>
+                <a href="https://researchgate.net/profile/Daniel_Whittenbury" title="ResearchGate" >
+<i class="fa ai ai-researchgate ai-60x fa-lg"></i></a>
+                <a href="https://twitter.com/dlwhittenbury" title="Twitter" >
+<i class="fa fa-twitter fa-lg"></i></a>
+                <a href="https://linkedin.com/in/daniel-whittenbury-44235a155" title="LinkedIn" >
+<i class="fa fa-linkedin fa-lg"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav><!-- .site-navigation -->
+
+      <div class="container">
+
+      <div id="logo">
+        <span class="site-name"><a class="navbar-brand" href="https://dlwhittenbury.github.io"><img width="280" src="images/myAvatar-Circle.png" class="attachment-full size-full" alt="logo">          </a>
+        </span><!-- end of .site-name -->
+      </div><!-- end of #logo -->
+
+    </div>
+
+  </header><!-- #masthead -->
+  </div>
+    <div id="content" class="site-content">
+      <div class="container main-content-area">
+        <div class="row">
+          <div class="main-content-inner col-sm-12 col-md-12">
+            <div id="primary" class="content-area">
+              <div id="main" class="site-main" role="main">
+                <div class="article-container">
+<article>
+  <div class="blog-item-wrap">
+    <div class="post-inner-content">
+      <header class="entry-header page-header">
+        <span class="cat-item"><time datetime="2020-06-24 10:00:00+09:30">Wed 24 June 2020</time></span>
+        <h1 class="entry-title"><a href="https://dlwhittenbury.github.io/imdb-3-building-the-imdb-mysql-database.html">IMDb 3: Building the IMDb MySQL&nbsp;database</a></h1>
+      </header><!-- .entry-header -->
+      <div class="fb-like" data-href="https://dlwhittenbury.github.io/imdb-3-building-the-imdb-mysql-database.html" data-layout="standard" data-action="like" data-show-faces="false" data-share="true"></div>
+      <div class="entry-content">
+        <!-- # IMDb 3: Building the MySQL IMDb database -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/imdb.png" width="500">
+</center></p>
+<p>In our third post in this series we will finally build the <a href="https://www.mysql.com/">MySQL</a> database. <a href="https://www.mysql.com/">MySQL</a> is an open-source relational database management system (<span class="caps">DBMS</span>) and it is one of the most used <span class="caps">DBMS</span> in the world. We will begin by
+creating the database, then we will load the transformed IMDb data into it, add key constraints, and then finally add some indexing to the tables. This will all be done using <span class="caps">SQL</span> scripts. The <span class="caps">SQL</span> commands to build the database described in the previous post (illustrated by the <span class="caps">ER</span> and logical schema diagrams) is contained in the following 4 <span class="caps">SQL</span>&nbsp;scripts:</p>
+<ul>
+<li>imdb-create-tables.sql</li>
+<li>imdb-load-data.sql</li>
+<li>imdb-add-constraints.sql</li>
+<li>imdb-index-tables.sql</li>
+</ul>
+<h2>Steps to Build the MySQL IMDb&nbsp;Database</h2>
+<!-- The sequence of steps to build the database are as follows: -->
+
+<h3>1. Open MySQL in a&nbsp;terminal:</h3>
+<div class="highlight"><pre><span></span><code>$ mysql -u root -p --local-infile
+</code></pre></div>
+
+
+<p>Enter your&nbsp;password.</p>
+<h3>2. Create IMDb database in&nbsp;MySQL:</h3>
+<p>The code to create the database is contained in <strong>imdb-create-tables.sql</strong> and is
+shown&nbsp;below</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Delete IMDb database if necessary</span>
+<span class="k">DROP</span> <span class="k">DATABASE</span> <span class="k">IF</span> <span class="k">EXISTS</span> <span class="n">IMDb</span><span class="p">;</span>
+
+<span class="c1">-- Create IMDb database</span>
+
+<span class="k">CREATE</span> <span class="k">DATABASE</span> <span class="n">IMDb</span><span class="p">;</span>
+
+<span class="c1">-- Use IMDb database</span>
+
+<span class="n">USE</span> <span class="n">IMDb</span><span class="p">;</span>
+
+<span class="c1">-- Character set</span>
+<span class="c1">-- want to be able to distinguish text with accents</span>
+<span class="k">ALTER</span> <span class="k">DATABASE</span> <span class="n">IMDb</span> <span class="nb">CHARACTER</span> <span class="k">SET</span> <span class="n">utf8mb4</span> <span class="k">COLLATE</span> <span class="n">utf8mb4_bin</span><span class="p">;</span>
+
+<span class="c1">-- Create tables only</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Titles</span> <span class="p">(</span>
+  <span class="n">title_id</span>          <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">title_type</span>        <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
+  <span class="n">primary_title</span>     <span class="nb">TEXT</span><span class="p">,</span> <span class="c1">-- some are really long</span>
+  <span class="n">original_title</span>    <span class="nb">TEXT</span><span class="p">,</span> <span class="c1">-- some are really long</span>
+  <span class="n">is_adult</span>          <span class="nb">BOOLEAN</span><span class="p">,</span>
+  <span class="n">start_year</span>        <span class="nb">INTEGER</span><span class="p">,</span>
+  <span class="n">end_year</span>          <span class="nb">INTEGER</span><span class="p">,</span>
+  <span class="n">runtime_minutes</span>   <span class="nb">INTEGER</span>
+
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Title_ratings</span> <span class="p">(</span>
+  <span class="n">title_id</span>          <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">average_rating</span>    <span class="nb">FLOAT</span><span class="p">,</span>
+  <span class="n">num_votes</span>         <span class="nb">INTEGER</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Aliases</span> <span class="p">(</span>
+  <span class="n">title_id</span>          <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">ordering</span>          <span class="nb">INTEGER</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">title</span>             <span class="nb">TEXT</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="n">region</span>            <span class="nb">CHAR</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span>
+  <span class="k">language</span>          <span class="nb">CHAR</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span>
+  <span class="n">is_original_title</span> <span class="nb">BOOLEAN</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Alias_types</span> <span class="p">(</span>
+  <span class="n">title_id</span>      <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">ordering</span>      <span class="nb">INTEGER</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="k">type</span>          <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="c1">-- Only stored if not null</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">ALias_attributes</span> <span class="p">(</span>
+  <span class="n">title_id</span>          <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">ordering</span>          <span class="nb">INTEGER</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">attribute</span>         <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="c1">-- only stored if not null</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Episode_belongs_to</span> <span class="p">(</span>
+  <span class="n">episode_title_id</span>          <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">parent_tv_show_title_id</span>   <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="n">season_number</span>             <span class="nb">INTEGER</span><span class="p">,</span>
+  <span class="n">episode_number</span>            <span class="nb">INTEGER</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Title_genres</span> <span class="p">(</span>
+  <span class="n">title_id</span>      <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">genre</span>         <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="c1">-- not null bc PK</span>
+<span class="p">);</span>
+
+<span class="c1">-- Names and name is a reserved word in MySQL, so we add an underscore</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Names_</span> <span class="p">(</span>
+  <span class="n">name_id</span>       <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">name_</span>         <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- everybody has a name</span>
+  <span class="n">birth_year</span>    <span class="nb">SMALLINT</span><span class="p">,</span>
+  <span class="n">death_year</span>    <span class="nb">SMALLINT</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Name_worked_as</span> <span class="p">(</span>
+  <span class="n">name_id</span>       <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">profession</span>    <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="c1">-- not null bc PK</span>
+<span class="p">);</span>
+
+<span class="c1">-- NOTE: All 3 must must be used as the primary key</span>
+<span class="c1">-- role is a reserved word in MySQL, so we add an underscore</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Had_role</span> <span class="p">(</span>
+  <span class="n">title_id</span>      <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">name_id</span>       <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">role_</span>         <span class="nb">TEXT</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="c1">-- not null bc PK</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Known_for</span> <span class="p">(</span>
+  <span class="n">name_id</span>       <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">title_id</span>      <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="c1">-- not null bc PK</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Directors</span> <span class="p">(</span>
+  <span class="n">title_id</span>      <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">name_id</span>       <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="c1">-- not null bc PK</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Writers</span> <span class="p">(</span>
+  <span class="n">title_id</span>      <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">name_id</span>       <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="c1">-- not null bc PK</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Principals</span> <span class="p">(</span>
+  <span class="n">title_id</span>      <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">ordering</span>      <span class="n">TINYINT</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="c1">-- not null bc PK</span>
+  <span class="n">name_id</span>       <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="n">job_category</span>  <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span>
+  <span class="n">job</span>           <span class="nb">TEXT</span>
+<span class="p">);</span>
+</code></pre></div>
+
+
+<p>To run this code in the MySQL terminal type the following, but of course you should
+change the path to where you have placed the&nbsp;files.</p>
+<div class="highlight"><pre><span></span><code><span class="err">mysql&gt; SOURCE /Users/lappy/Git_repos_mine/MySQL_IMDb_Project/imdb-create-tables.sql</span>
+</code></pre></div>
+
+
+<!-- ![Terminal screenshot of running imdb-create-tables.sql in MySQL](images/terminal_screenshots/MySQL-startup-create-IMDb.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/terminal_screenshots/MySQL-startup-create-IMDb.png" width="1000">
+</center></p>
+<p>As one can see the tables a created very&nbsp;quickly.</p>
+<h3>3. Load the data into the MySQL&nbsp;database</h3>
+<p>The code to load the transformed data into the database is contained in <strong>imdb-load-data.sql</strong> and is
+shown below. Of course you should change the paths to reflect where you have placed the&nbsp;files.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- SHOW VARIABLES LIKE &quot;local_infile&quot;;</span>
+<span class="k">SET</span> <span class="k">GLOBAL</span> <span class="n">local_infile</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="c1">-- Load Aliases.tsv into Aliases table</span>
+<span class="k">LOAD</span> <span class="k">DATA</span> <span class="k">LOCAL</span> <span class="n">INFILE</span>  <span class="s1">&#39;/Users/lappy/Git_repos_mine/MySQL_IMDb_Project/Aliases.tsv&#39;</span>
+<span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">Aliases</span>
+<span class="n">COLUMNS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\t&#39;</span>
+<span class="k">IGNORE</span> <span class="mi">1</span> <span class="n">LINES</span><span class="p">;</span>
+
+<span class="c1">-- Load Alias_attributes.tsv into Alias_attributes table</span>
+<span class="k">LOAD</span> <span class="k">DATA</span> <span class="k">LOCAL</span> <span class="n">INFILE</span>  <span class="s1">&#39;/Users/lappy/Git_repos_mine/MySQL_IMDb_Project/Alias_attributes.tsv&#39;</span>
+<span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">Alias_attributes</span>
+<span class="n">COLUMNS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\t&#39;</span>
+<span class="k">IGNORE</span> <span class="mi">1</span> <span class="n">LINES</span><span class="p">;</span>
+
+<span class="c1">-- Load Alias_types.tsv into Alias_types table</span>
+<span class="k">LOAD</span> <span class="k">DATA</span> <span class="k">LOCAL</span> <span class="n">INFILE</span>  <span class="s1">&#39;/Users/lappy/Git_repos_mine/MySQL_IMDb_Project/Alias_types.tsv&#39;</span>
+<span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">Alias_types</span>
+<span class="n">COLUMNS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\t&#39;</span>
+<span class="k">IGNORE</span> <span class="mi">1</span> <span class="n">LINES</span><span class="p">;</span>
+
+<span class="c1">-- Load Directors.tsv into Directors table</span>
+<span class="k">LOAD</span> <span class="k">DATA</span> <span class="k">LOCAL</span> <span class="n">INFILE</span> <span class="s1">&#39;/Users/lappy/Git_repos_mine/MySQL_IMDb_Project/Directors.tsv&#39;</span>
+<span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">Directors</span>
+<span class="n">COLUMNS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\t&#39;</span>
+<span class="k">IGNORE</span> <span class="mi">1</span> <span class="n">LINES</span><span class="p">;</span>
+
+<span class="c1">-- Load Writers.tsv into Writers table</span>
+<span class="k">LOAD</span> <span class="k">DATA</span> <span class="k">LOCAL</span> <span class="n">INFILE</span> <span class="s1">&#39;/Users/lappy/Git_repos_mine/MySQL_IMDb_Project/Writers.tsv&#39;</span>
+<span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">Writers</span>
+<span class="n">COLUMNS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\t&#39;</span>
+<span class="k">IGNORE</span> <span class="mi">1</span> <span class="n">LINES</span><span class="p">;</span>
+
+<span class="c1">-- Load Episode_belongs_to.tsv into Episode_belongs_to table</span>
+<span class="k">LOAD</span> <span class="k">DATA</span> <span class="k">LOCAL</span> <span class="n">INFILE</span> <span class="s1">&#39;/Users/lappy/Git_repos_mine/MySQL_IMDb_Project/Episode_belongs_to.tsv&#39;</span>
+<span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">Episode_belongs_to</span>
+<span class="n">COLUMNS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\t&#39;</span>
+<span class="k">IGNORE</span> <span class="mi">1</span> <span class="n">LINES</span><span class="p">;</span>
+
+<span class="c1">-- Load Names_.tsv into Names_ table</span>
+<span class="k">LOAD</span> <span class="k">DATA</span> <span class="k">LOCAL</span> <span class="n">INFILE</span> <span class="s1">&#39;/Users/lappy/Git_repos_mine/MySQL_IMDb_Project/Names_.tsv&#39;</span>
+<span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">Names_</span>
+<span class="n">COLUMNS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\t&#39;</span>
+<span class="k">IGNORE</span> <span class="mi">1</span> <span class="n">LINES</span><span class="p">;</span>
+
+<span class="c1">-- Load Name_worked_as.tsv into Name_worked_as table</span>
+<span class="k">LOAD</span> <span class="k">DATA</span> <span class="k">LOCAL</span> <span class="n">INFILE</span> <span class="s1">&#39;/Users/lappy/Git_repos_mine/MySQL_IMDb_Project/Name_worked_as.tsv&#39;</span>
+<span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">Name_worked_as</span>
+<span class="n">COLUMNS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\t&#39;</span>
+<span class="k">IGNORE</span> <span class="mi">1</span> <span class="n">LINES</span><span class="p">;</span>
+
+<span class="c1">-- Load Known_for.tsv into Known_for table</span>
+<span class="k">LOAD</span> <span class="k">DATA</span> <span class="k">LOCAL</span> <span class="n">INFILE</span> <span class="s1">&#39;/Users/lappy/Git_repos_mine/MySQL_IMDb_Project/Known_for.tsv&#39;</span>
+<span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">Known_for</span>
+<span class="n">COLUMNS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\t&#39;</span>
+<span class="k">IGNORE</span> <span class="mi">1</span> <span class="n">LINES</span><span class="p">;</span>
+
+<span class="c1">-- Load Principals.tsv into Principals table</span>
+<span class="k">LOAD</span> <span class="k">DATA</span> <span class="k">LOCAL</span> <span class="n">INFILE</span> <span class="s1">&#39;/Users/lappy/Git_repos_mine/MySQL_IMDb_Project/Principals.tsv&#39;</span>
+<span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">Principals</span>
+<span class="n">COLUMNS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\t&#39;</span>
+<span class="k">IGNORE</span> <span class="mi">1</span> <span class="n">LINES</span><span class="p">;</span>
+
+<span class="c1">-- Load Had_role.tsv into Had_role table</span>
+<span class="k">LOAD</span> <span class="k">DATA</span> <span class="k">LOCAL</span> <span class="n">INFILE</span> <span class="s1">&#39;/Users/lappy/Git_repos_mine/MySQL_IMDb_Project/Had_role.tsv&#39;</span>
+<span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">Had_role</span>
+<span class="n">COLUMNS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\t&#39;</span>
+<span class="k">IGNORE</span> <span class="mi">1</span> <span class="n">LINES</span><span class="p">;</span>
+
+<span class="c1">-- Load Titles.tsv into Titles table</span>
+<span class="k">LOAD</span> <span class="k">DATA</span> <span class="k">LOCAL</span> <span class="n">INFILE</span> <span class="s1">&#39;/Users/lappy/Git_repos_mine/MySQL_IMDb_Project/Titles.tsv&#39;</span>
+<span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">Titles</span>
+<span class="n">COLUMNS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\t&#39;</span>
+<span class="k">IGNORE</span> <span class="mi">1</span> <span class="n">LINES</span><span class="p">;</span>
+
+<span class="c1">-- Load Title_genres.tsv into Title_genres table</span>
+<span class="k">LOAD</span> <span class="k">DATA</span> <span class="k">LOCAL</span> <span class="n">INFILE</span>  <span class="s1">&#39;/Users/lappy/Git_repos_mine/MySQL_IMDb_Project/Title_genres.tsv&#39;</span>
+<span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">Title_genres</span>
+<span class="n">COLUMNS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\t&#39;</span>
+<span class="k">IGNORE</span> <span class="mi">1</span> <span class="n">LINES</span><span class="p">;</span>
+
+<span class="c1">-- Load Title_ratings.tsv into Title_ratings table</span>
+<span class="k">LOAD</span> <span class="k">DATA</span> <span class="k">LOCAL</span> <span class="n">INFILE</span>  <span class="s1">&#39;/Users/lappy/Git_repos_mine/MySQL_IMDb_Project/Title_ratings.tsv&#39;</span>
+<span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">Title_ratings</span>
+<span class="n">COLUMNS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;\t&#39;</span>
+<span class="k">IGNORE</span> <span class="mi">1</span> <span class="n">LINES</span><span class="p">;</span>
+</code></pre></div>
+
+
+<p>To run this code in the MySQL terminal type the following, but of course you should
+change the path to where you have placed the&nbsp;files.</p>
+<div class="highlight"><pre><span></span><code><span class="err">mysql&gt; SOURCE /Users/lappy/Git_repos_mine/MySQL_IMDb_Project/imdb-load-data.sql</span>
+</code></pre></div>
+
+
+<!-- ![Terminal screenshot of running imdb-load-data.sql in MySQL](images/terminal_screenshots/MySQL-load-data.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/terminal_screenshots/MySQL-load-data.png" width="1000">
+</center></p>
+<h3>4. Add constraints to the IMDb&nbsp;database</h3>
+<p>The code to add the primary key and foreign key constraints to the database is contained in <strong>imdb-add-constraints.sql</strong> and is
+shown&nbsp;below.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Add constraints individually</span>
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Names_</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Names_pri_key</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">name_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Titles</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Titles_pri_key</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Aliases</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Aliases_pri_key</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">,</span><span class="n">ordering</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Alias_attributes</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Alias_attributes_pri_key</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">,</span><span class="n">ordering</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Alias_types</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Alias_types_pri_key</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">,</span><span class="n">ordering</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Directors</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Directors_pri_key</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">,</span><span class="n">name_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Directors</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Directors_title_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Titles</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Writers</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Writers_pri_key</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">,</span><span class="n">name_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Writers</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Writers_title_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Titles</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Episode_belongs_to</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Episode_belongs_to_pri_key</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">episode_title_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Episode_belongs_to</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Episode_belongs_to_ep_title_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">episode_title_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Titles</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Name_worked_as</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Name_worked_as_pri_key</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">name_id</span><span class="p">,</span><span class="n">profession</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Name_worked_as</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Name_worked_as_name_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">name_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Names_</span><span class="p">(</span><span class="n">name_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Known_for</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Known_for_pri_key</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">name_id</span><span class="p">,</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Known_for</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Known_for_name_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">name_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Names_</span><span class="p">(</span><span class="n">name_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Principals</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Principals_pri_key</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">,</span><span class="n">ordering</span><span class="p">);</span>
+
+<span class="c1">-- role_ is TEXT, so we need to add indexing length (255)</span>
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Had_role</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Had_role_pri_key</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">,</span><span class="n">name_id</span><span class="p">,</span><span class="n">role_</span><span class="p">(</span><span class="mi">255</span><span class="p">));</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Title_genres</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Title_genres_pri_key</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">,</span><span class="n">genre</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Title_genres</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Title_genres_title_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Titles</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Title_ratings</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Title_ratings_pri_key</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Title_ratings</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Title_ratings_title_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Titles</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="c1">-- Issues with missing data in title.basics.tsv.gz, name.basics.tsv.gz, ...</span>
+
+<span class="c1">-- Disable foreign key check lock</span>
+<span class="k">SET</span> <span class="n">foreign_key_checks</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">-- Aliases has titles that do not exist in Titles, i.e., there are entries in</span>
+<span class="c1">-- IMDb&#39;s title.akas.tsv.gz that are not present in title.basics.tsv.gz. The same</span>
+<span class="c1">-- issue arises when setting the foreign key for the Alias_attributes and</span>
+<span class="c1">-- Alias_types tables.</span>
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Aliases</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Aliases_title_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Titles</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Alias_attributes</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Alias_attributes_title_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Titles</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Alias_types</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Alias_types_title_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Titles</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="c1">-- Ditto for Episode_belongs_to table.</span>
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Episode_belongs_to</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Episode_belongs_to_show_title_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">parent_tv_show_title_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Titles</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Known_for</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Known_for_title_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Titles</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Principals</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Principals_name_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">name_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Names_</span><span class="p">(</span><span class="n">name_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Principals</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Principals_title_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Titles</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Had_role</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Had_role_title_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">title_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Titles</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Had_role</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Had_role_name_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">name_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Names_</span><span class="p">(</span><span class="n">name_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Directors</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Directors_name_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">name_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Names_</span><span class="p">(</span><span class="n">name_id</span><span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">Writers</span>
+<span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">Writers_name_id_fkey</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">name_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">Names_</span><span class="p">(</span><span class="n">name_id</span><span class="p">);</span>
+
+<span class="c1">-- Enable foreign key check lock</span>
+<span class="k">SET</span> <span class="n">foreign_key_checks</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</code></pre></div>
+
+
+<p>It is important to note that Aliases has titles that do not exist in Titles,
+i.e., there are entries in IMDb&#8217;s title.akas.tsv.gz that are not present in
+title.basics.tsv.gz. This leads to issues with the constraints. The same issue arises for the
+Alias_attributes and Alias_types tables. This is why we have disabled and then re-enabled the foreign key&nbsp;checks.</p>
+<p>To run this code in the MySQL terminal type the following, but of course you should
+change the path to where you have placed the&nbsp;files.</p>
+<div class="highlight"><pre><span></span><code><span class="err">mysql&gt; SOURCE /Users/lappy/Git_repos_mine/MySQL_IMDb_Project/imdb-add-constraints.sql</span>
+</code></pre></div>
+
+
+<!-- ![Terminal screenshot of running imdb-add-constraints.sql in MySQL](images/terminal_screenshots/MySQL-add-constraints.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/terminal_screenshots/MySQL-add-constraints.png" width="1000">
+</center></p>
+<h3>5. Add indexes to the IMDb&nbsp;database</h3>
+<p>The code to add indexes to the tables in the database is contained in <strong>imdb-index-tables.sql</strong> and is shown&nbsp;below.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Alias_attributes</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Alias_attributes_index</span> <span class="k">ON</span> <span class="n">Alias_attributes</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="c1">-- Alias_types</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Alias_types_index</span> <span class="k">ON</span> <span class="n">Alias_types</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="c1">-- Aliases</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Aliases_index</span> <span class="k">ON</span> <span class="n">Aliases</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="c1">-- Directors</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Directors_title_id_index</span> <span class="k">ON</span> <span class="n">Directors</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Directors_name_id_index</span> <span class="k">ON</span> <span class="n">Directors</span><span class="p">(</span><span class="n">name_id</span><span class="p">);</span>
+
+<span class="c1">-- Episode_belongs_to</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Episode_belongs_to_ep_title_id_index</span> <span class="k">ON</span> <span class="n">Episode_belongs_to</span><span class="p">(</span><span class="n">episode_title_id</span><span class="p">);</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Episode_belongs_to_show_title_id_index</span> <span class="k">ON</span> <span class="n">Episode_belongs_to</span><span class="p">(</span><span class="n">parent_tv_show_title_id</span><span class="p">);</span>
+
+<span class="c1">-- Had_role</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Had_role_title_id_index</span> <span class="k">ON</span> <span class="n">Had_role</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Had_role_name_id_index</span> <span class="k">ON</span> <span class="n">Had_role</span><span class="p">(</span><span class="n">name_id</span><span class="p">);</span>
+
+<span class="c1">-- Known_for</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Known_for_index</span> <span class="k">ON</span> <span class="n">Known_for</span><span class="p">(</span><span class="n">name_id</span><span class="p">);</span>
+
+<span class="c1">-- Name_worked_as</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Name_worked_as_index</span> <span class="k">ON</span> <span class="n">Name_worked_as</span><span class="p">(</span><span class="n">profession</span><span class="p">);</span>
+
+<span class="c1">-- Names_</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Names_index</span> <span class="k">ON</span> <span class="n">Names_</span><span class="p">(</span><span class="n">name_id</span><span class="p">);</span>
+
+<span class="c1">-- Principals</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Principals_index</span> <span class="k">ON</span> <span class="n">Principals</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="c1">-- Title_genres</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Title_genres_title_id_index</span> <span class="k">ON</span> <span class="n">Title_genres</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Title_genres_genre_index</span> <span class="k">ON</span> <span class="n">Title_genres</span><span class="p">(</span><span class="n">genre</span><span class="p">);</span>
+
+<span class="c1">-- Title_ratings</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Title_ratings_index</span> <span class="k">ON</span> <span class="n">Title_ratings</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="c1">-- Titles</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Titles_index</span> <span class="k">ON</span> <span class="n">Titles</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+
+<span class="c1">-- Writers</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Writers_title_id_index</span> <span class="k">ON</span> <span class="n">Writers</span><span class="p">(</span><span class="n">title_id</span><span class="p">);</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">Writers_name_id_index</span> <span class="k">ON</span> <span class="n">Writers</span><span class="p">(</span><span class="n">name_id</span><span class="p">);</span>
+</code></pre></div>
+
+
+<p>To run this code in the MySQL terminal type the following, but of course you should
+change the path to where you have placed the&nbsp;files.</p>
+<div class="highlight"><pre><span></span><code><span class="err">mysql&gt; SOURCE /Users/lappy/Git_repos_mine/MySQL_IMDb_Project/imdb-index-tables.sql</span>
+</code></pre></div>
+
+
+<!-- ![Terminal screenshot of running imdb-index-tables.sql in MySQL](images/terminal_screenshots/MySQL-index-tables.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/terminal_screenshots/MySQL-index-tables.png" width="1000">
+</center></p>
+<h2>Conclusion</h2>
+<p>In our third post we finally built and indexed the MySQL database to store the IMDb dataset. In our
+next post we will look at querying the database and also make a few visualisations the data. For further
+details on database concepts and <span class="caps">SQL</span> we refer the interested reader to references&nbsp;below.</p>
+<h2>Further&nbsp;Reading</h2>
+<ol>
+<li>
+<p>R. Ramakrishnan and J. Gehrke, Database management systems, 3rd edition, Mc Graw-Hill.
+<a href="http://pages.cs.wisc.edu/~dbbook/openAccess/thirdEdition/supporting_material.htm">Companion&nbsp;site</a></p>
+</li>
+<li>
+<p>Yu-San Lin, <span class="caps">CMPSC431W</span>: Database Management Systems fall 2015 video lectures, Penn State.
+<a href="http://yusanlin.com/cmpsc431w/lectures.html">Course&nbsp;site</a></p>
+</li>
+</ol>
+      </div><!-- .entry-content -->
+      <br /><br />
+      <div class="article_meta">
+        Tags:
+          <a href="https://dlwhittenbury.github.io/tag/mysql.html">MySQL</a>,          <a href="https://dlwhittenbury.github.io/tag/databases.html">Databases</a>,          <a href="https://dlwhittenbury.github.io/tag/sql.html">SQL</a>,          <a href="https://dlwhittenbury.github.io/tag/etl.html">ETL</a>,          <a href="https://dlwhittenbury.github.io/tag/imdb.html">IMDb</a>      </div>
+    </div>
+  </div>
+</article><!-- #post-## -->
+                </div>
+              </div><!-- #main -->
+          </div><!-- #primary -->
+        </div>
+      </div><!-- close .row -->
+    </div><!-- close .container -->
+  </div><!-- close .site-content -->
+
+
+
+
+  <div id="footer-area">
+    <footer id="colophon" class="site-footer" role="contentinfo">
+      <div class="site-info container">
+        <div class="row">
+                    <div class="copyright col-md-12">
+                    <a href="https://dlwhittenbury.github.io/pages/privacy-policy">Privacy Policy</a> |
+                    <a href="https://dlwhittenbury.github.io/feeds/all.atom.xml">Atom Feed</a> |
+                    <a href="https://dlwhittenbury.github.io/sitemap.xml">Sitemap</a><br />
+                    This site uses the <a href="https://github.com/limbenjamin/voce">voce</a> theme by <a href="//limbenjamin.com/">Benjamin Lim</a><br />
+                    &copy; 2020 <a href="https://dlwhittenbury.github.io">Daniel Whittenbury</a> </div>
+        </div>
+      </div><!-- .site-info -->
+      <div class="scroll-to-top" style="display: none;"><i class="fa fa-angle-up"></i></div><!-- .scroll-to-top -->
+    </footer><!-- #colophon -->
+  </div>
+
+  <script type="text/javascript">
+    window.addEventListener('load', function(){
+    if (window.location.pathname != '/' && window.location.pathname != '/index.html'){
+      window.scroll(0, document.getElementById('main').offsetTop);
+    }})
+  </script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Daniel Whittenbury">
+  <meta name="description" content="IMDb 4: Querying the IMDb MySQL database and visualising its data | This post is the fourth and final post in this series. Here we will query the...">
+
+  <base href="https://dlwhittenbury.github.io">
+
+  <!-- <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96"> -->
+
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" type="text/css" media="all">
+  <link rel="stylesheet" href="https://dlwhittenbury.github.io/theme/css/font.css" type="text/css" media="all">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://dlwhittenbury.github.io/theme/css/style.css" type="text/css" media="all">
+
+
+
+  <link rel="stylesheet" href="https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css">
+
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://dlwhittenbury.github.io/theme/js/functions.min.js"></script>
+
+
+
+
+
+<meta name="keywords" content="MySQL, Databases, SQL, ETL, IMDb">
+
+
+  <title>IMDb 4: Querying the IMDb MySQL database and visualising its data</title>
+
+
+</head>
+
+<body class="home blog">
+
+  <div>
+    <header class="site-header">
+      <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+          <div class="row">
+            <div class="site-navigation-inner col-sm-12">
+              <div class="navbar-header">
+                <button type="button" class="btn navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+              </div>
+              <div class="collapse navbar-collapse navbar-ex1-collapse">
+              <ul id="menu-all-pages" class="nav navbar-nav">
+                <li class="menu-item"><a href="/index.html" >Home
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/about-me.html" >About me
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/publications.html" >Publications
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/resume.html" >Resume
+<i class="fa  fa-lg"></i></a></li>
+                <li class="menu-item"><a href="/pages/dashboards-and-reports.html" >Dashboards and Reports
+<i class="fa  fa-lg"></i></a></li>
+              </ul>
+              </div>
+              <div class="social">
+                <a href="mailto:whittenburydaniel@gmail.com" title="Email" >
+<i class="fa fa-envelope fa-lg"></i></a>
+                <a href="https://github.com/dlwhittenbury" title="GitHub" >
+<i class="fa fa-github fa-lg"></i></a>
+                <a href="https://scholar.google.com/citations?user=3m-Rd7oAAAAJ&hl=en" title="GoogleScholar" >
+<i class="fa ai ai-google-scholar-square ai-3x fa-lg"></i></a>
+                <a href="https://researchgate.net/profile/Daniel_Whittenbury" title="ResearchGate" >
+<i class="fa ai ai-researchgate ai-60x fa-lg"></i></a>
+                <a href="https://twitter.com/dlwhittenbury" title="Twitter" >
+<i class="fa fa-twitter fa-lg"></i></a>
+                <a href="https://linkedin.com/in/daniel-whittenbury-44235a155" title="LinkedIn" >
+<i class="fa fa-linkedin fa-lg"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav><!-- .site-navigation -->
+
+      <div class="container">
+
+      <div id="logo">
+        <span class="site-name"><a class="navbar-brand" href="https://dlwhittenbury.github.io"><img width="280" src="images/myAvatar-Circle.png" class="attachment-full size-full" alt="logo">          </a>
+        </span><!-- end of .site-name -->
+      </div><!-- end of #logo -->
+
+    </div>
+
+  </header><!-- #masthead -->
+  </div>
+    <div id="content" class="site-content">
+      <div class="container main-content-area">
+        <div class="row">
+          <div class="main-content-inner col-sm-12 col-md-12">
+            <div id="primary" class="content-area">
+              <div id="main" class="site-main" role="main">
+                <div class="article-container">
+<article>
+  <div class="blog-item-wrap">
+    <div class="post-inner-content">
+      <header class="entry-header page-header">
+        <span class="cat-item"><time datetime="2020-06-24 11:00:00+09:30">Wed 24 June 2020</time></span>
+        <h1 class="entry-title"><a href="https://dlwhittenbury.github.io/imdb-4-querying-the-imdb-mysql-database-and-visualising-its-data.html">IMDb 4: Querying the IMDb MySQL database and visualising its&nbsp;data</a></h1>
+      </header><!-- .entry-header -->
+      <div class="fb-like" data-href="https://dlwhittenbury.github.io/imdb-4-querying-the-imdb-mysql-database-and-visualising-its-data.html" data-layout="standard" data-action="like" data-show-faces="false" data-share="true"></div>
+      <div class="entry-content">
+        <!-- # IMDb 4: Querying and visualising the MySQL database containing the IMDb dataset -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/imdb.png" width="500">
+</center></p>
+<p>This post is the fourth and final post in this series. Here we will query the database in
+a couple of different ways and perform some visualisation of the&nbsp;data.</p>
+<h2><span class="caps">SQL</span> Queries using&nbsp;MySQL</h2>
+<p>After creating and loading the data into the database, we can now query it. Queries can be posed by typing the <span class="caps">SQL</span> commands directly into the MySQL terminal or
+by writing them in a file, which would then be run from the terminal using the
+<span class="caps">SOURCE</span> command. In the file <code>SQL_Queries_1.sql</code> we consider many questions and answer them
+by querying the IMDb database. This section is an on going piece of work and we
+intend to add more queries to the repository in the&nbsp;future.</p>
+<p>For each query in the file <code>SQL_Queries_1.sql</code> we create a view&nbsp;by</p>
+<div class="highlight"><pre><span></span><code><span class="err">CREATE OR REPLACE VIEW Q1(column_1,column_2)</span>
+<span class="err">AS</span>
+<span class="err">...</span>
+<span class="err">;</span>
+</code></pre></div>
+
+
+<p>The result of the query which is stored in the view can be seen&nbsp;by</p>
+<div class="highlight"><pre><span></span><code><span class="err">SELECT * FROM Q1;</span>
+</code></pre></div>
+
+
+<p>To delete the&nbsp;view</p>
+<div class="highlight"><pre><span></span><code><span class="err">DROP VIEW Q1;</span>
+</code></pre></div>
+
+
+<p>The database is quite large, so for illustration purposes we will quite often
+limit ourselves to the first few entries&nbsp;only.</p>
+<h3>A few example&nbsp;queries</h3>
+<p>We will consider a few queries for illustration&nbsp;purposes.</p>
+<ul>
+<li><strong>Query 9:</strong> Who are the actors who played James Bond in a movie? How many times
+did they play the role of James&nbsp;Bond?</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="err">CREATE OR REPLACE VIEW Q9(name_id,name_,number_of_films)</span>
+<span class="err">AS SELECT N.name_id, N.name_, COUNT(*) AS number_of_films</span>
+<span class="err">FROM Names_ AS N, Had_role AS H, Titles AS T</span>
+<span class="err">WHERE H.role_ LIKE &#39;James Bond&#39;</span>
+<span class="err">AND T.title_type LIKE &#39;movie&#39;</span>
+<span class="err">AND T.title_id = H.title_id</span>
+<span class="err">AND N.name_id = H.name_id</span>
+<span class="err">GROUP BY N.name_id;</span>
+</code></pre></div>
+
+
+<p>To see the results of this&nbsp;query:</p>
+<div class="highlight"><pre><span></span><code><span class="err">SELECT * FROM Q9;</span>
+</code></pre></div>
+
+
+<!-- ![MySQL Query 9.](images/terminal_screenshots/MySQL-Query9.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/terminal_screenshots/MySQL-Query9.png" width="1000">
+</center></p>
+<ul>
+<li><strong>Query 10:</strong> How many actors played James&nbsp;Bond?</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="err">CREATE OR REPLACE VIEW Q10(number_of_JB_actors)</span>
+<span class="err">AS SELECT COUNT(DISTINCT name_id) AS number_of_JB_actors</span>
+<span class="err">FROM Q9;</span>
+</code></pre></div>
+
+
+<p>To see the results of this&nbsp;query:</p>
+<div class="highlight"><pre><span></span><code><span class="err">SELECT * FROM Q10;</span>
+</code></pre></div>
+
+
+<!-- ![MySQL Query 10.](images/terminal_screenshots/MySQL-Query10.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/terminal_screenshots/MySQL-Query10.png" width="1000">
+</center></p>
+<ul>
+<li><strong>Query 11:</strong> I don&#8217;t recognise some of the names shown above, so lets look at them more&nbsp;closely!</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="err">CREATE OR REPLACE VIEW Q11(name_,title_id,primary_title,start_year)</span>
+<span class="err">AS SELECT Q9.name_, T.title_id, T.primary_title, T.start_year</span>
+<span class="err">FROM Q9, Titles AS T, Had_role AS H</span>
+<span class="err">WHERE Q9.name_id = H.name_id</span>
+<span class="err">AND H.role_ LIKE &#39;James Bond&#39;</span>
+<span class="err">AND T.title_id = H.title_id</span>
+<span class="err">AND T.title_type LIKE &#39;movie&#39;</span>
+<span class="err">ORDER BY T.start_year DESC;</span>
+</code></pre></div>
+
+
+<p>To see the results of this&nbsp;query:</p>
+<div class="highlight"><pre><span></span><code><span class="err">SELECT * FROM Q11;</span>
+</code></pre></div>
+
+
+<!-- ![MySQL Query 11.](images/terminal_screenshots/MySQL-Query11.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/terminal_screenshots/MySQL-Query11.png" width="1000">
+</center></p>
+<p>Clearly, a few of these movies contain the character James Bond, but are not the
+James Bond movies we have in mind. In particular, the appearance of the movie
+<code>Deadly Hands of Kung Fu</code> is quite interesting as it looks to be a 1970&#8217;s kung
+fu flick. Its IMDb page can be found
+<a href="https://www.imdb.com/title/tt0165362/">here</a>. From this page we quote its&nbsp;synopsis:</p>
+<blockquote>
+<p><span class="dquo">&#8220;</span>It&#8217;s one of the &#8220;Bruceploitation&#8221; films that were made to cash in on Bruce Lee after his death. The story follows Bruce Lee after he dies and ends up in Hell. Once there, he does the logical thing and opens a gym. After fending off the advances of the King Of Hell&#8217;s naked wives, he discovers that the most evil people in Hell are attempting a takeover, so Bruce sets out to stop it. As if it wasn&#8217;t weird enough, the evil people are: Zatoichi (the blind swordsman hero of Japanese film), <strong>James Bond</strong>, The Godfather, The Exorcist, Emmanuelle (the &#8220;heroine&#8221; of many European softcore porn films), Dracula, and, of course, Clint Eastwood (played by a Chinese guy). Aiding Bruce is The One-Armed Swordsman (hero of kung-fu films), Kain from the <span class="caps">U.S.</span> tv series, Kung-Fu (actually played by a Chinese guy this time), and Popeye the Sailor Man! Yes, Popeye the Sailor Man. He eats spinach and helps Bruce fight some&nbsp;mummies.&#8221;</p>
+</blockquote>
+<p><strong><span class="caps">WOW</span>!!!</strong> I certainly was not expecting that, I need to see this movie! In the
+script <code>imdb_scraper.py</code> we provide a couple of functions that can be used to
+extract the url of a movie poster on its IMDb webpage using its <code>title_id</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+
+<span class="k">def</span> <span class="nf">get_title_webpage</span><span class="p">(</span><span class="n">title_id</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get_title_webpage(title_id):</span>
+<span class="sd">    ============================</span>
+
+<span class="sd">    Given an IMDb title_id this function will return the title&#39;s webpage as</span>
+<span class="sd">    a BeautifulSoup object.</span>
+
+<span class="sd">    INPUT:</span>
+<span class="sd">    ======</span>
+
+<span class="sd">    title_id (string) - An IMDb title id.</span>
+
+<span class="sd">    OUTPUT:</span>
+<span class="sd">    =======</span>
+
+<span class="sd">    bs (beaustiful soup object) - The title&#39;s webpage as a BeautifulSoup object.</span>
+
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="c1"># Construct url for title</span>
+  <span class="n">title_url</span> <span class="o">=</span> <span class="s1">&#39;https://www.imdb.com/title/&#39;</span> <span class="o">+</span> <span class="n">title_id</span>
+
+  <span class="c1"># Get the HTML of the title&#39;s IMDb page</span>
+  <span class="n">html</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">title_url</span><span class="p">)</span>
+
+  <span class="c1"># Create a BeautifulSoup object</span>
+  <span class="n">bs</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span><span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">bs</span>
+
+
+<span class="k">def</span> <span class="nf">get_imdb_title_poster_url</span><span class="p">(</span><span class="n">bs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get_imdb_title_poster_url(bs):</span>
+<span class="sd">    ==============================</span>
+
+<span class="sd">    Given a BeautifulSoup object of a title&#39;s IMDb webpage this function will</span>
+<span class="sd">    return the url for its poster.</span>
+
+<span class="sd">    INPUT:</span>
+<span class="sd">    ======</span>
+
+<span class="sd">    bs (beaustiful soup object) - The title&#39;s webpage as a BeautifulSoup object.</span>
+
+<span class="sd">    OUTPUT:</span>
+<span class="sd">    =======</span>
+
+<span class="sd">    poster_link (string) - Link to the poster.</span>
+
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="c1"># Extract poster link</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="n">bs</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="s1">&#39;poster&#39;</span><span class="p">})</span>
+  <span class="n">poster_link</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">img</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">]</span>
+
+  <span class="k">return</span> <span class="n">poster_link</span>
+</code></pre></div>
+
+
+<p>The functions used to scrape the movie poster url made use of BeautifulSoup and
+urllib.request. To see how these functions can be used in practice seen the screenshot&nbsp;below.</p>
+<!-- ![Poster url for Deadly Hands of Kung Fu.](images/terminal_screenshots/Terminal_screenshot-imdb_scraper.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/terminal_screenshots/Terminal_screenshot-imdb_scraper.png" width="1000">
+</center></p>
+<p><center>
+<img src="https://m.media-amazon.com/images/M/MV5BMzk0NTE1MDA1NF5BMl5BanBnXkFtZTgwOTIxMDAxNDE@._V1_UY268_CR8,0,182,268_AL_.jpg" width="500">
+</center>
+<!--
+<img alt="Poster for Deadly Hands of Kung Fu." src="https://m.media-amazon.com/images/M/MV5BMzk0NTE1MDA1NF5BMl5BanBnXkFtZTgwOTIxMDAxNDE@._V1_UY268_CR8,0,182,268_AL_.jpg"> --></p>
+<h2><span class="caps">SQL</span> Queries using python and data&nbsp;visualisation</h2>
+<p>In the notebook <code>MySQL_IMDb_visualisation.ipynb</code> we query the IMDb database to
+explore and visualise the IMDb dataset using pandas and matplotlib.
+This notebook is by no means a thorough exploration of the IMDb dataset. Its
+purpose is to practice querying a database using python, then to process and
+visualise the retrieved data with the pandas package. In particular, we consider
+the following&nbsp;questions:</p>
+<ul>
+<li>What are the average ratings for the <span class="caps">TV</span> show &#8216;The&nbsp;X-files&#8217;?</li>
+<li>What genres are&nbsp;there?</li>
+<li>How many movies are there in each&nbsp;genre?</li>
+<li>How many movies are made in each genre each&nbsp;year?</li>
+<li>How do the average ages of leading actors and actresses compare in each&nbsp;genre?</li>
+<li>What is a typical runtime for movies in each&nbsp;genre?</li>
+</ul>
+<p>This section is also an ongoing piece of work, which will be added to in the&nbsp;future.</p>
+<p>To connect to the MySQL IMDb database we use the following code. Of course you
+will need to use your own&nbsp;password.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">mysql.connector</span>
+
+<span class="n">mydb</span> <span class="o">=</span> <span class="n">mysql</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+    <span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span>
+    <span class="n">user</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span>
+    <span class="n">passwd</span><span class="o">=</span><span class="s1">&#39;put_your_password_here&#39;</span><span class="p">,</span>
+    <span class="n">auth_plugin</span><span class="o">=</span><span class="s1">&#39;mysql_native_password&#39;</span><span class="p">,</span>
+    <span class="n">database</span><span class="o">=</span><span class="s1">&#39;IMDb&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>We then create a&nbsp;cursor.</p>
+<div class="highlight"><pre><span></span><code><span class="n">mycursor</span> <span class="o">=</span> <span class="n">mydb</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</code></pre></div>
+
+
+<p>To execute a query we simply use the cursor&#8217;s execute and fetchall methods. For example to show
+all tables in the IMDb&nbsp;database</p>
+<div class="highlight"><pre><span></span><code><span class="n">mycursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SHOW TABLES;&quot;</span><span class="p">)</span>
+<span class="n">tables</span> <span class="o">=</span> <span class="n">mycursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</code></pre></div>
+
+
+<p>To print the contents of the tables variable we can simply do the&nbsp;following</p>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;IMDb Database contains the following tables:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;--------------------------------------------&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</code></pre></div>
+
+
+<p>Since we have ran the <span class="caps">SQL</span> script containing many queries, we have many tables in our&nbsp;database.</p>
+<div class="highlight"><pre><span></span><code><span class="gh">IMDb Database contains the following tables:</span>
+<span class="gh">--------------------------------------------</span>
+Alias_attributes
+Alias_types
+Aliases
+Directors
+Episode_belongs_to
+Had_role
+Known_for
+Leading_people
+Name_worked_as
+Names_
+Principals
+q1
+q10
+q11
+q12
+q13
+q14
+q15
+q16
+q17
+q18
+q19
+q2
+q20
+q21
+q22
+q23
+q24
+q3
+q4
+q5
+q6
+q7
+q8
+q9
+Title_genres
+Title_ratings
+Titles
+Writers
+</code></pre></div>
+
+
+<h3>Visualising the ratings of the tv show &#8220;The&nbsp;X-Files&#8221;</h3>
+<p>What is the average rating of each episode of The&nbsp;X-Files?</p>
+<div class="highlight"><pre><span></span><code><span class="n">Query1</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;SELECT E.season_number, E.episode_number, T2.primary_title, R.average_rating</span>
+<span class="s2">FROM Titles AS T1, Titles AS T2, Episode_belongs_to AS E, Title_ratings AS R</span>
+<span class="s2">WHERE T1.primary_title = &#39;The X-Files&#39;</span>
+<span class="s2">AND T1.title_type = &#39;tvSeries&#39;</span>
+<span class="s2">AND T1.title_id = E.parent_tv_show_title_id</span>
+<span class="s2">AND T2.title_type = &#39;tvEpisode&#39;</span>
+<span class="s2">AND T2.title_id = E.episode_title_id</span>
+<span class="s2">AND T2.title_id = R.title_id</span>
+<span class="s2">ORDER BY E.season_number, E.episode_number;&quot;&quot;&quot;</span>
+
+<span class="n">mycursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Query1</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">mycursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;season_no&#39;</span><span class="p">,</span><span class="s1">&#39;episode_no&#39;</span><span class="p">,</span><span class="s1">&#39;ep_title&#39;</span><span class="p">,</span><span class="s1">&#39;avg_rating&#39;</span><span class="p">])</span>
+</code></pre></div>
+
+
+<p>How many episodes were there in The X-Files per season? And what was the average of the average episode ratings for each&nbsp;season?</p>
+<div class="highlight"><pre><span></span><code><span class="n">Query2</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;SELECT Q22.season_number, COUNT(*) AS Number_of_episodes, AVG(Q22.average_rating) AS Average_of_ep_average_ratings</span>
+<span class="s2">FROM Q22</span>
+<span class="s2">GROUP BY Q22.season_number</span>
+<span class="s2">ORDER BY Q22.season_number;&quot;&quot;&quot;</span>
+
+<span class="n">mycursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Query2</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">mycursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+<span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;season_no&#39;</span><span class="p">,</span><span class="s1">&#39;no_of_eps&#39;</span><span class="p">,</span><span class="s1">&#39;avg_of_avg_ratings&#39;</span><span class="p">])</span>
+
+<span class="n">df2</span><span class="p">[</span><span class="s1">&#39;total_eps_so_far&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df2</span><span class="p">[</span><span class="s1">&#39;no_of_eps&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+</code></pre></div>
+
+
+<p>We will plot the results of the above two queries to illustrate the average ratings of The X-files episodes. Please see the notebook for the details of how to produce this&nbsp;figure.</p>
+<!-- As a sample of the kind of querying and visualisation performed in this notebook
+we show a few of the created figures: -->
+
+<!-- ![Average ratings of episodes of the X-Files.](images/plots/The_X-Files_ratings.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/plots/The_X-Files_ratings.png" width="800">
+</center></p>
+<h3>Genres</h3>
+<p>Let&#8217;s start with something fairly simple. What genres are there? How many movies are there in each&nbsp;genre?</p>
+<div class="highlight"><pre><span></span><code><span class="n">Query3</span> <span class="o">=</span><span class="s2">&quot;&quot;&quot;SELECT G.genre, COUNT(G.genre) AS Count</span>
+<span class="s2">FROM Title_genres AS G, Titles AS T</span>
+<span class="s2">WHERE T.title_id = G.title_id</span>
+<span class="s2">AND T.title_type = &#39;movie&#39;</span>
+<span class="s2">GROUP BY genre</span>
+<span class="s2">ORDER BY Count DESC;&quot;&quot;&quot;</span>
+
+<span class="n">mycursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Query3</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">mycursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+<span class="n">df3</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Genre&#39;</span><span class="p">,</span><span class="s1">&#39;No. of movies&#39;</span><span class="p">])</span>
+</code></pre></div>
+
+
+<p>We will visualise this data using a horizontal bar&nbsp;chart.</p>
+<!-- ![Number of movies in the database in each genre.](images/plots/Genre_movie_count.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/plots/Genre_movie_count.png" width="800">
+</center></p>
+<p>How many movies are made in each genre each year? We only consider up to and including&nbsp;2019.</p>
+<div class="highlight"><pre><span></span><code><span class="n">Query4</span> <span class="o">=</span><span class="s2">&quot;&quot;&quot;SELECT T.start_year, G.genre, COUNT(DISTINCT T.title_id) AS Number_of_movies</span>
+<span class="s2">FROM Titles AS T, Title_genres AS G</span>
+<span class="s2">WHERE T.title_id = G.title_id</span>
+<span class="s2">AND T.title_type = &#39;movie&#39;</span>
+<span class="s2">AND T.start_year &lt;= 2019</span>
+<span class="s2">GROUP BY T.start_year, G.genre</span>
+<span class="s2">ORDER BY T.start_year DESC, G.genre ASC;&quot;&quot;&quot;</span>
+
+<span class="n">mycursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Query4</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">mycursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+<span class="n">df4</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span><span class="s1">&#39;Genre&#39;</span><span class="p">,</span><span class="s1">&#39;Number of movies&#39;</span><span class="p">])</span>
+</code></pre></div>
+
+
+<p>We will visualise this data using a line&nbsp;plot.</p>
+<!-- ![Number of movies per year in each genre.](images/plots/Genre_movie_count_vs_year.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/plots/Genre_movie_count_vs_year.png" width="800">
+</center></p>
+<p>How do the average ages of leading actors and actresses compare in each&nbsp;genre?</p>
+<p>We limit ourselves to movies between 1919 and 2019. To determine the age of an actor/actress when the movie was being made the title start year and the birth year of the person must both be non-<span class="caps">NULL</span>. If either of these are <span class="caps">NULL</span>, then that entry is&nbsp;neglected.</p>
+<p>First we create an intermediate table Leading_people with &#8216;year&#8217;,&#8217;title_id&#8217;,&#8217;job_category&#8217;, and &#8216;ordering&#8217; data. We then query this table to combine this with &#8216;age&#8217; and &#8216;genre&#8217;&nbsp;information.</p>
+<div class="highlight"><pre><span></span><code><span class="n">Query5</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;CREATE TABLE  Leading_people</span>
+<span class="s2">AS SELECT T.start_year, T.title_id, P.job_category, MIN(P.ordering) AS ordering</span>
+<span class="s2">FROM Titles AS T, Principals AS P, Names_ AS N</span>
+<span class="s2">WHERE T.title_id = P.title_id</span>
+<span class="s2">AND P.job_category IN (&#39;actor&#39;,&#39;actress&#39;)</span>
+<span class="s2">AND T.title_type = &#39;movie&#39;</span>
+<span class="s2">AND T.start_year IS NOT NULL</span>
+<span class="s2">AND N.birth_year IS NOT NULL</span>
+<span class="s2">AND N.name_id = P.name_id</span>
+<span class="s2">AND T.start_year BETWEEN 1919 AND 2019</span>
+<span class="s2">GROUP BY T.title_id, P.job_category</span>
+<span class="s2">ORDER BY T.start_year, T.title_id;&quot;&quot;&quot;</span>
+
+<span class="n">mycursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Query5</span><span class="p">)</span>
+
+<span class="n">Query6</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;SELECT L.*, T.start_year - N.birth_year AS age, G.genre</span>
+<span class="s2">FROM Leading_people AS L, Names_ AS N, Titles AS T, Principals AS P, Title_genres AS G</span>
+<span class="s2">WHERE L.title_id = T.title_id</span>
+<span class="s2">AND P.title_id = L.title_id</span>
+<span class="s2">AND P.name_id = N.name_id</span>
+<span class="s2">AND P.ordering = L.ordering</span>
+<span class="s2">AND T.title_id = G.title_id ;&quot;&quot;&quot;</span>
+
+<span class="n">mycursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Query6</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">mycursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+<span class="n">df6</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span><span class="s1">&#39;title_id&#39;</span><span class="p">,</span><span class="s1">&#39;job_category&#39;</span><span class="p">,</span><span class="s1">&#39;ordering&#39;</span><span class="p">,</span><span class="s1">&#39;age&#39;</span><span class="p">,</span><span class="s1">&#39;genre&#39;</span><span class="p">])</span>
+</code></pre></div>
+
+
+<p>Let&#8217;s group by year, job_category (actor/actress, i.e., gender) and also genre using pandas&#8217; groupby&nbsp;function</p>
+<div class="highlight"><pre><span></span><code><span class="n">df_ages</span> <span class="o">=</span> <span class="n">df6</span><span class="p">[[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span><span class="s1">&#39;job_category&#39;</span><span class="p">,</span><span class="s1">&#39;genre&#39;</span><span class="p">,</span><span class="s1">&#39;age&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span><span class="s1">&#39;job_category&#39;</span><span class="p">,</span><span class="s1">&#39;genre&#39;</span><span class="p">])</span>
+</code></pre></div>
+
+
+<p>We define two functions which will be passed to the aggregrate function. These functions will be used to calculate the first and third&nbsp;quartile.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">Q1</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The first quartile = 0.25 quantile = 25 th percentile.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">Q3</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The third quartile = 0.75 quantile = 75 th percentile.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">df_ages</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span><span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="n">Q1</span><span class="p">,</span><span class="n">Q3</span><span class="p">]})</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="err">````</span>
+
+<span class="n">Rename</span> <span class="n">columns</span>
+
+<span class="err">```</span><span class="n">python</span>
+<span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span><span class="s1">&#39;job_category&#39;</span><span class="p">,</span><span class="s1">&#39;genre&#39;</span><span class="p">,</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span><span class="s1">&#39;median&#39;</span><span class="p">,</span><span class="s1">&#39;Q1&#39;</span><span class="p">,</span><span class="s1">&#39;Q3&#39;</span><span class="p">]</span>
+</code></pre></div>
+
+
+<p>Let&#8217;s visualise this data for just the Drama movies, which is the top genre. The lines are the mean values and the bands are given by the first and third&nbsp;quartiles.</p>
+<!-- ![Average ages of leading actors and actresses in drama movies.](images/plots/Drama_average_age_gender.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/plots/Drama_average_age_gender.png" width="800">
+</center></p>
+<p>Now let&#8217;s visualise for the top 9&nbsp;genres.</p>
+<!-- ![Average ages of leading actors and actresses in the top 9 movie genres.](images/plots/Top_9_genres_average_age_gender.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/plots/Top_9_genres_average_age_gender.png" width="1000">
+</center></p>
+<p>We see a very clear trend in pretty much all genres shown. The leading men are typically older than the leading ladies. Although<br>
+this trend is not as clear cut for&nbsp;documentaries.</p>
+<p>What is a typical runtime for movies in each&nbsp;genre?</p>
+<div class="highlight"><pre><span></span><code><span class="n">Query7</span> <span class="o">=</span><span class="s2">&quot;&quot;&quot;SELECT G.genre, T.runtime_minutes</span>
+<span class="s2">FROM Titles AS T, Title_genres AS G</span>
+<span class="s2">WHERE T.runtime_minutes IS NOT NULL</span>
+<span class="s2">AND T.title_type = &#39;movie&#39;</span>
+<span class="s2">AND T.title_id = G.title_id; &quot;&quot;&quot;</span>
+
+<span class="n">mycursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Query7</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">mycursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</code></pre></div>
+
+
+<p>Some titles have extremely large and unrealistic values. We choose to ignore
+these by introducing a cutoff of 300 minutes for the runtime minutes. We visualise
+this data for 6 genres as a histogram&nbsp;plot.</p>
+<!-- ![Histogram of movie runtimes for the top 6 movie genres.](images/plots/Top_6_genres_runtime_hist.png) -->
+
+<p><center>
+<img src="articles/IMDb-MySQL-Project/images/plots/Top_6_genres_runtime_hist.png" width="800">
+</center></p>
+<p>We finish by closing the connection to the&nbsp;database.</p>
+<div class="highlight"><pre><span></span><code><span class="n">mycursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">mydb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div>
+
+
+<h2>Conclusion</h2>
+<p>In this post we looked at querying the IMDb database, we created in previous
+posts, in a few different ways. We then proceeded to visualise the retrieved data.
+This post was meant to
+only scratch the surface of what could be done with this data. At a later date we will
+likely return to this dataset again to try out other <span class="caps">ETL</span> tools such as Microsoft&#8217;s <span class="caps">SQL</span> Server
+Integrations Services (<span class="caps">SSIS</span>) and others. We may also investigate trends further by performing statistical analyses and possibly even use some machine learning algorithms.
+Well this concludes the series of posts on building and querying a MySQL database for the IMDb&nbsp;dataset.</p>
+      </div><!-- .entry-content -->
+      <br /><br />
+      <div class="article_meta">
+        Tags:
+          <a href="https://dlwhittenbury.github.io/tag/mysql.html">MySQL</a>,          <a href="https://dlwhittenbury.github.io/tag/databases.html">Databases</a>,          <a href="https://dlwhittenbury.github.io/tag/sql.html">SQL</a>,          <a href="https://dlwhittenbury.github.io/tag/etl.html">ETL</a>,          <a href="https://dlwhittenbury.github.io/tag/imdb.html">IMDb</a>      </div>
+    </div>
+  </div>
+</article><!-- #post-## -->
+                </div>
+              </div><!-- #main -->
+          </div><!-- #primary -->
+        </div>
+      </div><!-- close .row -->
+    </div><!-- close .container -->
+  </div><!-- close .site-content -->
+
+
+
+
+  <div id="footer-area">
+    <footer id="colophon" class="site-footer" role="contentinfo">
+      <div class="site-info container">
+        <div class="row">
+                    <div class="copyright col-md-12">
+                    <a href="https://dlwhittenbury.github.io/pages/privacy-policy">Privacy Policy</a> |
+                    <a href="https://dlwhittenbury.github.io/feeds/all.atom.xml">Atom Feed</a> |
+                    <a href="https://dlwhittenbury.github.io/sitemap.xml">Sitemap</a><br />
+                    This site uses the <a href="https://github.com/limbenjamin/voce">voce</a> theme by <a href="//limbenjamin.com/">Benjamin Lim</a><br />
+                    &copy; 2020 <a href="https://dlwhittenbury.github.io">Daniel Whittenbury</a> </div>
+        </div>
+      </div><!-- .site-info -->
+      <div class="scroll-to-top" style="display: none;"><i class="fa fa-angle-up"></i></div><!-- .scroll-to-top -->
+    </footer><!-- #colophon -->
+  </div>
+
+  <script type="text/javascript">
+    window.addEventListener('load', function(){
+    if (window.location.pathname != '/' && window.location.pathname != '/index.html'){
+      window.scroll(0, document.getElementById('main').offsetTop);
+    }})
+  </script>
+
+
+
+
+</body>
+</html>
